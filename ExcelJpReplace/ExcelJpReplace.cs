@@ -118,7 +118,6 @@ namespace ExcelJpReplace
 
             inputdir = inputdir.upath();
             Console.WriteLine("已翻译 Excel 根路径为: " + inputdir);
-            var outdir = inputdir + ".out";
             foreach(var f in Directory.GetFiles(inputdir, "*.*", SearchOption.AllDirectories)
                 .Where(f => f.EndsWith(".xls") || f.EndsWith(".xlsx")))
             {
