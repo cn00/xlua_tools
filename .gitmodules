@@ -1,0 +1,3 @@
+[submodule "npoi"]
+	path = npoi
+	url = git@github.com:cn00/npoi.git

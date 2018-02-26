@@ -8,6 +8,7 @@ using NPOI.XSSF.UserModel;
 using NPOI.SS.UserModel;
 using System.IO;
 using System.Text.RegularExpressions;
+using NPOI.OpenXmlFormats.Spreadsheet;
 
 namespace CollectExcelJp
 {
@@ -101,6 +102,7 @@ namespace CollectExcelJp
     }
     class ExcelJpCollect
     {
+        IWorkbook AllInOnebook = null;
         static void Main(string[] args)
         {
             begin:
@@ -118,6 +120,20 @@ namespace CollectExcelJp
             inputdir = inputdir.upath();
             Console.WriteLine("待翻译 Excel 根路径为: " + inputdir);
             var outdir = inputdir + ".out";
+
+            var AllInOnebook = new XSSFWorkbook();
+            int count = 0;
+            var outSheet = AllInOnebook.Sheet("jp");//new XSSFSheet();//
+            int tmi = -1;
+            outSheet.Cell(0, ++tmi).SetCellValue("jp");
+            outSheet.Cell(0, ++tmi).SetCellValue("trans");
+            outSheet.Cell(0, ++tmi).SetCellValue("trans_jd");
+            outSheet.Cell(0, ++tmi).SetCellValue("i");
+            outSheet.Cell(0, ++tmi).SetCellValue("j");
+            outSheet.Cell(0, ++tmi).SetCellValue("SheetName");
+            outSheet.Cell(0, ++tmi).SetCellValue("FilePath");
+
+
             foreach(var f in Directory.GetFiles(inputdir, "*.*", SearchOption.AllDirectories)
                 .Where(f => f.EndsWith(".xls") || f.EndsWith(".xlsx")))
             {
@@ -130,6 +146,44 @@ namespace CollectExcelJp
             Console.ReadLine();
         }//end main
 
+        public class ExcelHead
+        {
+            public int[] hidx;
+
+            public int this[HeadIdx i]
+            {
+                get { return hidx[(int)i]; }
+            }
+
+            public ExcelHead(IRow hrow)
+            {
+                hidx = new int[(int)HeadIdx.Count];
+                for(int i = 0; i < hrow.LastCellNum; ++i)
+                {
+                    var v = hrow.Cell(i);
+                    for(int j = 0; j < (int)HeadIdx.Count; ++j)
+                    {
+                        if(v.StringCellValue == ((HeadIdx)j).ToString())
+                        {
+                            hidx[j] = i;
+                            break;
+                        }
+                    }
+                }
+
+            }
+        }
+        public enum HeadIdx
+        {
+            jp,
+            trans,
+            trans_jd,
+            i,
+            j,
+            SheetName,
+
+            Count
+        }
         const string regular = "[\u3021-\u3126]";
         static int colCount = 0;
         public static bool Collect(string inExcel, string outExcel)
@@ -148,23 +202,41 @@ namespace CollectExcelJp
                 inbook = new XSSFWorkbook(inStream);
             }
 
-            int totalCount = 0;
-            var outBook = new XSSFWorkbook();
-            int count = 0;
-            var outSheet = outBook.Sheet("jp");//new XSSFSheet();//
-            int tmi = -1;
-            outSheet.Cell(0, ++tmi).SetCellValue("jp");
-            outSheet.Cell(0, ++tmi).SetCellValue("trans");
-            outSheet.Cell(0, ++tmi).SetCellValue("trans_jd");
-            outSheet.Cell(0, ++tmi).SetCellValue("i");
-            outSheet.Cell(0, ++tmi).SetCellValue("j");
-            outSheet.Cell(0, ++tmi).SetCellValue("SheetName");
+            //template
+            var templateStream = new FileStream("d:/a3/client/docs/protected.xlsx", FileMode.Open);
+            var outBook = new XSSFWorkbook(templateStream);
+            XSSFSheet outSheet = outBook.GetSheet("jp") as XSSFSheet;//new XSSFSheet();//
+            templateStream.Close();
 
+
+            int totalCount = 0;
+            //var outSheet = outBook.Sheet("jp");//new XSSFSheet();//
+            //outBook.Add(outSheet as XSSFSheet);
+            var hrow = outSheet.GetRow(0);
+            var head = new ExcelHead(hrow);
+
+            var locked = outBook.CreateCellStyle();
+            locked.IsLocked = true;
+            locked.WrapText = true;
+            locked.ShrinkToFit = true;
+
+            var nolocked = outBook.CreateCellStyle();
+            nolocked.IsLocked = false;
+            nolocked.WrapText = true;
+            nolocked.ShrinkToFit = true;
+
+            outSheet.SetDefaultColumnStyle(head[HeadIdx.jp], locked);
+            outSheet.SetDefaultColumnStyle(head[HeadIdx.trans], nolocked);
+            outSheet.SetDefaultColumnStyle(head[HeadIdx.trans_jd], nolocked);
+            outSheet.SetDefaultColumnStyle(head[HeadIdx.i], locked);
+            outSheet.SetDefaultColumnStyle(head[HeadIdx.j], locked);
+            outSheet.SetDefaultColumnStyle(head[HeadIdx.SheetName], locked);
+
+            int count = 2;
             bool cellLock = true;
             foreach(var sheet in inbook.AllSheets())
             {
-                //跳过表头
-                for(int i = 1; i <= sheet.LastRowNum; ++i)
+                for(int i = 0; i <= sheet.LastRowNum; ++i)
                 {
                     var row = sheet.Row(i);
                     for(int j = 0; j < row.LastCellNum; ++j)
@@ -176,34 +248,33 @@ namespace CollectExcelJp
                             ++count;
                             ++totalCount;
 
-                            int tmi2 = -1;
-
-                            var c = outSheet.Cell(count, ++tmi2);
+                            var c = outSheet.Cell(count, head[HeadIdx.jp]);
                             c.SetCellValue(v);
-                            c.CellStyle.IsLocked = cellLock;
+                            //c.CellStyle.IsLocked = cellLock;
 
-                            c = outSheet.Cell(count, ++tmi2);
+                            c = outSheet.Cell(count, head[HeadIdx.trans]);
                             c.SetCellValue("译文: " + v);
-                            c.CellStyle.IsLocked = false;
+                            //c.CellStyle.IsLocked = false;
 
-                            c = outSheet.Cell(count, ++tmi2);
+                            c = outSheet.Cell(count, head[HeadIdx.trans_jd]);
                             c.SetCellValue("校对");
-                            c.CellStyle.IsLocked = false;
+                            //c.CellStyle.IsLocked = false;
 
-                            c = outSheet.Cell(count, ++tmi2);
+                            c = outSheet.Cell(count, head[HeadIdx.i]);
                             c.SetCellValue(i);
-                            c.CellStyle.IsLocked = cellLock;
+                            //c.CellStyle.IsLocked = cellLock;
 
-                            c = outSheet.Cell(count, ++tmi2);
+                            c = outSheet.Cell(count, head[HeadIdx.j]);
                             c.SetCellValue(j);
-                            c.CellStyle.IsLocked = cellLock;
+                            //c.CellStyle.IsLocked = cellLock;
 
-                            c = outSheet.Cell(count, ++tmi2);
+                            c = outSheet.Cell(count, head[HeadIdx.SheetName]);
                             c.SetCellValue(sheet.SheetName);
-                            c.CellStyle.IsLocked = cellLock;
+                            //c.CellStyle.IsLocked = cellLock;
                         }
                     }
                 }
+                outSheet.AutoSizeColumn(0, false, 64);
 
                 //if(count == 0)
                 //{
@@ -215,31 +286,19 @@ namespace CollectExcelJp
                 //    }
                 //}
             }
-            //var l = outSheet.GetColumnStyle(0);
-            //l.IsLocked = true;
-            //l.ShrinkToFit = true;
-            //l = outSheet.GetColumnStyle(1);
-            //l.IsLocked = false;
-            //l.ShrinkToFit = true;
-            //l = outSheet.GetColumnStyle(2);
-            //l.IsLocked = true;
-            //l.ShrinkToFit = true;
-            //l = outSheet.GetColumnStyle(3);
-            //l.IsLocked = true;
-            //l.ShrinkToFit = true;
-            //l = outSheet.GetColumnStyle(4);
-            //l.IsLocked = true;
-            //l.ShrinkToFit = true;
 
-            //outSheet.ProtectSheet("654123");
+            var pro = outSheet.AddProtection("654123");
+
             inStream.Close();
 
             if(totalCount > 0)
             {
-                b = true;
                 ++colCount;
+                b = true;
+
                 var infoSheet = outBook.Sheet("info");//
                 infoSheet.Cell(0, 0).SetCellValue(inExcel);
+
                 var outDir = Path.GetDirectoryName(outExcel);
                 if(!Directory.Exists(outDir))
                 {
@@ -248,6 +307,7 @@ namespace CollectExcelJp
                 var outStream = new FileStream(outExcel, FileMode.Create);
                 outStream.Position = 0;
 
+                // no use
                 //outBook.LockRevision();
                 //outBook.LockStructure();
                 //outBook.LockWindows();

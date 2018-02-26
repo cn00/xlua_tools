@@ -52,6 +52,10 @@ namespace ExcelRpelaceStr
             if(string.IsNullOrEmpty(newStr))
                 goto input_new_str;
 
+            Console.WriteLine("将替换全部 [{0}] 为 [{1}]", oldStr, newStr);
+            Console.Write("按 Enter 确认: ");
+            Console.ReadLine();
+
             go:
             foreach(var f in Directory.GetFiles(inputdir, "*.*", SearchOption.AllDirectories)
                 .Where(f => f.EndsWith(".xls") || f.EndsWith(".xlsx")))
@@ -65,7 +69,7 @@ namespace ExcelRpelaceStr
             Console.ReadLine();
         }//end main
 
-        static int colCount = 0;
+        static int fColCount = 0;
         public static void Replace(string inExcel, string oldStr, string newStr)
         {
             var inStream = new FileStream(inExcel, FileMode.Open);
@@ -81,6 +85,10 @@ namespace ExcelRpelaceStr
             }
             inStream.Close();
 
+            ++fColCount;
+            Console.WriteLine(fColCount + " <<< " + inExcel);
+
+            int count = 0;
             foreach(var sheet in inbook.AllSheets())
             {
                 for(int i = 1; i <= sheet.LastRowNum; ++i)
@@ -89,17 +97,23 @@ namespace ExcelRpelaceStr
                     for(int j = 0; j < row.LastCellNum; ++j)
                     {
                         var c = row.Cell(j);
-                        var v = c.StringCellValue;
-                        c.SetCellValue(v.Replace(oldStr, newStr));
+                        var v = c.SValue();
+                        if(v.Contains(oldStr))
+                        {
+                            ++count;
+                            c.SetCellValue(v.Replace(oldStr, newStr));
+                            Console.WriteLine("{0}: [{1}, {2}]", sheet.SheetName, i, j);
+                        }
                     }
                 }
             }
 
-            inStream = new FileStream(inExcel, FileMode.Create);
-            inbook.Write(inStream);
-            inStream.Close();
-            ++colCount;
-            Console.WriteLine(colCount + " <<< " + inExcel);
+            if(count > 0)
+            {
+                inStream = new FileStream(inExcel, FileMode.Create);
+                inbook.Write(inStream);
+                inStream.Close();
+            }
         }
 
     }
