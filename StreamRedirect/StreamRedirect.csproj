@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{DDB4C12A-633B-42C6-ABDC-4A931BE64D9A}</ProjectGuid>
+    <ProjectGuid>{AACF4226-1C12-4A7D-A248-FA0FB1ED4C38}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>ExcelJpCollect</RootNamespace>
-    <AssemblyName>ExcelJpCollect</AssemblyName>
+    <RootNamespace>StreamRedirect</RootNamespace>
+    <AssemblyName>StreamRedirect</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -42,7 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExcelJpCollect.cs" />
+    <Compile Include="StreamRedirectTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

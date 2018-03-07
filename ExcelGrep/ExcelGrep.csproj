@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{DDB4C12A-633B-42C6-ABDC-4A931BE64D9A}</ProjectGuid>
+    <ProjectGuid>{55BBD4C0-AD4C-4F02-BA0B-C889E0F2C09C}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>ExcelJpCollect</RootNamespace>
-    <AssemblyName>ExcelJpCollect</AssemblyName>
+    <RootNamespace>ExcelGrep</RootNamespace>
+    <AssemblyName>ExcelGrep</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -42,7 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExcelJpCollect.cs" />
+    <Compile Include="ExcelGrep.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

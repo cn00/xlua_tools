@@ -49,6 +49,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ExcelJpCollect\ExcelJpCollect.csproj">
+      <Project>{DDB4C12A-633B-42C6-ABDC-4A931BE64D9A}</Project>
+      <Name>ExcelJpCollect</Name>
+    </ProjectReference>
     <ProjectReference Include="..\npoi\main\NPOI.csproj">
       <Project>{10fa8538-157a-4380-a4f6-8e2c3ee92cae}</Project>
       <Name>NPOI</Name>

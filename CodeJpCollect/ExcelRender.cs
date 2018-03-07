@@ -64,7 +64,7 @@ public class ExcelRender
 
             for (int i = 0, l = headerRow.LastCellNum; i < l; i++)
             {
-                sheet.AutoSizeColumn(i);
+                //sheet.AutoSizeColumn(i);
             }
         }
     }

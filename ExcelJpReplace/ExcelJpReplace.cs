@@ -8,7 +8,7 @@ using NPOI.XSSF.UserModel;
 using NPOI.SS.UserModel;
 using System.IO;
 using System.Text.RegularExpressions;
-
+using LibShared;
 
 namespace ExcelJpReplace
 {
@@ -109,9 +109,9 @@ namespace ExcelJpReplace
             Console.WriteLine("输入已翻译 Excel 根路径, 默认值: " + inputdir);
             Console.Write("输入或拖入: ");
             var tmp = Console.ReadLine();
-            if(!string.IsNullOrWhiteSpace(tmp))
+            if(!string.IsNullOrWhiteSpace(tmp) && Directory.Exists(tmp))
                 inputdir = tmp;
-            if(!Directory.Exists(inputdir))
+            else
             {
                 goto begin;
             }
@@ -160,6 +160,9 @@ namespace ExcelJpReplace
             outStream.Close();
 
             var jpSheet = inbook.Sheet("jp");
+            var hrow = jpSheet.GetRow(0);
+            var head = new ExcelHead(hrow);
+
             for(var i = 1; i <= jpSheet.LastRowNum; ++i)
             {
                 int tmi2 = -1;

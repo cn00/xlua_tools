@@ -9,97 +9,10 @@ using NPOI.SS.UserModel;
 using System.IO;
 using System.Text.RegularExpressions;
 using NPOI.OpenXmlFormats.Spreadsheet;
+using LibShared;
 
 namespace CollectExcelJp
 {
-    public static class ExcelExtension
-    {
-        public static string upath(this string self)
-        {
-
-            return self.Trim()
-                .TrimEnd()
-                .Replace("\\", "/")
-                .Replace("//", "/");
-        }
-
-        public static string SValue(this ICell cell, CellType? FormulaResultType = null)
-        {
-            string svalue = "";
-            var cellType = FormulaResultType ?? cell.CellType;
-            switch(cellType)
-            {
-            case CellType.Unknown:
-                svalue = "nil";
-                break;
-            case CellType.Numeric:
-                svalue = cell.NumericCellValue.ToString();
-                break;
-            case CellType.String:
-                svalue = cell.StringCellValue
-                    //.Replace("\n", "\\n")
-                    //.Replace("\t", "\\t")
-                    //.Replace("\"", "\\\"")
-                    ;
-                break;
-            case CellType.Formula:
-                svalue = cell.SValue(cell.CachedFormulaResultType);
-                break;
-            case CellType.Blank:
-                svalue = "nil";
-                break;
-            case CellType.Boolean:
-                svalue = cell.BooleanCellValue.ToString();
-                break;
-            case CellType.Error:
-                svalue = "nil";
-                break;
-            default:
-                break;
-            }
-            return svalue;
-        }
-
-        public static List<ISheet> AllSheets(this IWorkbook workbook)
-        {
-            List<ISheet> sheets = new List<ISheet>();
-            if(workbook is HSSFWorkbook)
-            {
-                HSSFWorkbook book = workbook as HSSFWorkbook;
-                for(int i = 0; i < book.NumberOfSheets; ++i)
-                {
-                    sheets.Add(book.GetSheetAt(i));
-                }
-            }
-            else if(workbook is XSSFWorkbook)
-            {
-                XSSFWorkbook book = workbook as XSSFWorkbook;
-                for(int i = 0; i < book.NumberOfSheets; ++i)
-                {
-                    sheets.Add(book.GetSheetAt(i));
-                }
-            }
-            return sheets;
-        }
-
-        public static ISheet Sheet(this IWorkbook workbook, string name)
-        {
-            return workbook.GetSheet(name) ?? workbook.CreateSheet(name);
-        }
-        public static IRow Row(this ISheet sheet, int i)
-        {
-            return sheet.GetRow(i) ?? sheet.CreateRow(i);
-        }
-        public static ICell Cell(this IRow row, int i)
-        {
-            return row.GetCell(i) ?? row.CreateCell(i);
-        }
-        public static ICell Cell(this ISheet sheet, int i, int j)
-        {
-            return sheet.Row(i).Cell(j);
-        }
-
-    }
     class ExcelJpCollect
     {
         IWorkbook AllInOnebook = null;
@@ -119,7 +32,7 @@ namespace CollectExcelJp
 
             inputdir = inputdir.upath();
             Console.WriteLine("待翻译 Excel 根路径为: " + inputdir);
-            var outdir = inputdir + ".out";
+            var outdir = inputdir + ".jp";
 
             var AllInOnebook = new XSSFWorkbook();
             int count = 0;
@@ -146,44 +59,6 @@ namespace CollectExcelJp
             Console.ReadLine();
         }//end main
 
-        public class ExcelHead
-        {
-            public int[] hidx;
-
-            public int this[HeadIdx i]
-            {
-                get { return hidx[(int)i]; }
-            }
-
-            public ExcelHead(IRow hrow)
-            {
-                hidx = new int[(int)HeadIdx.Count];
-                for(int i = 0; i < hrow.LastCellNum; ++i)
-                {
-                    var v = hrow.Cell(i);
-                    for(int j = 0; j < (int)HeadIdx.Count; ++j)
-                    {
-                        if(v.StringCellValue == ((HeadIdx)j).ToString())
-                        {
-                            hidx[j] = i;
-                            break;
-                        }
-                    }
-                }
-
-            }
-        }
-        public enum HeadIdx
-        {
-            jp,
-            trans,
-            trans_jd,
-            i,
-            j,
-            SheetName,
-
-            Count
-        }
         const string regular = "[\u3021-\u3126]";
         static int colCount = 0;
         public static bool Collect(string inExcel, string outExcel)
@@ -232,7 +107,7 @@ namespace CollectExcelJp
             outSheet.SetDefaultColumnStyle(head[HeadIdx.j], locked);
             outSheet.SetDefaultColumnStyle(head[HeadIdx.SheetName], locked);
 
-            int count = 2;
+            int count = 0;
             bool cellLock = true;
             foreach(var sheet in inbook.AllSheets())
             {
@@ -253,7 +128,7 @@ namespace CollectExcelJp
                             //c.CellStyle.IsLocked = cellLock;
 
                             c = outSheet.Cell(count, head[HeadIdx.trans]);
-                            c.SetCellValue("译文: " + v);
+                            c.SetCellValue("译文");
                             //c.CellStyle.IsLocked = false;
 
                             c = outSheet.Cell(count, head[HeadIdx.trans_jd]);
@@ -287,7 +162,7 @@ namespace CollectExcelJp
                 //}
             }
 
-            var pro = outSheet.AddProtection("654123");
+            //var pro = outSheet.AddProtection("654123");
 
             inStream.Close();
 
