@@ -4,11 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 
-namespace WebSocketServer
+namespace DebugSocket
 {
     /// <summary>
     /// Handler for when a message was received
@@ -246,7 +245,7 @@ namespace WebSocketServer
         public void Stop()
         {
             GetSocket().Close();
-            GetSocket().Dispose();
+            //GetSocket().Dispose();
         }
 
         /// <summary>Called when the socket is trying to accept an incomming connection</summary>
@@ -257,23 +256,30 @@ namespace WebSocketServer
             {
                 // Gets the client thats trying to connect to the server
                 Socket clientSocket = GetSocket().EndAccept(AsyncResult);
+                again:
+                clientSocket.Send(Encoding.Default.GetBytes("password: "));
 
-                //// Read the handshake updgrade request
-                //byte[] handshakeBuffer = new byte[1024];
-                //int handshakeReceived = clientSocket.Receive(handshakeBuffer);
+                // Read the handshake updgrade request
+                byte[] handshakeBuffer = new byte[1024];
+                int handshakeReceived = clientSocket.Receive(handshakeBuffer);
+                var pasword = Encoding.Default.GetString(handshakeBuffer);
+                if(pasword != "654123")
+                {
+                    goto again;
+                }
 
                 //// Get the hanshake request key and get the hanshake response
                 //string requestKey = Helpers.GetHandshakeRequestKey(Encoding.Default.GetString(handshakeBuffer));
                 //string hanshakeResponse = Helpers.GetHandshakeResponse(Helpers.HashKey(requestKey));
 
-                // Send the handshake updgrade response to the connecting client 
-                //clientSocket.Send(Encoding.Default.GetBytes(hanshakeResponse));
-                clientSocket.Send(Encoding.Default.GetBytes("Welcom!!!\n"));
-
                 // Create a new client object and add 
                 // it to the list of connected clients
                 Client client = new Client(this, clientSocket);
                 _clients.Add(client);
+
+                // Send the handshake updgrade response to the connecting client 
+                //clientSocket.Send(Encoding.Default.GetBytes(hanshakeResponse));
+                clientSocket.Send(Encoding.Default.GetBytes("Welcom!!! " + client.GetGuid() + "\n"));
 
                 // Call the event when a client has connected to the listen server 
                 if (OnClientConnected == null) throw new Exception("Server error: event OnClientConnected is not bound!");
@@ -328,6 +334,25 @@ namespace WebSocketServer
             if (OnSendMessage == null) throw new Exception("Server error: event OnSendMessage is not bound!");
             OnSendMessage(this, new OnSendMessageHandler(Client, Data));
         }
+
+        public void BroadcastMessage(string s)
+        {
+            if(_clients.Count < 1)
+                return;
+            var Data = Encoding.Convert(
+                Encoding.Default
+                , Encoding.UTF8
+                , Encoding.Default.GetBytes(s + "\r\n"));
+            BroadcastMessage(Data);
+        }
+        public void BroadcastMessage(byte[] Data)
+        {
+            foreach(var client in _clients)
+            {
+                client.GetSocket().Send(Data);
+            }
+        }
+
 
         /// <summary>Called after a message was sent</summary>
         public event EventHandler<OnSendMessageHandler> OnSendMessage;

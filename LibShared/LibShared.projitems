@@ -9,11 +9,9 @@
     <Import_RootNamespace>LibShared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Client.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ExcelExtension.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ExcelHead.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Helpers.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Server.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Socket\Client.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Socket\Helpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Socket\Server.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StreamRedirect.cs" />
   </ItemGroup>
 </Project>

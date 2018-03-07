@@ -68,139 +68,142 @@ namespace SocketServer
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.cmdListen = new System.Windows.Forms.Button();
-			this.txtPortNo = new System.Windows.Forms.TextBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.txtDataRx = new System.Windows.Forms.TextBox();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.button1 = new System.Windows.Forms.Button();
-			this.txtDataTx = new System.Windows.Forms.TextBox();
-			this.groupBox3 = new System.Windows.Forms.GroupBox();
-			this.label2 = new System.Windows.Forms.Label();
-			this.txtIP = new System.Windows.Forms.TextBox();
-			this.groupBox1.SuspendLayout();
-			this.groupBox2.SuspendLayout();
-			this.SuspendLayout();
-			// 
-			// groupBox1
-			// 
-			this.groupBox1.Controls.Add(this.cmdListen);
-			this.groupBox1.Controls.Add(this.txtPortNo);
-			this.groupBox1.Controls.Add(this.label1);
-			this.groupBox1.Controls.Add(this.label2);
-			this.groupBox1.Controls.Add(this.txtIP);
-			this.groupBox1.Location = new System.Drawing.Point(8, 18);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(360, 56);
-			this.groupBox1.TabIndex = 0;
-			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "Settings";
-			// 
-			// cmdListen
-			// 
-			this.cmdListen.Location = new System.Drawing.Point(248, 16);
-			this.cmdListen.Name = "cmdListen";
-			this.cmdListen.Size = new System.Drawing.Size(104, 28);
-			this.cmdListen.TabIndex = 2;
-			this.cmdListen.Text = "Start Listening";
-			this.cmdListen.Click += new System.EventHandler(this.cmdListen_Click);
-			// 
-			// txtPortNo
-			// 
-			this.txtPortNo.Location = new System.Drawing.Point(192, 18);
-			this.txtPortNo.Name = "txtPortNo";
-			this.txtPortNo.Size = new System.Drawing.Size(40, 22);
-			this.txtPortNo.TabIndex = 1;
-			this.txtPortNo.Text = "8888";
-			// 
-			// label1
-			// 
-			this.label1.Location = new System.Drawing.Point(160, 24);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(32, 19);
-			this.label1.TabIndex = 0;
-			this.label1.Text = "Port:";
-			// 
-			// txtDataRx
-			// 
-			this.txtDataRx.Location = new System.Drawing.Point(8, 305);
-			this.txtDataRx.Multiline = true;
-			this.txtDataRx.Name = "txtDataRx";
-			this.txtDataRx.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.txtDataRx.Size = new System.Drawing.Size(352, 92);
-			this.txtDataRx.TabIndex = 1;
-			this.txtDataRx.Text = "";
-			// 
-			// groupBox2
-			// 
-			this.groupBox2.Controls.Add(this.button1);
-			this.groupBox2.Controls.Add(this.txtDataTx);
-			this.groupBox2.Location = new System.Drawing.Point(8, 83);
-			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(360, 175);
-			this.groupBox2.TabIndex = 2;
-			this.groupBox2.TabStop = false;
-			this.groupBox2.Text = "Send Data";
-			// 
-			// button1
-			// 
-			this.button1.Location = new System.Drawing.Point(16, 138);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(336, 28);
-			this.button1.TabIndex = 1;
-			this.button1.Text = "Send";
-			this.button1.Click += new System.EventHandler(this.button1_Click);
-			// 
-			// txtDataTx
-			// 
-			this.txtDataTx.Cursor = System.Windows.Forms.Cursors.IBeam;
-			this.txtDataTx.Location = new System.Drawing.Point(8, 18);
-			this.txtDataTx.Multiline = true;
-			this.txtDataTx.Name = "txtDataTx";
-			this.txtDataTx.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.txtDataTx.Size = new System.Drawing.Size(344, 111);
-			this.txtDataTx.TabIndex = 0;
-			this.txtDataTx.Text = "";
-			// 
-			// groupBox3
-			// 
-			this.groupBox3.Location = new System.Drawing.Point(0, 277);
-			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(368, 129);
-			this.groupBox3.TabIndex = 3;
-			this.groupBox3.TabStop = false;
-			this.groupBox3.Text = "Data Received";
-			// 
-			// label2
-			// 
-			this.label2.Location = new System.Drawing.Point(16, 24);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(32, 19);
-			this.label2.TabIndex = 4;
-			this.label2.Text = "IP:";
-			// 
-			// txtIP
-			// 
-			this.txtIP.Location = new System.Drawing.Point(56, 16);
-			this.txtIP.Name = "txtIP";
-			this.txtIP.Size = new System.Drawing.Size(96, 22);
-			this.txtIP.TabIndex = 4;
-			this.txtIP.Text = "0.0.0.0";
-			// 
-			// Form1
-			// 
-			this.AutoScaleBaseSize = new System.Drawing.Size(5, 15);
-			this.ClientSize = new System.Drawing.Size(376, 414);
-			this.Controls.Add(this.groupBox2);
-			this.Controls.Add(this.txtDataRx);
-			this.Controls.Add(this.groupBox1);
-			this.Controls.Add(this.groupBox3);
-			this.Name = "Form1";
-			this.Text = "Socket Server in C#";
-			this.groupBox1.ResumeLayout(false);
-			this.groupBox2.ResumeLayout(false);
-			this.ResumeLayout(false);
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.cmdListen = new System.Windows.Forms.Button();
+            this.txtPortNo = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.txtIP = new System.Windows.Forms.TextBox();
+            this.txtDataRx = new System.Windows.Forms.TextBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.txtDataTx = new System.Windows.Forms.TextBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.cmdListen);
+            this.groupBox1.Controls.Add(this.txtPortNo);
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Controls.Add(this.txtIP);
+            this.groupBox1.Location = new System.Drawing.Point(16, 25);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(720, 79);
+            this.groupBox1.TabIndex = 0;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Settings";
+            // 
+            // cmdListen
+            // 
+            this.cmdListen.Location = new System.Drawing.Point(496, 22);
+            this.cmdListen.Name = "cmdListen";
+            this.cmdListen.Size = new System.Drawing.Size(208, 40);
+            this.cmdListen.TabIndex = 2;
+            this.cmdListen.Text = "Start Listening";
+            this.cmdListen.Click += new System.EventHandler(this.cmdListen_Click);
+            // 
+            // txtPortNo
+            // 
+            this.txtPortNo.Location = new System.Drawing.Point(384, 25);
+            this.txtPortNo.Name = "txtPortNo";
+            this.txtPortNo.Size = new System.Drawing.Size(80, 28);
+            this.txtPortNo.TabIndex = 1;
+            this.txtPortNo.Text = "8899";
+            this.txtPortNo.TextChanged += new System.EventHandler(this.txtPortNo_TextChanged);
+            // 
+            // label1
+            // 
+            this.label1.Location = new System.Drawing.Point(320, 34);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(64, 26);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Port:";
+            // 
+            // label2
+            // 
+            this.label2.Location = new System.Drawing.Point(32, 34);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(64, 26);
+            this.label2.TabIndex = 4;
+            this.label2.Text = "IP:";
+            // 
+            // txtIP
+            // 
+            this.txtIP.Location = new System.Drawing.Point(112, 22);
+            this.txtIP.Name = "txtIP";
+            this.txtIP.Size = new System.Drawing.Size(192, 28);
+            this.txtIP.TabIndex = 4;
+            this.txtIP.Text = "0.0.0.0";
+            // 
+            // txtDataRx
+            // 
+            this.txtDataRx.Location = new System.Drawing.Point(16, 427);
+            this.txtDataRx.Multiline = true;
+            this.txtDataRx.Name = "txtDataRx";
+            this.txtDataRx.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtDataRx.Size = new System.Drawing.Size(704, 129);
+            this.txtDataRx.TabIndex = 1;
+            this.txtDataRx.TextChanged += new System.EventHandler(this.txtDataRx_TextChanged);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.button1);
+            this.groupBox2.Controls.Add(this.txtDataTx);
+            this.groupBox2.Location = new System.Drawing.Point(16, 116);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(720, 245);
+            this.groupBox2.TabIndex = 2;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Send Data";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(32, 193);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(672, 39);
+            this.button1.TabIndex = 1;
+            this.button1.Text = "Send";
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // txtDataTx
+            // 
+            this.txtDataTx.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtDataTx.Location = new System.Drawing.Point(16, 25);
+            this.txtDataTx.Multiline = true;
+            this.txtDataTx.Name = "txtDataTx";
+            this.txtDataTx.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtDataTx.Size = new System.Drawing.Size(688, 156);
+            this.txtDataTx.TabIndex = 0;
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Location = new System.Drawing.Point(0, 388);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(736, 180);
+            this.groupBox3.TabIndex = 3;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Data Received";
+            // 
+            // Form1
+            // 
+            this.AutoScaleBaseSize = new System.Drawing.Size(10, 21);
+            this.ClientSize = new System.Drawing.Size(746, 574);
+            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.txtDataRx);
+            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.groupBox3);
+            this.Name = "Form1";
+            this.Text = "Socket Server in C#";
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            this.ResumeLayout(false);
+            this.PerformLayout();
 
 		}
 		#endregion
@@ -309,7 +312,17 @@ namespace SocketServer
 			}
 		}
 
-		private void button1_Click(object sender, System.EventArgs e)
+        private void txtDataRx_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtPortNo_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, System.EventArgs e)
 		{
 			try
 			{

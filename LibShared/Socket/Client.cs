@@ -4,11 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 
-namespace WebSocketServer
+namespace DebugSocket
 {
     ///<summary>
     /// Object for all connectecd clients
@@ -130,8 +129,8 @@ namespace WebSocketServer
             catch(Exception Exception)
             {
                 GetSocket().Close();
-                GetSocket().Dispose();
                 GetServer().ClientDisconnect(this);
+                //GetSocket().Dispose();
             }
         }
 
