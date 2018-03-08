@@ -12,6 +12,29 @@ namespace StreamRedirect
     {
         List<TextWriter> mList = new List<TextWriter>(){  };
 
+
+        public override bool AutoFlush {
+            get
+            {
+                return base.AutoFlush;
+            }
+            set
+            {
+                base.AutoFlush = value;
+                foreach(var i in mList)
+                {
+                    if(i is StreamWriter)
+                        (i as StreamWriter).AutoFlush = value;
+                }
+            }
+        }
+
+        ~StreamRedirect()
+        {
+            Flush();
+            Close();
+        }
+
         public StreamRedirect(string path):base(path)
         {
         }
@@ -21,25 +44,27 @@ namespace StreamRedirect
 
         public StreamRedirect Add(string path)
         {
-            mList.Add(new StreamWriter(path));
+            Add(new StreamWriter(path));
             return this;
         }
 
         public StreamRedirect Add(Stream stream)
         {
-            mList.Add(new StreamWriter(stream));
+            Add(new StreamWriter(stream));
             return this;
         }
 
-        public StreamRedirect Add(TextWriter writer)
+        public StreamRedirect Add(TextWriter i)
         {
-            mList.Add(writer);
+            mList.Add(i);
+            if(i is StreamWriter)
+                (i as StreamWriter).AutoFlush = AutoFlush;
             return this;
         }
 
-        public StreamRedirect Remove(TextWriter stream)
+        public StreamRedirect Remove(TextWriter i)
         {
-            mList.Remove(stream);
+            mList.Remove(i);
             return this;
         }
 
