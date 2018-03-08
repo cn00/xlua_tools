@@ -256,17 +256,17 @@ namespace DebugSocket
             {
                 // Gets the client thats trying to connect to the server
                 Socket clientSocket = GetSocket().EndAccept(AsyncResult);
-                again:
-                clientSocket.Send(Encoding.Default.GetBytes("password: "));
 
-                // Read the handshake updgrade request
-                byte[] handshakeBuffer = new byte[1024];
-                int handshakeReceived = clientSocket.Receive(handshakeBuffer);
-                var pasword = Encoding.Default.GetString(handshakeBuffer);
-                if(pasword != "654123")
-                {
-                    goto again;
-                }
+                //again:
+                //clientSocket.Send(Encoding.Default.GetBytes("password: "));
+                //// Read the handshake updgrade request
+                //byte[] handshakeBuffer = new byte[1024];
+                //int handshakeReceived = clientSocket.Receive(handshakeBuffer);
+                //var pasword = Encoding.Default.GetString(handshakeBuffer);
+                //if(pasword != "654123")
+                //{
+                //    goto again;
+                //}
 
                 //// Get the hanshake request key and get the hanshake response
                 //string requestKey = Helpers.GetHandshakeRequestKey(Encoding.Default.GetString(handshakeBuffer));
@@ -335,21 +335,38 @@ namespace DebugSocket
             OnSendMessage(this, new OnSendMessageHandler(Client, Data));
         }
 
-        public void BroadcastMessage(string s)
+        static int MaxCacheCount = 30;
+        List<byte[]> mCacheMsg = new List<byte[]>();
+        public void SendCacheMessage(Client client)
         {
-            if(_clients.Count < 1)
-                return;
+            foreach(var i in mCacheMsg)
+            {
+                client.GetSocket().Send(i);
+            }
+        }
+
+        int mLogCount = 0;
+        public void BroadcastMessage(string s, Client source = null)
+        {
             var Data = Encoding.Convert(
                 Encoding.Default
                 , Encoding.UTF8
-                , Encoding.Default.GetBytes(s + "\r\n"));
-            BroadcastMessage(Data);
+                , Encoding.Default.GetBytes(string.Format("{0:0000}: {1}\r\n", ++mLogCount, s)));
+            BroadcastMessage(Data, source);
+
+            // cach last MaxCacheCount msgs
+            mCacheMsg.Add(Data);
+            if(mCacheMsg.Count > MaxCacheCount)
+            {
+                mCacheMsg.RemoveAt(0);
+            }
         }
-        public void BroadcastMessage(byte[] Data)
+        public void BroadcastMessage(byte[] Data, Client source = null)
         {
             foreach(var client in _clients)
             {
-                client.GetSocket().Send(Data);
+                if(client != source)
+                    client.GetSocket().Send(Data);
             }
         }
 

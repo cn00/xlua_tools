@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -44,8 +45,45 @@ namespace SocketLog
         static string _ip, _port;
         static void Main(string[] args)
         {
-            _ip = "192.168.8.171";//args[0];
-            _port = "8899";//args[1];
+            string ipport = "192.168.8.171:8899";
+            var configfile = ".logcat.cfg.txt";
+            if(File.Exists(configfile))
+            {
+                ipport = File.ReadAllText(configfile);
+            }
+
+            if(args.Length == 1)
+            {
+                ipport = args[0];
+                goto go;
+            }
+
+            Console.WriteLine("usage: LogCat.exe ip port\n或按下面提示操作");
+            Console.WriteLine("输入目标 ip 和 port, 以分号[:]分割, 直接按 ENTER 使用默认值: " + ipport);
+            Console.Write("输入: ");
+            var tmpInput = Console.ReadLine();
+            if(!string.IsNullOrWhiteSpace(tmpInput) && tmpInput.Contains(":"))
+            {
+                ipport = tmpInput;
+            }
+            else
+            {
+                Console.WriteLine("输入错误, 将使用默认值");
+            }
+            Console.WriteLine("监听目标为: " + ipport);
+
+            go:
+            var stream = new StreamRedirect.StreamRedirect("./test1.txt");
+            stream.Add("./test2.txt");
+            stream.Add("./test3.txt");
+            stream.Add(Console.Out);
+            stream.AutoFlush = true;
+            Console.SetOut(stream);
+
+            File.WriteAllText(configfile, ipport);
+            var split = ipport.Split(':');
+            _ip = split[0];
+            _port = split[1];
 
             Socket s = GetSocket();
             
@@ -53,14 +91,14 @@ namespace SocketLog
 
             while(true)
             {
-                var tmp = Console.ReadLine();
-                if(!string.IsNullOrWhiteSpace(tmp))
+                tmpInput = Console.ReadLine();
+                if(!string.IsNullOrWhiteSpace(tmpInput))
                 {
                     var utf8 = Encoding.Convert(
                         Encoding.Default
                         , Encoding.UTF8
-                        , Encoding.Default.GetBytes(tmp));
-                    var bytes = Encoding.Default.GetBytes(tmp);
+                        , Encoding.Default.GetBytes(tmpInput));
+                    var bytes = Encoding.Default.GetBytes(tmpInput);
                     s.Send(bytes, SocketFlags.None);
                 }
             }
