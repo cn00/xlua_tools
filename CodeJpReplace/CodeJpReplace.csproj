@@ -32,9 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>..\plugins\NPOI\dotnet2\ICSharpCode.SharpZipLib.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -69,5 +66,7 @@
       <Name>NPOI.OpenXmlFormats</Name>
     </ProjectReference>
   </ItemGroup>
+  <Import Project="..\LibShared\LibShared.projitems" Label="Shared" />
+  <Import Project="..\NPOIExtension\NPOIExtension.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

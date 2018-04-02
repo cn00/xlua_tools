@@ -58,24 +58,23 @@ namespace SocketLog
                 goto go;
             }
 
-            Console.WriteLine("usage: LogCat.exe ip port\n或按下面提示操作");
-            Console.WriteLine("输入目标 ip 和 port, 以分号[:]分割, 直接按 ENTER 使用默认值: " + ipport);
-            Console.Write("输入: ");
-            var tmpInput = Console.ReadLine();
-            if(!string.IsNullOrWhiteSpace(tmpInput) && tmpInput.Contains(":"))
-            {
-                ipport = tmpInput;
-            }
-            else
-            {
-                Console.WriteLine("输入错误, 将使用默认值");
-            }
+            string tmpInput = "";
+            //Console.WriteLine("usage: LogCat.exe ip port\n或按下面提示操作");
+            //Console.WriteLine("输入目标 ip 和 port, 以分号[:]分割, 直接按 ENTER 使用默认值: " + ipport);
+            //Console.Write("输入: ");
+            //tmpInput = Console.ReadLine();
+            //if(!string.IsNullOrWhiteSpace(tmpInput) && tmpInput.Contains(":"))
+            //{
+            //    ipport = tmpInput;
+            //}
+            //else
+            //{
+            //    Console.WriteLine("输入错误, 将使用默认值");
+            //}
             Console.WriteLine("监听目标为: " + ipport);
 
             go:
-            var stream = new StreamRedirect.StreamRedirect("./test1.txt");
-            stream.Add("./test2.txt");
-            stream.Add("./test3.txt");
+            var stream = new StreamRedirect.StreamRedirect("./log.txt");
             stream.Add(Console.Out);
             stream.AutoFlush = true;
             Console.SetOut(stream);
@@ -134,7 +133,8 @@ namespace SocketLog
                 //EOpcodeType opcode = Helpers.GetFrameOpcode(messageBuffer);
 
                 var msg = Encoding.UTF8.GetString(messageBuffer).TrimEnd(new char[] { '\n', '\r' });
-                Console.WriteLine(msg);
+                if(!string.IsNullOrWhiteSpace(msg))
+                    Console.WriteLine(msg);
 
                 // Start to receive messages again
                 GetSocket().BeginReceive(new byte[] { 0 }, 0, 0, SocketFlags.None, messageCallback, null);

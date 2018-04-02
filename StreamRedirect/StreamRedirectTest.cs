@@ -11,8 +11,6 @@ namespace StreamRedirect
     {
         static void Main(string[] args)
         {
-            Socket socket = new Socket(SocketType.Stream, ProtocolType.IP);
-
             var stream = new StreamRedirect("./test1.txt");
             stream.AutoFlush = true;
             stream.Add("./test2.txt");
