@@ -71,7 +71,7 @@ namespace ExcelGrep
             stdout.Close();
 
             Console.SetOut(oldout);
-            Console.WriteLine("按 Enter 退出");
+            Console.WriteLine("搜索了 {0} 个文件\n按 Enter 退出", fColCount);
             Console.ReadLine();
         }//end main
 
@@ -92,10 +92,10 @@ namespace ExcelGrep
             inStream.Close();
 
             ++fColCount;
-            Console.Write(fColCount + " <<< " + inExcel + "\r");
+            Console.Write(fColCount + " <<< " + inExcel + "                                        \r");
 
             int count = 0;
-            string outstring = "";
+            string outstring = fColCount + ": " + inExcel + "\n";
             foreach(var sheet in inbook.AllSheets())
             {
                 for(int i = 1; i <= sheet.LastRowNum; ++i)
@@ -113,11 +113,6 @@ namespace ExcelGrep
                         }
                     }
                 }
-            }
-
-            if(count > 0)
-            {
-                Console.Write("{0}\n{1}\n", inExcel, outstring);
             }
         }
     }

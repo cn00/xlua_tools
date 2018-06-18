@@ -67,5 +67,6 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="..\LibShared\LibShared.projitems" Label="Shared" />
+  <Import Project="..\NPOIExtension\NPOIExtension.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
