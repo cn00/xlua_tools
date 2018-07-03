@@ -71,11 +71,13 @@ namespace ExcelGrep
             stdout.Close();
 
             Console.SetOut(oldout);
-            Console.WriteLine("搜索了 {0} 个文件\n按 Enter 退出", fColCount);
+            Console.Write("\n搜索了 {0} 个文件, {1} 个匹配\n按 Enter 退出\n", FileColCount, MatchColCount);
             Console.ReadLine();
         }//end main
 
-        static int fColCount = 0;
+        const string space = "                  ";
+        static int FileColCount = 0;
+        static int MatchColCount = 0;
         public static void Grep(string inExcel, string oldStr)
         {
             var inStream = new FileStream(inExcel, FileMode.Open);
@@ -91,11 +93,11 @@ namespace ExcelGrep
             }
             inStream.Close();
 
-            ++fColCount;
-            Console.Write(fColCount + " <<< " + inExcel + "                                        \r");
+            ++FileColCount;
+            Console.Write(FileColCount + " <<< " + inExcel + space +  "\r");
 
             int count = 0;
-            string outstring = fColCount + ": " + inExcel + "\n";
+            string outstring = FileColCount + ": " + inExcel + space + "\n";
             foreach(var sheet in inbook.AllSheets())
             {
                 for(int i = 1; i <= sheet.LastRowNum; ++i)
@@ -105,14 +107,20 @@ namespace ExcelGrep
                     {
                         var c = row.Cell(j);
                         var v = c.SValue();
-                        if(v.Contains(oldStr))
+                        var match = Regex.Matches(v, oldStr);
+                        if(match.Count > 0)
                         {
                             ++count;
+                            ++MatchColCount;
                             //c.SetCellValue(v.Replace(oldStr, newStr));
                             outstring += string.Format("\t{0}: [{1}, {2}]: {3}\n", sheet.SheetName, i, j, v.Replace("\n", "\\n").Replace("\r", "\\r"));
                         }
                     }
                 }
+            }
+            if(count > 0)
+            {
+                Console.Write(outstring + "                  \n");
             }
         }
     }
