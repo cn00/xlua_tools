@@ -3,10 +3,12 @@ using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System.Collections.Generic;
 
-namespace LibShared
+namespace NPOI
 {
     public static class ExcelExtension
     {
+        public const int MaxRowNum = 50000;
+        public const int MaxColumn = 256;
         public static string upath(this string self)
         {
 

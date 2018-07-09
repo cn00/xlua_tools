@@ -8,7 +8,7 @@ using NPOI.XSSF.UserModel;
 using NPOI.SS.UserModel;
 using System.IO;
 using System.Text.RegularExpressions;
-using LibShared;
+using NPOI;
 
 namespace ExcelRpelaceStr
 {
@@ -66,11 +66,14 @@ namespace ExcelRpelaceStr
                 //Console.WriteLine(fin);
             }// foreach
 
-            Console.WriteLine("按 Enter 退出");
+            Console.Write("\n搜索了 {0} 个文件, 替换了 {1} 个匹配\n按 Enter 退出\n", FileColCount, MatchColCount);
+            //Console.WriteLine("按 Enter 退出");
             Console.ReadLine();
         }//end main
 
-        static int fColCount = 0;
+        const string space = "                  ";
+        static int FileColCount = 0;
+        static int MatchColCount = 0;
         public static void Replace(string inExcel, string oldStr, string newStr)
         {
             var inStream = new FileStream(inExcel, FileMode.Open);
@@ -86,10 +89,12 @@ namespace ExcelRpelaceStr
             }
             inStream.Close();
 
-            ++fColCount;
-            Console.WriteLine(fColCount + " <<< " + inExcel);
+            ++FileColCount;
+            //Console.WriteLine(fColCount + " <<< " + inExcel);
+            Console.Write(FileColCount + " <<< " + inExcel + space + "\r");
 
             int count = 0;
+            string outStr = FileColCount + ": " + inExcel + space;
             foreach(var sheet in inbook.AllSheets())
             {
                 for(int i = 1; i <= sheet.LastRowNum; ++i)
@@ -101,9 +106,10 @@ namespace ExcelRpelaceStr
                         var v = c.SValue();
                         if(v.Contains(oldStr))
                         {
+                            ++MatchColCount;
                             ++count;
                             c.SetCellValue(v.Replace(oldStr, newStr));
-                            Console.WriteLine("{0}: [{1}, {2}]", sheet.SheetName, i, j);
+                            outStr += string.Format("\n\t{0}: [{1}, {2}]", sheet.SheetName, i, j);
                         }
                     }
                 }
@@ -111,6 +117,7 @@ namespace ExcelRpelaceStr
 
             if(count > 0)
             {
+                Console.Write(outStr + "                  \n");
                 inStream = new FileStream(inExcel, FileMode.Create);
                 inbook.Write(inStream);
                 inStream.Close();

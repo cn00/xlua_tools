@@ -9,7 +9,15 @@ using NPOI.SS.UserModel;
 using System.IO;
 using System.Text.RegularExpressions;
 using NPOI.OpenXmlFormats.Spreadsheet;
-using LibShared;
+using NPOI;
+
+public static class StringExtension
+{
+    public static string upath(this string self)
+    {
+        return self.Replace("\\", "/");
+    }
+}
 
 namespace CollectExcelJp
 {

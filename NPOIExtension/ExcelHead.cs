@@ -10,7 +10,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using NPOI.OpenXmlFormats.Spreadsheet;
 
-namespace LibShared
+namespace NPOI
 {
     public enum HeadIdx
     {
