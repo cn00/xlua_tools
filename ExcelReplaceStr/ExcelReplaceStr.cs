@@ -79,7 +79,7 @@ namespace ExcelRpelaceStr
             var inStream = new FileStream(inExcel, FileMode.Open);
 
             IWorkbook inbook = null;
-            if(inExcel.EndsWith("xls"))
+            if(inExcel.EndsWith(".xls"))
             {
                 inbook = new HSSFWorkbook(inStream);
             }
@@ -108,8 +108,9 @@ namespace ExcelRpelaceStr
                         {
                             ++MatchColCount;
                             ++count;
-                            c.SetCellValue(v.Replace(oldStr, newStr));
-                            outStr += string.Format("\n\t{0}: [{1}, {2}]", sheet.SheetName, i, j);
+                            var ns = v.Replace(oldStr, newStr);
+                            outStr += string.Format("\n\t{0}[{1}, {2}]: [{3}]", sheet.SheetName, i, j, ns.oneline());
+                            c.SetCellValue(ns);
                         }
                     }
                 }

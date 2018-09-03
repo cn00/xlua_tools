@@ -18,6 +18,14 @@ namespace NPOI
                 .Replace("//", "/");
         }
 
+        public static string oneline(this string self)
+        {
+
+            return self.Trim()
+                .Replace("\n", "\\n")
+                .Replace("\r", "\\r");
+        }
+
         public static string SValue(this ICell cell, CellType? FormulaResultType = null)
         {
             string svalue = "";
