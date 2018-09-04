@@ -7,6 +7,12 @@ namespace NPOI
 {
     public static class ExcelExtension
     {
+        public static string[] ColumnNames = new[]{
+            "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", 
+            "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", 
+            "U", "V", "W", "X", "Y", "Z"
+        };
+
         public const int MaxRowNum = 50000;
         public const int MaxColumn = 256;
         public static string upath(this string self)
@@ -92,6 +98,13 @@ namespace NPOI
         public static IRow Row(this ISheet sheet, int i)
         {
             return sheet.GetRow(i) ?? sheet.CreateRow(i);
+        }
+        public static string ColumnName(this ISheet sheet, int i)
+        {
+            string frefix = "";
+            if (i > 26 && i < 26 * 26)
+                frefix = ColumnNames[(i / 26)-1];
+            return frefix + ColumnNames[i%26];
         }
         public static ICell Cell(this IRow row, int i)
         {

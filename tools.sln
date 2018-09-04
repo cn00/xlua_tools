@@ -31,7 +31,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocketTest", "SocketTest\So
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocketServer", "SocketTestServer\SocketServer.csproj", "{CF77DA73-EF59-409A-9BF3-8E26451D2593}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelGrep", "ExcelGrep\ExcelGrep.csproj", "{55BBD4C0-AD4C-4F02-BA0B-C889E0F2C09C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelDiff", "ExcelDiff\ExcelDiff.csproj", "{55BBD4C0-AD4C-4F02-BA0B-C889E0F2C09C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocketLog", "SocketLog\SocketLog.csproj", "{C7C7CCB6-C3B0-4660-B5AB-4F34CDC13AFF}"
 EndProject
@@ -39,7 +39,7 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "NPOIExtension", "NPOIExtens
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelReplaceStr", "ExcelReplaceStr\ExcelReplaceStr.csproj", "{7C1F496A-C315-4D2C-86AD-92BB6686A208}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibAppLog", "LibAppLog\LibAppLog.csproj", "{EDFF1FA0-35A8-4636-A352-E83732F5E542}"
+Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "LibAppLog", "LibAppLog\LibAppLog.csproj", "{3006F8CC-7887-4801-9CF2-915F9576467D}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -183,14 +183,14 @@ Global
 		{7C1F496A-C315-4D2C-86AD-92BB6686A208}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C1F496A-C315-4D2C-86AD-92BB6686A208}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C1F496A-C315-4D2C-86AD-92BB6686A208}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EDFF1FA0-35A8-4636-A352-E83732F5E542}..net 2 Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EDFF1FA0-35A8-4636-A352-E83732F5E542}..net 2 Release|Any CPU.Build.0 = Release|Any CPU
-		{EDFF1FA0-35A8-4636-A352-E83732F5E542}..net 4 Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EDFF1FA0-35A8-4636-A352-E83732F5E542}..net 4 Release|Any CPU.Build.0 = Release|Any CPU
-		{EDFF1FA0-35A8-4636-A352-E83732F5E542}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EDFF1FA0-35A8-4636-A352-E83732F5E542}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EDFF1FA0-35A8-4636-A352-E83732F5E542}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EDFF1FA0-35A8-4636-A352-E83732F5E542}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3006F8CC-7887-4801-9CF2-915F9576467D}..net 2 Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3006F8CC-7887-4801-9CF2-915F9576467D}..net 2 Release|Any CPU.Build.0 = Release|Any CPU
+		{3006F8CC-7887-4801-9CF2-915F9576467D}..net 4 Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3006F8CC-7887-4801-9CF2-915F9576467D}..net 4 Release|Any CPU.Build.0 = Release|Any CPU
+		{3006F8CC-7887-4801-9CF2-915F9576467D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3006F8CC-7887-4801-9CF2-915F9576467D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3006F8CC-7887-4801-9CF2-915F9576467D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3006F8CC-7887-4801-9CF2-915F9576467D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
