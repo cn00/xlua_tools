@@ -71,8 +71,15 @@ namespace ExcelGrep
             stdout.Close();
 
             Console.SetOut(oldout);
-            Console.Write("\n搜索了 {0} 个文件, {1} 个匹配\n按 Enter 退出\n", FileColCount, MatchColCount);
-            Console.ReadLine();
+            Console.Write("\n搜索了 {0} 个文件, {1} 个匹配\n", FileColCount, MatchColCount);
+            var os = Environment.OSVersion.ToString();
+            Console.WriteLine(os);
+            if (!os.Contains("Unix"))
+            {
+                Console.WriteLine("按 Enter 退出");
+                Console.ReadLine();
+            }
+
         }//end main
 
         const string space = "                  ";

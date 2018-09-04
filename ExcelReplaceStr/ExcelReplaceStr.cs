@@ -66,9 +66,15 @@ namespace ExcelRpelaceStr
                 //Console.WriteLine(fin);
             }// foreach
 
-            Console.Write("\n搜索了 {0} 个文件, 替换了 {1} 个匹配\n按 Enter 退出\n", FileColCount, MatchColCount);
+            Console.Write("\n搜索了 {0} 个文件, 替换了 {1} 个匹配\n", FileColCount, MatchColCount);
             //Console.WriteLine("按 Enter 退出");
-            Console.ReadLine();
+            var os = Environment.OSVersion.ToString();
+            Console.WriteLine(os);
+            if (!os.Contains("Unix"))
+            {
+                Console.WriteLine("按 Enter 退出");
+                Console.ReadLine();
+            }
         }//end main
 
         const string space = "                  ";
