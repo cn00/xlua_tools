@@ -64,7 +64,7 @@ namespace ExcelDiff
             stdout.Close();
 
             Console.SetOut(oldout);
-            Console.WriteLine("比较了 {0} 个单元格, {1} 个不同", TotalCellCount, DiffCellCount);
+            Console.WriteLine("\n比较了 {0} 个单元格, {1} 个不同", TotalCellCount, DiffCellCount);
             var os = Environment.OSVersion.ToString();
             Console.WriteLine(os);
             if (!os.Contains("Unix"))
@@ -79,6 +79,7 @@ namespace ExcelDiff
         static int DiffCellCount = 0;
         public static void Diff(string filePath1, string filePath2)
         {
+            Console.WriteLine("diff {0} {1}", filePath1, filePath2);
             var inStream = new FileStream(filePath1, FileMode.Open);
 
             IWorkbook book1 = null;
@@ -132,7 +133,7 @@ namespace ExcelDiff
                             ++count;
                             ++DiffCellCount;
                             //c.SetCellValue(v.Replace(oldStr, newStr));
-                            outstring += string.Format("\t{0}: [{1}{2}]: \n\t\t{3}\n\t\t{4}\n"
+                            outstring += string.Format("\t{0}: [{1}{2}]\n\t\t{3}\n\t\t{4}\n"
                                                        , sheetL.SheetName, sheetL.ColumnName(j), i+1
                                                        , vL.Replace("\n", "\\n").Replace("\r", "\\r")
                                                        , vR.Replace("\n", "\\n").Replace("\r", "\\r"));
