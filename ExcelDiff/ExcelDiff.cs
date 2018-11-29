@@ -52,21 +52,21 @@ namespace ExcelDiff
                 goto input_old_str;
 
             go:
-            // redirect stdout
-            var stdout = new StreamRedirect.StreamRedirect("./log.log");
-            stdout.Add(Console.Out);
-            var oldout = Console.Out;
-            Console.SetOut(stdout);
+            //// redirect stdout
+            //var stdout = new StreamRedirect.StreamRedirect("./log.log");
+            //stdout.Add(Console.Out);
+            //var oldout = Console.Out;
+            //Console.SetOut(stdout);
 
             Diff(file1, file2);
 
-            stdout.Flush();
-            stdout.Close();
+            //stdout.Flush();
+            //stdout.Close();
 
-            Console.SetOut(oldout);
-            Console.WriteLine("\n比较了 {0} 个单元格, {1} 个不同", TotalCellCount, DiffCellCount);
+            //Console.SetOut(oldout);
+            Console.WriteLine("compared {0} cells, {1} different\n", TotalCellCount, DiffCellCount);
             var os = Environment.OSVersion.ToString();
-            Console.WriteLine(os);
+            //Console.WriteLine(os);
             if (!os.Contains("Unix"))
             {
                 Console.WriteLine("按 Enter 退出");
@@ -77,9 +77,17 @@ namespace ExcelDiff
         const string space = "                  ";
         static int TotalCellCount = 0;
         static int DiffCellCount = 0;
+        const int MaxRowNum = 10000;
+        const int MaxColuNum = 200;
         public static void Diff(string filePath1, string filePath2)
         {
             Console.WriteLine("diff {0} {1}", filePath1, filePath2);
+            if(!File.Exists(filePath1) || !File.Exists(filePath2)
+               || filePath1 == "/dev/null" || filePath2 == "/dev/null")
+            {
+                Console.WriteLine("warning: diff with null file, skip compare");
+                return;
+            }
             var inStream = new FileStream(filePath1, FileMode.Open);
 
             IWorkbook book1 = null;
@@ -105,9 +113,11 @@ namespace ExcelDiff
             }
             inStream.Close();
 
+            var regular = "[^\x00-\xff「」（）【】■～…]";
 
             int count = 0;
-            string outstring = filePath1 + space + "\n";
+            StringBuilder outstring = new StringBuilder(2048);
+            outstring.Append(filePath1 + space);
             foreach(var sheetL in book1.AllSheets())
             {
                 var sheetR = book2.GetSheet(sheetL.SheetName);
@@ -117,26 +127,38 @@ namespace ExcelDiff
                     continue;
                 }
 
-                for(int i = 0; i <= sheetL.LastRowNum; ++i)
+                var headL = sheetL.Row(sheetL.FirstRowNum);
+                var headR = sheetL.Row(sheetR.FirstRowNum);
+                for (int i = sheetL.FirstRowNum; i <= sheetL.LastRowNum && i < MaxRowNum; ++i)
                 {
                     var rowL = sheetL.Row(i);
                     var rowR = sheetR.Row(i);
-                    for(int j = 0; j < rowL.LastCellNum; ++j)
+                    for (int j = headL.FirstCellNum; j < headL.LastCellNum && j < MaxColuNum; ++j)
                     {
                         ++TotalCellCount;
                         var cL = rowL.Cell(j);
                         var cR = rowR.Cell(j);
                         var vL = cL.SValue();
                         var vR = cR.SValue();
-                        if(vL != vR)
+                        //var matches = Regex.Matches(vL, regular + "+"); 
+                        if (
+                            //(matches.Count == 0) 
+                            //&& (vL != vR 
+                               // || (vL != "nil" && vR == "nil")
+                               //)
+                            vL != vR
+                        )
                         {
                             ++count;
                             ++DiffCellCount;
                             //c.SetCellValue(v.Replace(oldStr, newStr));
-                            outstring += string.Format("\t{0}: [{1}{2}]\n\t\t{3}\n\t\t{4}\n"
+                            outstring.Append(string.Format("\n\t{0}:[{1}{2}]\n\t\t{3}\n\t\t{4}"
                                                        , sheetL.SheetName, sheetL.ColumnName(j), i+1
                                                        , vL.Replace("\n", "\\n").Replace("\r", "\\r")
-                                                       , vR.Replace("\n", "\\n").Replace("\r", "\\r"));
+                                                       , vR.Replace("\n", "\\n").Replace("\r", "\\r")
+                                                       //, sheetL.Row(sheetL.FirstRowNum).Cell(j).SValue().Replace("\n", "\\n").Replace("\r", "\\r")
+                                                      )
+                                            );
                         }
                     }
                 }

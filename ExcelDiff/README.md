@@ -11,11 +11,11 @@ mono path/to/ExcelDiff.exe $1 $2
 	command = diffExcel $LOCAL $REMOTE
 ```
 
-* ${HOME}/.config/git/attributes
+* ${HOME}/.config/git/attributes or repository_root/.gitattributes
 ```
 # excel
-*.xls  diff=excel
-*.xlsx diff=excel
+*.xls  diff=excel show=excel
+*.xlsx diff=excel show=excel
 ```
 
 * gitbash
