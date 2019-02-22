@@ -64,7 +64,7 @@ namespace ExcelDiff
             //stdout.Close();
 
             //Console.SetOut(oldout);
-            Console.WriteLine("compared {0} cells, {1} different\n", TotalCellCount, DiffCellCount);
+
             var os = Environment.OSVersion.ToString();
             //Console.WriteLine(os);
             if (!os.Contains("Unix"))
@@ -78,14 +78,17 @@ namespace ExcelDiff
         static int TotalCellCount = 0;
         static int DiffCellCount = 0;
         const int MaxRowNum = 10000;
-        const int MaxColuNum = 200;
+        const int MaxColuNum = 300;
         public static void Diff(string filePath1, string filePath2)
         {
-            Console.WriteLine("diff {0} {1}", filePath1, filePath2);
-            if(!File.Exists(filePath1) || !File.Exists(filePath2)
+            StringBuilder outstring = new StringBuilder(2048);
+            outstring.Append(string.Format("{{\n\ta=\"{0}\",\n\tb=\"{1}\",\n\tsheets={{", filePath1, filePath2));
+            //Console.WriteLine("diff {0} {1}", filePath1, filePath2);
+            if (!File.Exists(filePath1) || !File.Exists(filePath2)
                || filePath1 == "/dev/null" || filePath2 == "/dev/null")
             {
-                Console.WriteLine("warning: diff with null file, skip compare");
+                outstring.Append("},\n\tmsg = \"warning: diff with null file, skip compare\",\n},");
+                Console.WriteLine(outstring);
                 return;
             }
             var inStream = new FileStream(filePath1, FileMode.Open);
@@ -113,59 +116,108 @@ namespace ExcelDiff
             }
             inStream.Close();
 
-            var regular = "[^\x00-\xff「」（）【】■～…]";
+            //var regular = "[^\x00-\xff「」（）【】■～…]";
 
-            int count = 0;
-            StringBuilder outstring = new StringBuilder(2048);
-            outstring.Append(filePath1 + space);
-            foreach(var sheetL in book1.AllSheets())
+            int bookcount = 0;
+            foreach (var sheetL in book1.AllSheets())
             {
+                var sheetout = new StringBuilder(1024);
                 var sheetR = book2.GetSheet(sheetL.SheetName);
-                if (sheetR == null)
-                {
-                    Console.WriteLine("[{0}] not in {1}", sheetL.SheetName, filePath2);
-                    continue;
-                }
 
                 var headL = sheetL.Row(sheetL.FirstRowNum);
-                var headR = sheetL.Row(sheetR.FirstRowNum);
-                for (int i = sheetL.FirstRowNum; i <= sheetL.LastRowNum && i < MaxRowNum; ++i)
+                sheetout.Append(string.Format("\n\t[\"{0}\"]={{\n\t\thead={{", sheetL.SheetName));
+                for (int j = headL.FirstCellNum; j < headL.LastCellNum && j < MaxColuNum; ++j)
                 {
-                    var rowL = sheetL.Row(i);
-                    var rowR = sheetR.Row(i);
-                    for (int j = headL.FirstCellNum; j < headL.LastCellNum && j < MaxColuNum; ++j)
+                    sheetout.Append(string.Format("\n\t\t\t[{1}]=\"{0}\",", headL.Cell(j).SValue().Replace("\"", "\\\"").Replace("\n", "\\n").Replace("\r", "\\r"), j+1));
+                }
+                sheetout.Append("\n\t\t},");
+                var sheetcount = 0;
+                if (sheetR == null)
+                {
+                    sheetout.Append(string.Format("\n\t\t\tmsg=\"[{0}] not in {1}\"}},}},", sheetL.SheetName, filePath2));
+                }
+                else
+                {
+
+                    sheetout.Append(string.Format("\n\t\tcells={{"));
+                   
+                    var headR = sheetL.Row(sheetR.FirstRowNum);
+
+                    for (int i = sheetL.FirstRowNum; i <= sheetL.LastRowNum && i < MaxRowNum; ++i)
                     {
-                        ++TotalCellCount;
-                        var cL = rowL.Cell(j);
-                        var cR = rowR.Cell(j);
-                        var vL = cL.SValue();
-                        var vR = cR.SValue();
-                        //var matches = Regex.Matches(vL, regular + "+"); 
-                        if (
-                            //(matches.Count == 0) 
-                            //&& (vL != vR 
-                               // || (vL != "nil" && vR == "nil")
-                               //)
-                            vL != vR
-                        )
+                        var rowL = sheetL.Row(i);
+                        var rowR = sheetR.Row(i);
+                        for (int j = headL.FirstCellNum; j < headL.LastCellNum && j < MaxColuNum; ++j)
                         {
-                            ++count;
-                            ++DiffCellCount;
-                            //c.SetCellValue(v.Replace(oldStr, newStr));
-                            outstring.Append(string.Format("\n\t{0}:[{1}{2}]\n\t\t{3}\n\t\t{4}"
-                                                       , sheetL.SheetName, sheetL.ColumnName(j), i+1
-                                                       , vL.Replace("\n", "\\n").Replace("\r", "\\r")
-                                                       , vR.Replace("\n", "\\n").Replace("\r", "\\r")
-                                                       //, sheetL.Row(sheetL.FirstRowNum).Cell(j).SValue().Replace("\n", "\\n").Replace("\r", "\\r")
-                                                      )
-                                            );
-                        }
+                            ++TotalCellCount;
+                            var cL = rowL.Cell(j);
+                            var cR = rowR.Cell(j);
+                            var vL = cL.SValue();
+                            var vR = cR.SValue();
+                            //var matches = Regex.Matches(vL, regular + "+"); 
+                            if (
+                                //(matches.Count == 0) 
+                                //&& (vL != vR 
+                                // || (vL != "nil" && vR == "nil")
+                                //)
+                                vL != vR
+                            )
+                            {
+                                ++sheetcount;
+
+                                ++DiffCellCount;
+                                //c.SetCellValue(v.Replace(oldStr, newStr));
+
+                                //Scenario:[I34]
+                                //    不過，我們還得繼續成長哦！　目標是得到金花獎！
+                                //    不過，我們還得繼續成長哦！　一定要得到金花獎！
+                                /*
+                                {
+                                    a = "excel-a.xls",
+                                    b = "excel-b.xls",
+                                    sheets = {
+                                        ["sheetname"] = {
+                                            msg = "",
+                                            cells = {
+                                                {x = 2, y = 23,
+                                                    a = "aaaaaaa",
+                                                    b = "bbbbbbb",
+                                                },
+                                                {x = 2, y = 23,
+                                                    a = "aaaaaaa",
+                                                    b = "bbbbbbb",
+                                                },
+                                                ...
+                                            },
+                                        },
+                                        ...
+                                    }
+                                    msg = "",
+                                },
+                                */
+                                var s = string.Format("\n\t\t\t{{\n\t\t\t\tx={0},y={1},\n\t\t\t\ta=\"{2}\",\n\t\t\t\tb=\"{3}\",\n\t\t\t}},"
+                                                           , j+1, i + 1
+                                                           , vL.Replace("\"", "\\\"").Replace("\n", "\\n").Replace("\r", "\\r")
+                                                           , vR.Replace("\"", "\\\"").Replace("\n", "\\n").Replace("\r", "\\r")
+                                                     );
+                                sheetout.Append(s);
+                            }// for rows
+
+                        }// for sheets
+
                     }
                 }
-            }
-            if(count > 0)
+                bookcount += sheetcount;
+                sheetout.Append("\n\t\t},\n\t},-- " + sheetL.SheetName);
+                if (sheetcount > 0)
+                    outstring.Append(sheetout);
+
+            }//foreach sheet
+
+            outstring.Append(string.Format("\n\t}},--sheets\n\tcompared={0},different={1},\n}},", TotalCellCount, DiffCellCount));
+            if (bookcount > 0)
             {
-                Console.Write(outstring + "                  \n");
+                Console.Write(outstring);
             }
         }
     }
