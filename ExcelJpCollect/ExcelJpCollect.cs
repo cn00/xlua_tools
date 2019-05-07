@@ -11,14 +11,6 @@ using System.Text.RegularExpressions;
 using NPOI.OpenXmlFormats.Spreadsheet;
 using NPOI;
 
-public static class StringExtension
-{
-    public static string upath(this string self)
-    {
-        return self.Replace("\\", "/");
-    }
-}
-
 namespace CollectExcelJp
 {
     class ExcelJpCollect
@@ -157,7 +149,7 @@ namespace CollectExcelJp
                         }
                     }
                 }
-                outSheet.AutoSizeColumn(0, false, 64);
+                // outSheet.AutoSizeColumn(0, false, 64);
 
                 //if(count == 0)
                 //{

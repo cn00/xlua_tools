@@ -8,7 +8,7 @@ using NPOI.XSSF.UserModel;
 using NPOI.SS.UserModel;
 using System.IO;
 using System.Text.RegularExpressions;
-using LibShared;
+using NPOI;
 
 namespace ExcelJpReplace
 {

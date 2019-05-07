@@ -39,6 +39,10 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "NPOIExtension", "NPOIExtens
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelReplaceStr", "ExcelReplaceStr\ExcelReplaceStr.csproj", "{7C1F496A-C315-4D2C-86AD-92BB6686A208}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelGrep", "ExcelGrep\ExcelGrep.csproj", "{55BBD4C0-AD4C-4F02-BA0B-C889E0F2C09C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XmlJpCollect", "XmlJpCollect\XmlJpCollect.csproj", "{710D5F39-B9A9-43F0-BA1B-DE7EBA4FD5AB}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		LibShared\LibShared.projitems*{3248ea5e-2185-4f83-bc61-e4a7306bddd1}*SharedItemsImports = 13
@@ -77,14 +81,6 @@ Global
 		{DDB4C12A-633B-42C6-ABDC-4A931BE64D9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDB4C12A-633B-42C6-ABDC-4A931BE64D9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DDB4C12A-633B-42C6-ABDC-4A931BE64D9A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{710D5F39-B9A9-43F0-BA1B-DE7EBA4FD5AA}..net 2 Release|Any CPU.ActiveCfg = Release|Any CPU
-		{710D5F39-B9A9-43F0-BA1B-DE7EBA4FD5AA}..net 2 Release|Any CPU.Build.0 = Release|Any CPU
-		{710D5F39-B9A9-43F0-BA1B-DE7EBA4FD5AA}..net 4 Release|Any CPU.ActiveCfg = Release|Any CPU
-		{710D5F39-B9A9-43F0-BA1B-DE7EBA4FD5AA}..net 4 Release|Any CPU.Build.0 = Release|Any CPU
-		{710D5F39-B9A9-43F0-BA1B-DE7EBA4FD5AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{710D5F39-B9A9-43F0-BA1B-DE7EBA4FD5AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{710D5F39-B9A9-43F0-BA1B-DE7EBA4FD5AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{710D5F39-B9A9-43F0-BA1B-DE7EBA4FD5AA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{761D4EB3-800B-466F-830D-9AE0284DD5C1}..net 2 Release|Any CPU.ActiveCfg = Release|Any CPU
 		{761D4EB3-800B-466F-830D-9AE0284DD5C1}..net 2 Release|Any CPU.Build.0 = Release|Any CPU
 		{761D4EB3-800B-466F-830D-9AE0284DD5C1}..net 4 Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -181,6 +177,18 @@ Global
 		{7C1F496A-C315-4D2C-86AD-92BB6686A208}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C1F496A-C315-4D2C-86AD-92BB6686A208}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C1F496A-C315-4D2C-86AD-92BB6686A208}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55BBD4C0-AD4C-4F02-BA0B-C889E0F2C09C}..net 2 Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{55BBD4C0-AD4C-4F02-BA0B-C889E0F2C09C}..net 2 Release|Any CPU.Build.0 = Debug|Any CPU
+		{55BBD4C0-AD4C-4F02-BA0B-C889E0F2C09C}..net 4 Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{55BBD4C0-AD4C-4F02-BA0B-C889E0F2C09C}..net 4 Release|Any CPU.Build.0 = Debug|Any CPU
+		{710D5F39-B9A9-43F0-BA1B-DE7EBA4FD5AB}..net 2 Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{710D5F39-B9A9-43F0-BA1B-DE7EBA4FD5AB}..net 2 Release|Any CPU.Build.0 = Debug|Any CPU
+		{710D5F39-B9A9-43F0-BA1B-DE7EBA4FD5AB}..net 4 Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{710D5F39-B9A9-43F0-BA1B-DE7EBA4FD5AB}..net 4 Release|Any CPU.Build.0 = Debug|Any CPU
+		{710D5F39-B9A9-43F0-BA1B-DE7EBA4FD5AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{710D5F39-B9A9-43F0-BA1B-DE7EBA4FD5AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{710D5F39-B9A9-43F0-BA1B-DE7EBA4FD5AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{710D5F39-B9A9-43F0-BA1B-DE7EBA4FD5AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
