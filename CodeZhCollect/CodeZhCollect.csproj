@@ -3,10 +3,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9E237675-60CB-4D38-99A7-B7555277A3E8}</ProjectGuid>
+    <ProjectGuid>{10E49167-61D1-4D7B-8301-07F9D7B3243F}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>CodeJpCollect</RootNamespace>
-    <AssemblyName>CodeJpCollect</AssemblyName>
+    <RootNamespace>CodeZhCollect</RootNamespace>
+    <AssemblyName>CodeZhCollect</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -30,8 +30,8 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="CodeJpCollect.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\npoi\main\NPOI.csproj">

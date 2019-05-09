@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{710D5F39-B9A9-43F0-BA1B-DE7EBA4FD5AB}</ProjectGuid>
+    <ProjectGuid>{710D5F39-B9A9-43F0-BA1B-DE7EBA4FD5AA}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>XmlJpCollect</RootNamespace>
-    <AssemblyName>XmlJpCollect</AssemblyName>
+    <RootNamespace>CodeJpCollect</RootNamespace>
+    <AssemblyName>CodeJpCollect</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -42,8 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeJpCollect.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="XmlJpCollect.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
