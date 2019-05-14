@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ExcelGrep")]
+[assembly: AssemblyTitle("XmlJpReplace")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ExcelGrep")]
+[assembly: AssemblyProduct("XmlJpReplace")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("ECF0C4E2-15C5-4C5A-80C5-34EA9955623B")]
+[assembly: Guid("9FBF5A62-6458-496B-89EF-24FAC2C21FA5")]
 
 // Version information for an assembly consists of the following four values:
 //

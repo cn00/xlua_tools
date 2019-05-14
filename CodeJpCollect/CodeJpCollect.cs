@@ -9,73 +9,10 @@ using NPOI.SS.UserModel;
 using System.IO;
 using System.Text.RegularExpressions;
 using LitJson;
-
+using NPOI;
+    
 namespace Getjp
 {
-    public static class ExcelExtension
-    {
-        public static string upath(this string self)
-        {
-            return self.Trim()
-                .TrimEnd()
-                .Replace("\\", "/")
-                .Replace("//", "/");
-        }
-
-        public static string SValue(this ICell cell, CellType? FormulaResultType = null)
-        {
-            string svalue = "";
-            var cellType = FormulaResultType ?? cell.CellType;
-            switch (cellType)
-            {
-                case CellType.Unknown:
-                    svalue = "";
-                    break;
-                case CellType.Numeric:
-                    svalue = cell.NumericCellValue.ToString();
-                    break;
-                case CellType.String:
-                    svalue = cell.StringCellValue
-                                 .Replace("\n", "\\n")
-                                 .Replace("\t", "\\t")
-                                 .Replace("\"", "\\\"");
-                    break;
-                case CellType.Formula:
-                    svalue = cell.SValue(cell.CachedFormulaResultType);
-                    break;
-                case CellType.Blank:
-                    svalue = "";
-                    break;
-                case CellType.Boolean:
-                    svalue = cell.BooleanCellValue.ToString();
-                    break;
-                case CellType.Error:
-                    svalue = "";
-                    break;
-                default:
-                    break;
-            }
-
-            return svalue;
-        }
-
-
-        public static ISheet Sheet(this IWorkbook workbook, string name)
-        {
-            return workbook.GetSheet(name) ?? workbook.CreateSheet(name);
-        }
-
-        public static IRow Row(this ISheet sheet, int i)
-        {
-            return sheet.GetRow(i) ?? sheet.CreateRow(i);
-        }
-
-        public static ICell Cell(this IRow row, int i)
-        {
-            return row.GetCell(i) ?? row.CreateCell(i);
-        }
-    }
-
     class Program
     {
         // const string regular = "[^\x00-\xff「」（）【】■～…]";
@@ -181,7 +118,7 @@ namespace Getjp
         static void Main(string[] args)
         {
             Console.WriteLine("输入查找路径:");
-            var inputdir = Console.ReadLine() ?? "Classes";
+            var inputdir = "Resources";
             var stringCount = 0;
 
 
@@ -205,8 +142,8 @@ namespace Getjp
 
             var sheet_old = workbook.Sheet("old");
             var sheet3 = workbook.Sheet("ini");
-            CollectTranslateJsonToExcel("old-json.txt", sheet_old,
-                "/Users/men/ws/c2/Resources/vitamin/data/v2040/language_cn.ini", sheet3);
+            //CollectTranslateJsonToExcel("old-json.txt", sheet_old,
+                //"/Users/men/ws/c2/Resources/vitamin/data/v2040/language_cn.ini", sheet3);
 
             var textName = inputdir + "/" + inputdir.Substring(inputdir.LastIndexOf(Path.DirectorySeparatorChar) + 1) +
                            ".txt";
@@ -242,7 +179,9 @@ namespace Getjp
                     || f.EndsWith(".json")
                 ).Where(f => 
                        !f.Contains("/vitamin/Scene/debug/")
-                    && !f.Contains("Resources/vitamin/images/")
+                    && !f.Contains("/vitamin/images/")
+                    && !f.Contains("masterData")
+                    && !f.Contains("stable.json")
                     ))
             {
                 var lineCount = 0;

@@ -17,10 +17,10 @@ namespace XmlJp
     class Program
     {
         // const string regular = "[^\x00-\xff「」（）【】■～…]";
-        const string regular = "[\u3021-\u3126]";//jp 
+        // const string regular = "[\u3021-\u3126]";//jp 
         //const string regular = "[\u4e00-\u9fa5]"; //zh
-        // const string regular = "[\u3021-\u3126\u4e00-\u9fa5]"; //jp+zh
-        
+        const string regular = "[\\u3021-\\u3126\u4e00-\u9fa5]"; //jp+zh
+
         private static int delta_lang_idx = 45000;
 
         public class Record
@@ -79,6 +79,7 @@ namespace XmlJp
 
         const int MaxRowNum = 20000;
         const int MaxColuNum = 300;
+
         static void Delta(ISheet allSheet, ISheet transSheet, ISheet deltaSheet)
         {
             var transDic = new Dictionary<string, Record>();
@@ -97,7 +98,7 @@ namespace XmlJp
             }
 
             var deltaIdx = 1;
-            for (int i = allSheet.FirstRowNum+1; i <= allSheet.LastRowNum && i < MaxRowNum; ++i)
+            for (int i = allSheet.FirstRowNum + 1; i <= allSheet.LastRowNum && i < MaxRowNum; ++i)
             {
                 var rowl = allSheet.Row(i);
                 Record rec = null;
@@ -122,11 +123,12 @@ namespace XmlJp
         static void Main(string[] args)
         {
             Console.WriteLine("输入查找路径:");
-            var inputdir = Console.ReadLine().upath();
+            var inputdir = Console.ReadLine() ?? "Resources";
             var stringCount = 0;
 
 
-            var excelName = inputdir + "/" + inputdir.Substring(inputdir.LastIndexOf(Path.DirectorySeparatorChar) + 1) + ".xlsx";
+            var excelName = inputdir + "/" + inputdir.Substring(inputdir.LastIndexOf(Path.DirectorySeparatorChar) + 1) +
+                            ".xlsx";
             XSSFWorkbook workbook = null;
             FileStream excelStream = null;
             if (File.Exists(excelName))
@@ -154,7 +156,7 @@ namespace XmlJp
             var textStream = new StreamWriter(textName, false, Encoding.UTF8);
             var fini = new StreamWriter(textName + ".ini", false, Encoding.UTF8);
 
-            
+
             var row = sheet_jp.Row(0);
             row.Cell((int) ColumIdx.jp).SetCellValue("jp");
             row.Cell(1).SetCellValue("trans");
@@ -170,14 +172,15 @@ namespace XmlJp
             row.Cell(4).SetCellValue("src");
             row.Cell(5).SetCellValue("idx");
 
-            var files = Directory.GetFiles(inputdir, "*.*", SearchOption.AllDirectories)
-                                 .Where(f => false
-                                             // || f.EndsWith(".xml")
-                                             || f.EndsWith(".ccb")
-                                             // || f.EndsWith(".html")
-                                             // || f.EndsWith(".plist")
-                                         );
-            foreach (var f in files)
+
+            foreach (var f in Directory.GetFiles(inputdir, "*.*", SearchOption.AllDirectories)
+                                       .Where(f => false
+                                                   // || f.EndsWith(".xml")
+                                                   || f.EndsWith(".ccb")
+                                                   // || f.EndsWith(".html")
+                                                   // || f.EndsWith(".plist")
+                                       )
+            )
             {
                 //var stream = new StreamReader(f);
                 var txt = File.ReadAllText(f);
@@ -189,13 +192,13 @@ namespace XmlJp
                     ++stringCount;
                     row = sheet_jp.Row(stringCount);
                     var s0 = i.ToString()
-                        .Replace(">", "")
-                        .Replace("<", "")
-                        .Replace("\r", "\\r")
-                        .Replace("\n", "\\n")
+                              .Replace(">", "")
+                              .Replace("<", "")
+                              .Replace("\r", "\\r")
+                              .Replace("\n", "\\n")
                         ;
-                    row.Cell(0).SetCellValue(s0);  //jp
-                    //row.Cell(1).SetCellValue("译文");//zh
+                    // row.Cell(0).SetCellValue(s0); // jp
+                    row.Cell(1).SetCellValue(s0); // zh
                     row.Cell(2).SetCellValue("");
                     row.Cell(3).SetCellValue(f.upath());
                     row.Cell(5).SetCellValue(string.Format("{0:000000}", (delta_lang_idx)));
@@ -204,18 +207,18 @@ namespace XmlJp
                     fini.WriteLine(string.Format("{0:000000}={1}", delta_lang_idx, s0));
                     Console.WriteLine("{0}:{1}:{2}:{3}", stringCount, 0, i, f.upath());
                 }
-                
+
 
                 textStream.Flush();
             } // foreach
-            
-            
+
+
             Delta(sheet_jp, sheet_old, sheet_jp_delta);
-            
-            
+
+
             textStream.Close();
 
-            if(File.Exists(excelName))
+            if (File.Exists(excelName))
                 File.Delete(excelName);
             excelStream = new FileStream(excelName, FileMode.OpenOrCreate);
             excelStream.Position = 0;

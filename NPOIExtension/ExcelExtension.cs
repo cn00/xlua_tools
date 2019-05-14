@@ -1,4 +1,5 @@
-﻿using NPOI.HSSF.UserModel;
+﻿using System;
+using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System.Collections.Generic;
@@ -18,10 +19,21 @@ namespace NPOI
         public static string upath(this string self)
         {
 
-            return self.Trim()
+            var outp = self.Trim()
                 .TrimEnd()
                 .Replace("\\", "/")
                 .Replace("//", "/");
+            var os = System.Environment.OSVersion.ToString();
+            if (os.Contains("Windows") && outp.StartsWith("/cygdrive/"))
+            {
+                //in cygwin convert "/cygdrive/d/path_to_some_where" => "d:/path_to_some_where"
+                outp = outp.Replace("/cygdrive/", "");
+                string tmp = outp.Substring(0, 1);
+                tmp += ":" + outp.Substring(1);
+                outp = tmp;
+                // Console.WriteLine("cygwin_path_to_winpath:{0}", outp);
+            }
+            return outp;
         }
 
         public static string oneline(this string self)
@@ -39,29 +51,30 @@ namespace NPOI
             switch(cellType)
             {
             case CellType.Unknown:
-                svalue = "nil";
+                svalue = "";
                 break;
             case CellType.Numeric:
                 svalue = cell.NumericCellValue.ToString();
                 break;
             case CellType.String:
                 svalue = cell.StringCellValue
-                    //.Replace("\n", "\\n")
-                    //.Replace("\t", "\\t")
-                    //.Replace("\"", "\\\"")
-                    ;
+                             // .Replace("\n", "\\n")
+                             // .Replace("\r", "\\r")
+                             // .Replace("\t", "\\t")
+                             // .Replace("\"", "\\\"")
+                             ;
                 break;
             case CellType.Formula:
                 svalue = cell.SValue(cell.CachedFormulaResultType);
                 break;
             case CellType.Blank:
-                svalue = "nil";
+                svalue = "";
                 break;
             case CellType.Boolean:
                 svalue = cell.BooleanCellValue.ToString();
                 break;
             case CellType.Error:
-                svalue = "nil";
+                svalue = "";
                 break;
             default:
                 break;

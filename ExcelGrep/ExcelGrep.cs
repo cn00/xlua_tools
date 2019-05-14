@@ -16,6 +16,9 @@ namespace ExcelGrep
     {
         static void Main(string[] args)
         {
+            var os = Environment.OSVersion.ToString();
+            Console.WriteLine(os);
+            
             string inputdir = ".";
             string oldStr = null;
             if(args.Length == 2)
@@ -28,7 +31,7 @@ namespace ExcelGrep
             Console.WriteLine("usage: ExcelGrep Str\n或按下面提示操作");
             Console.WriteLine("输入待查找 Excel 根路径, 默认值: " + inputdir);
             Console.Write("输入或拖入: ");
-            var tmp = Console.ReadLine();
+            var tmp = Console.ReadLine().upath();
             if(!string.IsNullOrWhiteSpace(tmp) && Directory.Exists(tmp))
                 inputdir = tmp;
             else
@@ -72,8 +75,6 @@ namespace ExcelGrep
 
             Console.SetOut(oldout);
             Console.Write("\n搜索了 {0} 个文件, {1} 个匹配\n", FileColCount, MatchColCount);
-            var os = Environment.OSVersion.ToString();
-            Console.WriteLine(os);
             if (!os.Contains("Unix"))
             {
                 Console.WriteLine("按 Enter 退出");
