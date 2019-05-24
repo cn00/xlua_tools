@@ -43,7 +43,7 @@ namespace XmlJpReplace
                 var srcPath = row.Cell(3).StringCellValue;
                 var jp = row.Cell(0).SValue().Replace("\\r", "\r").Replace("\\n", "\n");
                 var tr = row.Cell(1).SValue().Replace("\\r", "\r").Replace("\\n", "\n");
-                if (File.Exists(srcPath) && jp.Length > 0 && tr.Length > 0)
+                if (File.Exists(srcPath) && jp.Length > 0 && tr.Length > 0 && tr != "0")
                 {
                     ReplaceOne(srcPath, jp, tr);
                 }
@@ -54,7 +54,7 @@ namespace XmlJpReplace
         public static void ReplaceOne(string srcPath, string jp, string tr)
         {
             string srcc = File.ReadAllText(srcPath);
-            var nsrcc = srcc.Replace(jp, tr);
+            var nsrcc = srcc.Replace(">" + jp + "<", ">" + tr + "<");
             if (nsrcc == srcc)
             {
                 Console.WriteLine("{0}:{1}:{2} NOT Replaced", jp, tr, srcPath);
