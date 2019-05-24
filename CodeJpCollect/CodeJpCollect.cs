@@ -118,7 +118,7 @@ namespace Getjp
         static void Main(string[] args)
         {
             Console.WriteLine("输入查找路径:");
-            var inputdir = "Resources";
+            var inputdir = "../../../Classes";
             var stringCount = 0;
 
 
@@ -190,7 +190,7 @@ namespace Getjp
                 //while(stream.Peek() > 0)
                 foreach (var line in alllines)
                 {
-                    Console.WriteLine(">>>>>>{0}", f.upath());
+//                    Console.WriteLine(">>>>>>{0}", f.upath());
                     //var line = stream.ReadLine();
                     ++lineCount;
 
