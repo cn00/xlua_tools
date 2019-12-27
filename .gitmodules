@@ -1,3 +1,6 @@
 [submodule "npoi"]
 	path = npoi
 	url = git@github.com:cn00/npoi.git
+[submodule "xlua"]
+	path = xlua
+	url = git@github.com:cn00/xLua.git
