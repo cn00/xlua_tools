@@ -10,6 +10,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using NPOI.OpenXmlFormats.Spreadsheet;
 using NPOI;
+using NPOI.SS.Formula.Functions;
 
 namespace CollectExcelJp
 {
@@ -78,9 +79,9 @@ namespace CollectExcelJp
             }
 
             //template
-            var templateStream = new FileStream("d:/a3/client/docs/protected.xlsx", FileMode.Open);
-            var outBook = new XSSFWorkbook(templateStream);
-            XSSFSheet outSheet = outBook.GetSheet("jp") as XSSFSheet;//new XSSFSheet();//
+            var templateStream = new FileStream("protected.xlsx", FileMode.OpenOrCreate);
+            var outBook = new XSSFWorkbook();
+            XSSFSheet outSheet = (outBook.GetSheet("jp") ?? outBook.CreateSheet("jp")) as XSSFSheet;//new XSSFSheet();//
             templateStream.Close();
 
 
@@ -88,6 +89,16 @@ namespace CollectExcelJp
             //var outSheet = outBook.Sheet("jp");//new XSSFSheet();//
             //outBook.Add(outSheet as XSSFSheet);
             var hrow = outSheet.GetRow(0);
+            if (hrow == null)
+            {
+                outSheet.Cell(0,0).SetCellValue("jp");
+                outSheet.Cell(0,1).SetCellValue("trans");
+                outSheet.Cell(0,2).SetCellValue("trans_jd");
+                outSheet.Cell(0,3).SetCellValue("i");
+                outSheet.Cell(0,4).SetCellValue("j");
+                outSheet.Cell(0,5).SetCellValue("SheetName");
+                hrow = outSheet.GetRow(0);
+            }
             var head = new ExcelHead(hrow);
 
             var locked = outBook.CreateCellStyle();
@@ -109,12 +120,14 @@ namespace CollectExcelJp
 
             int count = 0;
             bool cellLock = true;
+            int MaxRowNum = 10000;
+            int MaxCellNum = 256;
             foreach(var sheet in inbook.AllSheets())
             {
-                for(int i = 0; i <= sheet.LastRowNum; ++i)
+                for(int i = 0; i <= sheet.LastRowNum && i < MaxRowNum; ++i)
                 {
                     var row = sheet.Row(i);
-                    for(int j = 0; j < row.LastCellNum; ++j)
+                    for(int j = 0; j < row.LastCellNum && j < MaxCellNum; ++j)
                     {
                         var v = row.Cell(j).SValue();
                         var matches = Regex.Matches(v, regular + "+.*");

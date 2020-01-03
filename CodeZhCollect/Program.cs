@@ -78,7 +78,7 @@ namespace CodeZhCollect
 
         // const string regular = "[\u3021-\u3126]";//jp //\u4e00-\u9fa5
         //const string regular = "[\u4e00-\u9fa5]"; //zh
-        const string regular = "[\\u3021-\\u3126\u4e00-\u9fa5]"; //jp+zh
+        const string regular = "[\u3021-\u3126\u4e00-\u9fa5]"; //jp+zh
 
         public static void CollectZhToSheet(string inPath, ISheet sheet)
         {
@@ -125,7 +125,7 @@ namespace CodeZhCollect
                 // {
                 //     
                 // }
-            } //while       }
+            }
         }
     }
 }

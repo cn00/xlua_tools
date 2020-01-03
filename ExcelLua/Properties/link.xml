@@ -1,1 +1,22 @@
-<?xml version="1.0" encoding="utf-8"?>
+<linker>
+    <assembly fullname="System">
+        <type fullname="System.*" preserve="all"/>
+    </assembly>
+    <assembly fullname="mscorlib">
+        <namespace fullname="System.*" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="NPOI">
+        <type fullname="NPOI.*" preserve="all"/>
+    </assembly>
+    <assembly fullname="NPOI.OOXML">
+        <type fullname="NPOI.*" preserve="all"/>
+    </assembly>
+    <assembly fullname="NPOI.OpenXml4Net">
+        <type fullname="NPOI.*" preserve="all"/>
+    </assembly>
+    <assembly fullname="NPOI.OpenXmlFormats">
+        <type fullname="NPOI.*" preserve="all"/>
+    </assembly>
+
+</linker>

@@ -52,8 +52,6 @@ db:Open();
 
 
 function sqlitetest()
-    local db = Mono.Data.Sqlite.SqliteConnection("URI=file:strings.sqlite3;version=3");
-    db:Open();
     local cmd = db:CreateCommand();
     cmd.CommandText = "select * from strings_no_trans;";
     local reader = cmd:ExecuteReader();
@@ -140,22 +138,22 @@ function CollectOneExcel(path)
 end
 -- CollectOne("ExcelData.trans/Story/mini/StoryMini006_001_010.xlsx")
 
--- local dump = require "dump"
+local dump = require "dump"
 local rootPath = "ExcelData.trans"
 local util = require "util"
 -- util.GetFiles(rootPath, CollectOneExcel)
 
 -- -- 从差异提取的字典
--- local t = require "exceldata-diff-110"
+-- local t = require "exceldata-diff-210"
 -- local CollectExcelDiffDic = require "CollectExcelDiffDic"
--- CollectExcelDiffDic(t)
+-- CollectExcelDiffDic(t, db, "tr", "v210.0")
 
 
 -- 翻译
 local TransExcel = require "TransExcel"
-local jpRootPath = "ExcelData-jp-350"
+local jpRootPath = "ExcelData.trans/Digest"
 util.GetFiles(jpRootPath, function ( path )
-    TransExcel(path, db)
+    TransExcel(path, db, "zh")
 end)
 
 db:Close()

@@ -86,6 +86,8 @@ namespace ExcelGrep
         const string space = "                  ";
         static int FileColCount = 0;
         static int MatchColCount = 0;
+        const int MaxCellNum = 256;
+        const int MaxRowNum = 10000;
         public static void Grep(string inExcel, string oldStr)
         {
             var inStream = new FileStream(inExcel, FileMode.Open);
@@ -108,10 +110,14 @@ namespace ExcelGrep
             string outstring = FileColCount + ": " + inExcel + space + "\n";
             foreach(var sheet in inbook.AllSheets())
             {
-                for(int i = 1; i <= sheet.LastRowNum; ++i)
+                if (sheet.LastRowNum > MaxRowNum)
+                {
+                    Console.WriteLine($"{sheet.SheetName}:LastRowNum={sheet.LastRowNum} > MaxRowNum={MaxRowNum} skip last rows");
+                }
+                for(int i = 0; i <= sheet.LastRowNum && i < MaxRowNum; ++i)
                 {
                     var row = sheet.Row(i);
-                    for(int j = 0; j < row.LastCellNum; ++j)
+                    for(int j = 0; j < row.LastCellNum && j < MaxCellNum; ++j)
                     {
                         var c = row.Cell(j);
                         var v = c.SValue();

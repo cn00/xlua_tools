@@ -44,15 +44,12 @@ namespace NPOI
                 .Replace("\r", "\\r");
         }
 
-        public static string SValue(this ICell cell, CellType? FormulaResultType = null)
+        public static string SValue(this ICell cell)
         {
             string svalue = "";
-            var cellType = FormulaResultType ?? cell.CellType;
+            var cellType = cell.CellType == CellType.Formula ? cell.CachedFormulaResultType:cell.CellType;
             switch(cellType)
             {
-            case CellType.Unknown:
-                svalue = "";
-                break;
             case CellType.Numeric:
                 svalue = cell.NumericCellValue.ToString();
                 break;
@@ -64,18 +61,13 @@ namespace NPOI
                              // .Replace("\"", "\\\"")
                              ;
                 break;
-            case CellType.Formula:
-                svalue = cell.SValue(cell.CachedFormulaResultType);
-                break;
-            case CellType.Blank:
-                svalue = "";
-                break;
             case CellType.Boolean:
                 svalue = cell.BooleanCellValue.ToString();
                 break;
+            case CellType.Unknown:
+            case CellType.Formula:
+            case CellType.Blank:
             case CellType.Error:
-                svalue = "";
-                break;
             default:
                 break;
             }
