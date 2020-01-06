@@ -11,7 +11,7 @@ local lfs = require "lfs"
 
 local ClientAnchor, RichTextString
 
-local function TransOneExcel(path, dicdb, language)
+local function TransOneExcel(path, dicdb, language, version)
     if  true
     	and path:sub(-5) ~= ".xlsx" 
     	and path:sub(-4) ~= ".xls" 
@@ -20,6 +20,7 @@ local function TransOneExcel(path, dicdb, language)
     then return end
 
     language = language or "zh"
+    version =  version or "v110"
 
     print("TransOne",path)
     local wb
@@ -56,11 +57,14 @@ local function TransOneExcel(path, dicdb, language)
 	                if cell ~= nil then 
 	                    local str = cell.SValue:gsub("'", "''")
 	                    if util.JpMatch(str).Count > 0 then
-                            local patriarch = sheet:CreateDrawingPatriarch()
-                            local comment = patriarch:CreateCellComment(ClientAnchor())
-                            comment.String = RichTextString(str)
-                            cell.CellComment = comment
-                            -- print("comment", cell, cell.CellComment, str)
+                            -- if cell.CellComment == nil then
+                            --     local patriarch = sheet:CreateDrawingPatriarch()
+                            --     local anchor = ClientAnchor()
+                            --     local comment = patriarch:CreateCellComment(anchor)
+                            --     comment.String = RichTextString(str)
+                            --     cell.CellComment = comment
+                            --     print("comment", cell, anchor, str)
+                            -- end
 
 	                    	lastJpStr = str
 		                    -- print(ii, jjj, lastJpStr)
@@ -102,7 +106,7 @@ local function TransOneExcel(path, dicdb, language)
         jpTable[#jpTable] = currentRow 
             .. " ON CONFLICT(s) DO UPDATE SET "
             ..language.." = CASE WHEN "..language.." ISNULL OR "..language.." = '' THEN excluded."..language.. " ELSE " .. language .. " END"
-            -- ..", src = src || char(13) || excluded.src"
+            ..", src = '{"..language.."=\"'||excluded."..language.."||'\",src=\"'||excluded.src||\'\",v=\""..version.."\"},'||char(13)||src"
             ..";"
     	local sql = table.concat(jpTable, "\n")
     	-- print(sql)
@@ -127,9 +131,9 @@ local function TransOneExcel(path, dicdb, language)
         while (reader:Read()) do
         	local jp = reader:GetTextReader(0):ReadToEnd()
             local zh = reader:GetTextReader(1):ReadToEnd()
-        	print(jp, "->", zh)
         	local cache = cellCach[jp]
         	if cache ~= nil and zh ~= nil and zh ~= "" then
+                print(jp, "->", zh)
         		for i,v in ipairs(cache) do
         			-- print(i, v, v.CellComment)
     		        v:SetCellValue(zh)
@@ -143,11 +147,12 @@ local function TransOneExcel(path, dicdb, language)
     end
     ::skip::
 
-    System.IO.File.Delete(path)
+    System.IO.File.Delete(path..".x")
     local outStream = System.IO.FileStream(path .. ".x", System.IO.FileMode.CreateNew);
     outStream.Position = 0;
     wb:Write(outStream);
     outStream:Close();
+    System.IO.File.Delete(path)
 end
 
 return TransOneExcel

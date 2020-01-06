@@ -12,6 +12,7 @@ local NPOI = CS.NPOI
 local Mono = CS.Mono
 local Workbook = NPOI.XSSF.UserModel.XSSFWorkbook
 
+local util = require "util"
 
 local print = function(...)
     _G.print("main.lua", ...)
@@ -52,40 +53,40 @@ local db = Mono.Data.Sqlite.SqliteConnection("URI=file:strings.sqlite3;version=3
 db:Open();
 
 
-function sqlitetest()
-    local cmd = db:CreateCommand();
-    cmd.CommandText = "select * from strings_no_trans;";
-    local reader = cmd:ExecuteReader();
-    print(reader:GetName(0), reader:GetName(2), reader:GetName(3), reader:GetName(4), reader:GetName(5));
-    print(reader:GetDataTypeName(0), reader:GetDataTypeName(2), reader:GetDataTypeName(3), reader:GetDataTypeName(4), reader:GetDataTypeName(5));
-    while (reader:Read()) do
-        print(reader:GetInt32(0), reader:GetTextReader(1):ReadToEnd(), reader:GetTextReader(3):ReadToEnd());
-    end
-    reader:Dispose()
+-- -- https://www.sqlitetutorial.net/
+-- function sqlitetest()
+--     local cmd = db:CreateCommand();
+--     cmd.CommandText = "select * from strings_no_trans;";
+--     local reader = cmd:ExecuteReader();
+--     print(reader:GetName(0), reader:GetName(2), reader:GetName(3), reader:GetName(4), reader:GetName(5));
+--     print(reader:GetDataTypeName(0), reader:GetDataTypeName(2), reader:GetDataTypeName(3), reader:GetDataTypeName(4), reader:GetDataTypeName(5));
+--     while (reader:Read()) do
+--         print(reader:GetInt32(0), reader:GetTextReader(1):ReadToEnd(), reader:GetTextReader(3):ReadToEnd());
+--     end
+--     reader:Dispose()
 
-    cmd.CommandText = [[
-       CREATE TABLE IF NOT EXISTS "dic" (
-           "id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-           "s"	text,
-           "zh"	text,
-           "tr"	text,
-           "src"	text
-       );
+--     cmd.CommandText = [[
+--        CREATE TABLE IF NOT EXISTS "dic" (
+--            "id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+--            "s"	text,
+--            "zh"	text,
+--            "tr"	text,
+--            "src"	text
+--        );
 
-       CREATE UNIQUE INDEX "index_dic" ON "dic" (
-           "s"
-       );
-        -- insert in to dic (s,zh,tr)
-    ]]
-    reader = cmd:ExecuteReader();
-end
+--        CREATE UNIQUE INDEX "index_dic" ON "dic" (
+--            "s"
+--        );
+--         -- insert in to dic (s,zh,tr)
+--     ]]
+--     reader = cmd:ExecuteReader();
+-- end
 
 -- 从 Excel 字典并入
 -- local CollectExcelDic =  require "CollectExcelDic"
 -- -- 从 (jp, tr, src) Excel 导入字典
 -- local dump = require "dump"
 -- local rootPath = "ExcelData.trans"
--- local util = require "util"
 -- util.GetFiles(rootPath, function ( path)
 --     CollectExcelDic(path, db, "zh", "v110" )
 -- end)
@@ -96,17 +97,18 @@ end
 -- local CollectExcelDiff2Dic = require "CollectExcelDiff2Dic"
 -- CollectExcelDiff2Dic(t, db, "zh", "v110.0")
 
--- 从差异提取的字典 210
-local t = require "exceldata-trans-tr-210"
-local CollectExcelDiff2Dic = require "CollectExcelDiff2Dic"
-CollectExcelDiff2Dic(t, db, "tr", "v210.0")
+-- -- 从差异提取的字典 210
+-- local t = require "exceldata-trans-tr-210"
+-- local CollectExcelDiff2Dic = require "CollectExcelDiff2Dic"
+-- CollectExcelDiff2Dic(t, db, "tr", "v210.0")
 
 
--- -- 翻译
--- local TransExcel = require "TransExcel"
--- local jpRootPath = "ExcelData.trans/Digest"
--- util.GetFiles(jpRootPath, function ( path )
---     TransExcel(path, db, "zh")
--- end)
+-- 翻译 Excel
+local TransExcel = require "TransExcel"
+local jpRootPath = "ExcelData_c2ios"
+util.GetFiles(jpRootPath, function ( path )
+    -- print(path)
+    TransExcel(path, db, "zh", "v202")
+end)
 
 db:Close()

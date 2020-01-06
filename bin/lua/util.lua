@@ -24,11 +24,11 @@ local function GetFiles(root, fileAct)
     end
 end
 
-local regular_jp = [[.*[\u3021-\u3126]+.*]] -- jp
+local regular_jp = [[.*[\u3040-\u3126]+.*]] -- jp
 local regular_zh = [[.*[\u4e00-\u9fa5]+.*]] -- zh
 local regular_jpzh = [[.*[\u3021-\u3126\u4e00-\u9fa5]+.*]] -- zh
 local function JpMatch( s )
-	return System.Text.RegularExpressions.Regex.Matches(s, regular_jpzh)
+	return System.Text.RegularExpressions.Regex.Matches(s, regular_jp)
 end
 
 return {
