@@ -79,81 +79,33 @@ function sqlitetest()
     reader = cmd:ExecuteReader();
 end
 
--- sqlitetest()
-
-function CollectOneExcel(path)
-    if(path:sub(-5) == ".xlsx" and nil == path:match("~") )then return end
-
-    print("CollectOne",path)
-    local wb = Workbook(path)
-    local sheet = wb:GetSheet('jp')
-    local values = {
-        "INSERT OR IGNORE INTO dic (s,zh,src) VALUES "
-    }
-    local currentRow
-    for i = 1, math.min(sheet.LastRowNum, 10000) do
-        local row = sheet:GetRow(i)
-        if row ~= nil then
-            -- for j = 0, row.LastCellNum - 1 do
-            --     local cell = row:GetCell(j)
-            --     if cell ~= nil then 
-            --         print(i, j, row:GetCell(j).SValue)
-            --     end
-            -- end
-            local cjp = row:GetCell(0)
-            if cjp == nil then goto continue end
-            local jp = cjp.SValue
-            jp=jp:gsub("'", "''")
-
-            local czh = row:GetCell(1)
-            if czh == nil then goto continue end
-            local zh = czh.SValue
-            zh=zh:gsub("'", "''")
-            if zh ~= '译文' and zh ~= '' then
-                currentRow= "(" 
-                    .. "'".. jp .."'," -- jp
-                    .. "'".. zh .."'," -- zh
-                    .. "'".. path .. ":" ..row:GetCell(5).SValue.."'" -- src
-                    ..")"
-                values[1+#values] = currentRow .. ","
-            else
-                print(jp:gsub("\n", "\\n"), zh)
-            end
-        end
-        ::continue::
-    end
-    values[#values] = currentRow .. ";"
-    -- values[1+#values] = "COMMIT;"
-
-    local sql = table.concat(values, "\n")
-    local cmd = db:CreateCommand();
-    cmd.CommandText = sql;
-    local reader = cmd:ExecuteReader();
-    reader:Dispose()
+-- 从 Excel 字典并入
+-- local CollectExcelDic =  require "CollectExcelDic"
+-- -- 从 (jp, tr, src) Excel 导入字典
+-- local dump = require "dump"
+-- local rootPath = "ExcelData.trans"
+-- local util = require "util"
+-- util.GetFiles(rootPath, function ( path)
+--     CollectExcelDic(path, db, "zh", "v110" )
+-- end)
 
 
-    local f = io.open(path .. ".sql", "w")
-    f:write(sql)
-    f:close()
-end
--- CollectOne("ExcelData.trans/Story/mini/StoryMini006_001_010.xlsx")
+-- -- 从差异提取的字典 110
+-- local t = require "exceldata-trans-zh-110"
+-- local CollectExcelDiff2Dic = require "CollectExcelDiff2Dic"
+-- CollectExcelDiff2Dic(t, db, "zh", "v110.0")
 
-local dump = require "dump"
-local rootPath = "ExcelData.trans"
-local util = require "util"
--- util.GetFiles(rootPath, CollectOneExcel)
-
--- -- 从差异提取的字典
--- local t = require "exceldata-diff-210"
--- local CollectExcelDiffDic = require "CollectExcelDiffDic"
--- CollectExcelDiffDic(t, db, "tr", "v210.0")
+-- 从差异提取的字典 210
+local t = require "exceldata-trans-tr-210"
+local CollectExcelDiff2Dic = require "CollectExcelDiff2Dic"
+CollectExcelDiff2Dic(t, db, "tr", "v210.0")
 
 
--- 翻译
-local TransExcel = require "TransExcel"
-local jpRootPath = "ExcelData.trans/Digest"
-util.GetFiles(jpRootPath, function ( path )
-    TransExcel(path, db, "zh")
-end)
+-- -- 翻译
+-- local TransExcel = require "TransExcel"
+-- local jpRootPath = "ExcelData.trans/Digest"
+-- util.GetFiles(jpRootPath, function ( path )
+--     TransExcel(path, db, "zh")
+-- end)
 
 db:Close()

@@ -101,7 +101,7 @@ local function TransOneExcel(path, dicdb, language)
         end
         jpTable[#jpTable] = currentRow 
             .. " ON CONFLICT(s) DO UPDATE SET "
-            ..language.." = excluded."..language
+            ..language.." = CASE WHEN "..language.." ISNULL OR "..language.." = '' THEN excluded."..language.. " ELSE " .. language .. " END"
             -- ..", src = src || char(13) || excluded.src"
             ..";"
     	local sql = table.concat(jpTable, "\n")
