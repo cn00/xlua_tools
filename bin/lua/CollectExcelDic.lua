@@ -31,19 +31,19 @@ function CollectExcelDic(path, db, language, version)
             local jp = cjp.SValue
             jp=jp:gsub("'", "''")
 
-            local czh = row:GetCell(1)
-            if czh == nil then goto continue end
-            local zh = czh.SValue
-            zh=zh:gsub("'", "''")
-            if zh ~= '译文' and zh ~= '' then
+            local ctrans = row:GetCell(1)
+            if ctrans == nil then goto continue end
+            local trans = ctrans.SValue
+            trans=trans:gsub("'", "''")
+            if trans ~= '译文' and trans ~= '' then
                 currentRow= "(" 
                     .. "'".. jp .."'," -- jp
-                    .. "'".. zh .."'," -- zh
+                    .. "'".. trans .."'," -- trans
                     .. "'".. path .. ":" ..row:GetCell(5).SValue.."'" -- src
                     ..")"
                 values[1+#values] = currentRow .. ","
             else
-                print(jp:gsub("\n", "\\n"), zh)
+                print(jp:gsub("\n", "\\n"), trans)
             end
         end
         ::continue::

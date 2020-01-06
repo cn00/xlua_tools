@@ -17,6 +17,7 @@ local print = function(...)
     _G.print("main.lua", ...)
 end
 
+-- 更新 LuaCallCSharpTypes.cs
 local LuaCallCSharpTypesSrc = {}
 local types = CS.ExcelUtil.XLuaConfig.LuaCallCSharp
 LuaCallCSharpTypesSrc[1 + #LuaCallCSharpTypesSrc] = [[
