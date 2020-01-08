@@ -15,13 +15,14 @@ local function GetFiles(root, fileAct, filter)
             end
             -- print(traverpath)
             if (attr.mode == "directory") then
-                GetFiles(traverpath, fileAct)
+                GetFiles(traverpath, fileAct, filter)
             elseif attr.mode == "file" then
-                if fileAct then 
+                if fileAct then
+                    -- print("filter", filter)
                     if filter ~= nil and type(filter) == "function" then
                         if  filter(traverpath) then fileAct(traverpath) end
                     else
-                        fileAct(traverpath) 
+                        fileAct(traverpath)
                     end
                 end
             end
