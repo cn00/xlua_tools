@@ -2,7 +2,7 @@ local CS = CS
 local System = CS.System
 
 local lfs = require "lfs"
-local function GetFiles(root, fileAct)
+local function GetFiles(root, fileAct, filter)
     -- print("GetFiles", root)
     for entry in lfs.dir(root) do
         if entry ~= '.' and entry ~= '..' then
@@ -17,7 +17,13 @@ local function GetFiles(root, fileAct)
             if (attr.mode == "directory") then
                 GetFiles(traverpath, fileAct)
             elseif attr.mode == "file" then
-                if fileAct then fileAct(traverpath) end
+                if fileAct then 
+                    if filter ~= nil and type(filter) == "function" then
+                        if  filter(traverpath) then fileAct(traverpath) end
+                    else
+                        fileAct(traverpath) 
+                    end
+                end
             end
         end
         :: continue :: 
