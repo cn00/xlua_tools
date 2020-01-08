@@ -1,3 +1,9 @@
+local CS = CS
+local System = CS.System
+local NPOI = CS.NPOI
+local Mono = CS.Mono
+local XWorkbook = NPOI.XSSF.UserModel.XSSFWorkbook
+
 local util = require "util"
 local dump = require "dump"
 
@@ -20,6 +26,52 @@ local function test()
 		-- print(i, dump(t))
 	end
 	-- print("close", res:close())
+end
+
+local function Mysql2Excel(source, tables, user, pward, host, excelPath)
+	local conn = luasql.mysql():connect(source, user, pward, host)
+	local wb = XWorkbook()
+
+	if tables == nil then
+		tables = {}
+		local sql = "show tables;"
+		local res = conn:execute(sql)
+		for i=0,res:numrows()-1 do
+			tables[1+#tables] = res:fetch()
+		end
+		res:close()
+	end
+	print(source, dump(tables))
+
+	for it,tab in ipairs(tables) do
+		local sheet = wb:CreateSheet()
+		sheet.SheetName = tab
+		local sql = "select * from " .. tab ..";"
+		local res = conn:execute(sql)
+		print(tab, dump(res:getcolnames()), res:numrows())
+	    local row = sheet:GetRow(0) or sheet:CreateRow(0)
+		for k,v in pairs(res:getcolnames()) do
+		    local cell = row:GetCell(k-1) or row:CreateCell(k-1)
+			cell:SetCellValue(v)
+		end
+
+		for i=0,res:numrows()-1 do
+			local t = {res:fetch()}
+			local row = sheet:GetRow(i+1) or sheet:CreateRow(i+1)
+			for ii, vv in ipairs(t) do
+				local cell = row:GetCell(ii-1) or row:CreateCell(ii-1)
+				cell:SetCellValue(vv)
+			end
+		end
+		res:close()
+	end
+
+	print("saving ...")
+	System.IO.File.Delete(excelPath)
+	local outStream = System.IO.FileStream(excelPath, System.IO.FileMode.CreateNew);
+	outStream.Position = 0;
+	wb:Write(outStream);
+	outStream:Close();
 end
 
 -- t = {fetch()}
@@ -91,5 +143,6 @@ end
 ]]
 
 return {
-	test = test
+	test = test,
+	Mysql2Excel = Mysql2Excel,
 }
