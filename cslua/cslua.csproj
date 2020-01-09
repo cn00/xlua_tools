@@ -7,8 +7,8 @@
     <ProjectGuid>{02B75C01-9C92-4DA4-9854-ED4B42C87D00}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ExcelLua</RootNamespace>
-    <AssemblyName>ExcelLua</AssemblyName>
+    <RootNamespace>cslua</RootNamespace>
+    <AssemblyName>cslua</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

@@ -35,11 +35,11 @@ namespace ExcelUtil
     {
         public static void Main(string[] args)
         {
-            var path = "Master.xlsx";
-            // var inStream = new FileStream(path, FileMode.Open);
-            var wb = new Workbook(path);
-            var sheet = wb.GetSheet("jp");
-            Console.WriteLine($"wb={wb};sheet={sheet}");
+            // var path = "Master.xlsx";
+            // // var inStream = new FileStream(path, FileMode.Open);
+            // var wb = new Workbook(path);
+            // var sheet = wb.GetSheet("jp");
+            // Console.WriteLine($"wb={wb};sheet={sheet}");
             
                        
             // var db = new Mono.Data.Sqlite.SqliteConnection("URI=file:strings.sqlite3;version=3");
@@ -55,7 +55,8 @@ namespace ExcelUtil
             //     Console.WriteLine($"{reader.GetInt32(0)},\t{reader.GetTextReader(1).ReadToEnd()},\t {reader.GetTextReader(3).ReadToEnd()}");
             // }
 
-            
+
+            var l = LuaCallCSharpTypes.L;
             LuaEnv luaenv = LuaEnvSingleton.Instance;
             luaenv.DoString("require 'main'");
         }
