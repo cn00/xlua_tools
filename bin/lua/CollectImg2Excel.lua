@@ -11,8 +11,15 @@ local lfs = require "lfs"
 
 local ClientAnchor, RichTextString
 
---[[
-find Resource -name "*.png" | while read l; do i=$(file "$l" |awk -F '[, ]' '{print $6}'); if (($i>=1024));then echo "$i == $l"; magick convert "$l" -scale $((96000/$i))% "$l"; file "$l";  fi; done
+--[[ shell
+find Resource -name "*.png" | while read l; do 
+    i=$(file "$l" | awk -F '[, ]' '{print $6}'); 
+    if (($i>=1024));then 
+        echo "$i == $l"; 
+        magick convert "$l" -scale $((96000/$i))% "$l"; 
+        file "$l";
+    fi;
+done
 ]]
 local function CollectImg2Excel(path, wb, sheet, i)
     print(i, path)

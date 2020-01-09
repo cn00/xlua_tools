@@ -13,10 +13,12 @@ local luasql = require "luasql.mysql"
 -- end
 
 local function test()
-	local conn = luasql.mysql():connect("a3_350_u", "a3", "654123", "10.23.22.233")
+	local conn, err = luasql.mysql():connect("a3_350_u", "a3", "654123", "10.23.22.233")
+	if err ~= nil then print(err) return end
 	-- local sql = "show tables;"
 	local sql = "select s.jp_name, c.* from a3_350_m.m_card c left join a3_350_m.m_string_item s on c.card_name_id = s.string_id limit 20;"
-	local res = conn:execute(sql)
+	local res, err = conn:execute(sql)
+	if err ~= nil then print(err) return end
 	print(dump(res:getcolnames()), res:numrows())
 	for i=0,res:numrows()-1 do
 		local t = {res:fetch()}
@@ -29,13 +31,14 @@ local function test()
 end
 
 local function Mysql2Excel(source, tables, user, pward, host, excelPath)
-	local conn = luasql.mysql():connect(source, user, pward, host)
-	local wb = XWorkbook()
+	local conn, err = luasql.mysql():connect(source, user, pward, host)
+	if err ~= nil then print(err) return end
 
 	if tables == nil then
 		tables = {}
 		local sql = "show tables;"
-		local res = conn:execute(sql)
+		local res, err = conn:execute(sql)
+		if err ~= nil then print(err) return end
 		for i=0,res:numrows()-1 do
 			tables[1+#tables] = res:fetch()
 		end
@@ -43,11 +46,14 @@ local function Mysql2Excel(source, tables, user, pward, host, excelPath)
 	end
 	print(source, dump(tables))
 
+	local wb = XWorkbook()
 	for it,tab in ipairs(tables) do
 		local sheet = wb:CreateSheet()
 		sheet.SheetName = tab
 		local sql = "select * from " .. tab ..";"
-		local res = conn:execute(sql)
+		local res, err = conn:execute(sql)
+		if err ~= nil then print(err) return end
+
 		print(tab, dump(res:getcolnames()), res:numrows())
 	    local row = sheet:GetRow(0) or sheet:CreateRow(0)
 		for k,v in pairs(res:getcolnames()) do
@@ -74,8 +80,75 @@ local function Mysql2Excel(source, tables, user, pward, host, excelPath)
 	outStream:Close();
 end
 
+local function Excel2Sql(source, user, pward, host, excelPath)
+	local values = {}
+	local sql = "create database if not exists " .. source .. ";"
+	values[1+#values] = sql
+
+	values[1+#values] = "use ".. source .. ";"
+
+	local wb = XWorkbook(excelPath)
+	local tables = {}
+	for i=0, wb.NumberOfSheets-1 do
+		local sheet = wb:GetSheetAt(i)
+		local tab = sheet.SheetName
+
+		local head  = sheet:GetRow(0)
+		local keys = {}
+		local last
+		for ii=0, head.LastCellNum - 1 do
+			local c = head:GetCell(ii).SValue
+			if c == "id" then
+				last = c .. " VARCHAR(32)"
+			else
+				last = c .. " text"
+			end
+			keys[1+#keys] = last .. ","
+		end
+		keys[#keys] = last
+
+		sql = "drop table if exists `" .. tab .. "`; create table `" .. tab .. "` (" 
+			.. table.concat(keys, "\n")
+			.. ", PRIMARY KEY (`id`)"
+			.. ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
+		print(sql)
+
+		-- values
+		values[1+#values] = sql
+		values[1+#values] =  "insert into `" .. tab .. "` values "
+		local last
+		for ii = 1, sheet.LastRowNum - 1 do
+			local row  = sheet:GetRow(ii)
+			local vrow = {"("}
+			local lastv
+			for iii=0, #keys - 1 do
+				local cell = row:GetCell(iii) or row:CreateCell(iii)
+				lastv = "'" .. cell.SValue:gsub("'", "''") .. "'"
+				vrow[1+#vrow] = lastv .. ","
+			end
+			vrow[#vrow] = lastv .. ")"
+
+			last = table.concat(vrow, '')
+			values[1+#values] = last .. ","
+		end
+		values[#values] = last .. ";"
+
+	end
+
+	local conn, err = assert(luasql.mysql():connect("", user, pward, host))
+	if err ~= nil then print("sql err", err) return end
+	local sql = table.concat(values, "\n")
+	local res, err = assert.(conn:execute(sql))
+	-- if err ~= nil then error("\27[31m".. err .. "\27[0m") return end
+
+    local f = io.open(excelPath .. ".sql", "w")
+    f:write(sql)
+    f:close()
+	
+end
+
 -- t = {fetch()}
---[[
+--[[ t =
 {
 	[1] = "1",
 	[2] = "352",
@@ -109,7 +182,7 @@ end
 ]]
 
 -- fetch(t, "a")
---[[
+--[[ t = 
 {
 	["variation_no"] = "1",
 	["rf_flag"] = "1",
@@ -145,4 +218,5 @@ end
 return {
 	test = test,
 	Mysql2Excel = Mysql2Excel,
+	Excel2Sql = Excel2Sql,
 }

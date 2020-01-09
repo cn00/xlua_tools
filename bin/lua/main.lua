@@ -115,34 +115,43 @@ db:Open();
 db:Close()
 
 
--- local mysql = require "mysql"
--- mysql.test()
+local sqlutil = require "sqlutil"
+local host = "localhost"
 
+-- --Mysql2Excel(source, user, pward, host, excelPath)
+-- sqlutil.Mysql2Excel("a3_350_m", --[[{"strings"}]]nil, "a3", "654123", host, "a3_350_m.xlsx")
 
-local jpRootPath = "Resource"
-local CollectImg2Excel = require "CollectImg2Excel"
-local i = 1
-local wb = XWorkbook()
-local sheet = wb:CreateSheet()
-sheet.SheetName = "jp-img-350"
-sheet:SetColumnWidth(0, 16 * 1500)
-sheet:SetColumnWidth(1, 16 * 256)
-sheet:SetColumnWidth(2, 16 * 256)
-sheet:SetColumnWidth(3, 16 * 256)
-util.GetFiles(jpRootPath, function ( path )
-    -- print(path)
-    if  true
-        and path:sub(-4) ~= ".png" 
-        and path:sub(-4) ~= ".jpg" 
-        and path:sub(-5) ~= ".jpeg" 
-    then return end
-    CollectImg2Excel(path, wb, sheet, i)
-    i = 1 + i
-end)
-print("saving ...")
-System.IO.File.Delete("jp-img-350.xlsx")
-local outStream = System.IO.FileStream("jp-img-350.xlsx", System.IO.FileMode.CreateNew);
-outStream.Position = 0;
-wb:Write(outStream);
-outStream:Close();
+-- Excel2Sql(source, user, pward, host, excelPath)
+sqlutil.Excel2Sql("a3_350_string_luatest", "a3", "654123", host, "a3_strings_350.strings.xlsx")
 
+function Img2Excel()
+	local jpRootPath = "Resource"
+	local CollectImg2Excel = require "CollectImg2Excel"
+	local i = 1
+	local wb = XWorkbook()
+	local sheet = wb:CreateSheet()
+	sheet.SheetName = "jp-img-350"
+	sheet:SetColumnWidth(0, 16 * 1500)
+	sheet:SetColumnWidth(1, 16 * 256)
+	sheet:SetColumnWidth(2, 16 * 256)
+	sheet:SetColumnWidth(3, 16 * 256)
+	util.GetFiles(jpRootPath, function ( path )
+	    -- print(path)
+	    CollectImg2Excel(path, wb, sheet, i)
+	    i = 1 + i
+	end
+	,function ( path )
+	    local filter = path:sub(-4) == ".png" 
+	        or path:sub(-4) == ".jpg" 
+	        or path:sub(-5) == ".jpeg" 
+	    -- print(path, filter)
+	    return filter
+	end)
+	print("saving ...")
+	System.IO.File.Delete("jp-img-350.xlsx")
+	local outStream = System.IO.FileStream("jp-img-350.xlsx", System.IO.FileMode.CreateNew);
+	outStream.Position = 0;
+	wb:Write(outStream);
+	outStream:Close();
+end
+-- Img2Excel()
