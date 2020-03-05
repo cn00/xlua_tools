@@ -6,7 +6,7 @@ using NPOI.OpenXml4Net.OPC;
 using XLua;
 using Workbook = NPOI.XSSF.UserModel.XSSFWorkbook;
 
-namespace ExcelUtil
+namespace CSLua
 {
     public class LuaEnvSingleton  {
 	
@@ -31,14 +31,16 @@ namespace ExcelUtil
         }
     }
 
-    internal class ExcelLua
+    internal class cslua
     {
         public static void Main(string[] args)
         {
-            for (int i = 0; i < args.Length; i++)
-            {
-                Console.WriteLine("args{0}: {1}", i, args[i]);
-            }
+            // for (int i = 0; i < args.Length; i++)
+            // {
+            //     Console.WriteLine("args{0}: {1}", i, args[i]);
+            // }
+            
+            
             // var path = "Master.xlsx";
             // // var inStream = new FileStream(path, FileMode.Open);
             // var wb = new Workbook(path);
@@ -59,10 +61,21 @@ namespace ExcelUtil
             //     Console.WriteLine($"{reader.GetInt32(0)},\t{reader.GetTextReader(1).ReadToEnd()},\t {reader.GetTextReader(3).ReadToEnd()}");
             // }
 
-
+            var mainlua = "lua/main.lua";
+            if (args.Length > 0)
+            {
+                mainlua = args[0];
+            }
+            else
+            {
+                Console.WriteLine("run default entry lua/main.lua\n");
+                Console.WriteLine("osx usage: mono cslua.exe path/to/entry.lua");
+                Console.WriteLine("windows usage: cslua.exe path/to/entry.lua\n");
+            }
+            var luas = File.ReadAllText(mainlua);
             var l = LuaCallCSharpTypes.L;
             LuaEnv luaenv = LuaEnvSingleton.Instance;
-            luaenv.DoString("require 'main'");
+            luaenv.DoString(luas);
         }
     }
 }
