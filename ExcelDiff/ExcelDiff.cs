@@ -77,7 +77,7 @@ namespace ExcelDiff
         const string space = "                  ";
         static int TotalCellCount = 0;
         static int DiffCellCount = 0;
-        const int MaxRowNum = 10000;
+        const int MaxRowNum = 100000;
         const int MaxColuNum = 300;
         public static void Diff(string filePath1, string filePath2)
         {
@@ -131,6 +131,8 @@ namespace ExcelDiff
                     sheetout.Append(string.Format("\n\t\t\t[{1}]=\"{0}\",", headL.Cell(j).SValue().Replace("\"", "\\\"").Replace("\n", "\\n").Replace("\r", "\\r"), j+1));
                 }
                 sheetout.Append("\n\t\t},");
+                sheetout.Append(string.Format("\n\t\tL_LastRowNum={0},\n\t\tR_LastRowNum={1},", sheetL.LastRowNum, sheetR.LastRowNum));
+
                 var sheetcount = 0;
                 if (sheetR == null)
                 {
@@ -214,7 +216,7 @@ namespace ExcelDiff
 
             }//foreach sheet
 
-            outstring.Append(string.Format("\n\t}},--sheets\n\tcompared={0},different={1},\n}},", TotalCellCount, DiffCellCount));
+            outstring.Append(string.Format("\n\t}},--sheets\n\tcompared={0},different={1}\n}},", TotalCellCount, DiffCellCount));
             if (bookcount > 0)
             {
                 Console.Write(outstring);
