@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using NPOI.OpenXml4Net.OPC;
 using XLua;
 using Workbook = NPOI.XSSF.UserModel.XSSFWorkbook;
@@ -33,6 +34,7 @@ namespace CSLua
 
     internal class cslua
     {
+        public static string ExecutableDir;
         public static void Main(string[] args)
         {
             // for (int i = 0; i < args.Length; i++)
@@ -61,7 +63,8 @@ namespace CSLua
             //     Console.WriteLine($"{reader.GetInt32(0)},\t{reader.GetTextReader(1).ReadToEnd()},\t {reader.GetTextReader(3).ReadToEnd()}");
             // }
 
-            var mainlua = "lua/main.lua";
+            ExecutableDir = Application.ExecutablePath.Replace(Path.GetFileName(Application.ExecutablePath), "");
+            var mainlua = ExecutableDir + "lua/main.lua";
             if (args.Length > 0)
             {
                 mainlua = args[0];
@@ -72,10 +75,16 @@ namespace CSLua
                 Console.WriteLine("osx usage: mono cslua.exe path/to/entry.lua");
                 Console.WriteLine("windows usage: cslua.exe path/to/entry.lua\n");
             }
-            var luas = File.ReadAllText(mainlua);
+
+            var initlua = ExecutableDir + "/init.lua";
             var l = LuaCallCSharpTypes.L;
+            
             LuaEnv luaenv = LuaEnvSingleton.Instance;
-            luaenv.DoString(luas);
+            
+            if(File.Exists(initlua))
+                luaenv.DoFile(initlua);
+            if (File.Exists(mainlua))
+                luaenv.DoFile(mainlua);
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Reflection;
 using NPOI.SS.Formula.Functions;
 using XLua;
 
-namespace ExcelUtil
+namespace CSLua
 {
     public static class XLuaConfig
     {

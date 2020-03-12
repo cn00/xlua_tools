@@ -82,10 +82,10 @@ end
 
 local function Excel2Sql(source, user, pward, host, excelPath)
 	local values = {}
-	local sql = "create database if not exists " .. source .. ";"
+	local sql = "create database if not exists `" .. source .. "`;"
 	values[1+#values] = sql
 
-	values[1+#values] = "use ".. source .. ";"
+	values[1+#values] = "use `".. source .. "`;"
 
 	local wb = XWorkbook(excelPath)
 	local tables = {}
@@ -107,14 +107,15 @@ local function Excel2Sql(source, user, pward, host, excelPath)
 		end
 		keys[#keys] = last
 
-		sql = "drop table if exists `" .. tab .. "`; create table `" .. tab .. "` (" 
-			.. table.concat(keys, "\n")
+		values[1+#values] = "drop table if exists `" .. tab .. "`;"
+		sql = "create table `" .. tab .. "` (\n\t" 
+			.. table.concat(keys, "\n\t")
 			.. ", PRIMARY KEY (`id`)"
-			.. ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
+			.. "\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
 		print(sql)
+		values[1+#values] = sql
 
 		-- values
-		values[1+#values] = sql
 		values[1+#values] =  "insert into `" .. tab .. "` values "
 		local last
 		for ii = 1, sheet.LastRowNum - 1 do
@@ -135,15 +136,15 @@ local function Excel2Sql(source, user, pward, host, excelPath)
 
 	end
 
-	local conn, err = assert(luasql.mysql():connect("", user, pward, host))
-	if err ~= nil then print("sql err", err) return end
 	local sql = table.concat(values, "\n")
-	local res, err = assert.(conn:execute(sql))
-	-- if err ~= nil then error("\27[31m".. err .. "\27[0m") return end
-
     local f = io.open(excelPath .. ".sql", "w")
     f:write(sql)
     f:close()
+
+	local conn, err = assert(luasql.mysql():connect("", user, pward, host))
+	if err ~= nil then print("sql err", err) return end
+	local res, err = assert(conn:execute(sql))
+	-- if err ~= nil then error("\27[31m".. err .. "\27[0m") return end
 	
 end
 

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 public class LuaCallCSharpTypes{
     public static List<Type> L = new List<Type>(){ //2615
-		typeof(ExcelUtil.LuaEnvSingleton),
-		typeof(ExcelUtil.XLuaConfig),
+		typeof(CSLua.LuaEnvSingleton),
+		typeof(CSLua.XLuaConfig),
 		typeof(Mono.Data.Sqlite.CollationSequence),
 		typeof(Mono.Data.Sqlite.CommitEventArgs),
 		typeof(Mono.Data.Sqlite.SqliteCommand),

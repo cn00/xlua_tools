@@ -116,13 +116,13 @@ db:Close()
 
 
 local sqlutil = require "sqlutil"
-local host = "localhost"
+local host = "10.23.22.233"
 
 -- --Mysql2Excel(source, user, pward, host, excelPath)
 -- sqlutil.Mysql2Excel("a3_350_m", --[[{"strings"}]]nil, "a3", "654123", host, "a3_350_m.xlsx")
 
--- Excel2Sql(source, user, pward, host, excelPath)
-sqlutil.Excel2Sql("a3_350_string_luatest", "a3", "654123", host, "a3_strings_350.strings.xlsx")
+-- -- Excel2Sql(source, user, pward, host, excelPath)
+-- sqlutil.Excel2Sql("a3_350_string_luatest", "root", "456123", host, "a3_strings_350.strings.xlsx")
 
 function Img2Excel()
 	local jpRootPath = "Resource"
