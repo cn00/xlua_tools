@@ -16,6 +16,11 @@ namespace ExcelDiff
     {
         static void Main(string[] args)
         {
+            // args = new[]
+            // {
+            //     "/Volumes/Data/a3/c2/excels/strings/strings-zh-202-m110.xlsx",
+            //     "/Volumes/Data/a3/c2/excels/strings/strings-zh-202.xlsx"
+            // };
             string file1 = null;
             string file2 = null;
             if(args.Length == 2)
@@ -145,7 +150,7 @@ namespace ExcelDiff
                    
                     var headR = sheetL.Row(sheetR.FirstRowNum);
 
-                    for (int i = sheetL.FirstRowNum; i <= sheetL.LastRowNum && i < MaxRowNum; ++i)
+                    for (int i = sheetL.FirstRowNum; i <= Math.Max(sheetL.LastRowNum, sheetR.LastRowNum) && i < MaxRowNum; ++i)
                     {
                         var rowL = sheetL.Row(i);
                         var rowR = sheetR.Row(i);
