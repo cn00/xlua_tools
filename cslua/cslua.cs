@@ -37,54 +37,58 @@ namespace CSLua
         public static string ExecutableDir;
         public static void Main(string[] args)
         {
+            // args = new[] {"/Volumes/Data/a3/c2/client/Unity/Tools/excel/lua/sqlutil.lua"};
+            
             // for (int i = 0; i < args.Length; i++)
             // {
             //     Console.WriteLine("args{0}: {1}", i, args[i]);
             // }
             
+            var l = LuaCallCSharpTypes.L;
+            LuaEnv luaenv = LuaEnvSingleton.Instance;
             
-            // var path = "Master.xlsx";
-            // // var inStream = new FileStream(path, FileMode.Open);
-            // var wb = new Workbook(path);
-            // var sheet = wb.GetSheet("jp");
-            // Console.WriteLine($"wb={wb};sheet={sheet}");
-            
-                       
-            // var db = new Mono.Data.Sqlite.SqliteConnection("URI=file:strings.sqlite3;version=3");
-            // db.Open();
-            // db.Close();
-            // var cmd = db.CreateCommand();
-            // cmd.CommandText = "select * from strings_no_trans;";
-            // var reader  = cmd.ExecuteReader();
-            // Console.WriteLine($"{reader.GetName(0)}\t{reader.GetName(2)}\t{reader.GetName(3)}\t{reader.GetName(4)}\t{reader.GetName(5)}\t");
-            // Console.WriteLine($"{reader.GetDataTypeName(0)}\t{reader.GetDataTypeName(2)}\t{reader.GetDataTypeName(3)}\t{reader.GetDataTypeName(4)}\t{reader.GetDataTypeName(5)}\t");
-            // while(reader.Read())
-            // {
-            //     Console.WriteLine($"{reader.GetInt32(0)},\t{reader.GetTextReader(1).ReadToEnd()},\t {reader.GetTextReader(3).ReadToEnd()}");
-            // }
-
             ExecutableDir = Application.ExecutablePath.Replace(Path.GetFileName(Application.ExecutablePath), "");
             var mainlua = ExecutableDir + "lua/main.lua";
             if (args.Length > 0)
             {
                 mainlua = args[0];
+            
+                var initlua = ExecutableDir + "init.lua";
+            
+                LuaTable env =luaenv.NewTable();
+                env.Set("__index",    luaenv.Global);
+                env.Set("__newindex", luaenv.Global);
+
+                LuaTable argv =luaenv.NewTable();
+                for(int i = 0; i < args.Length; ++i)
+                {
+                    // Console.WriteLine($"cs-argv[{i}] = {args[i]}");
+                    argv.Set(i, args[i]);
+                }
+                env.Set("argv", argv);
+                env.SetMetaTable(env);
+
+                if(File.Exists(initlua))
+                    luaenv.DoFile(initlua);
+                if (File.Exists(mainlua))
+                    luaenv.DoFile(mainlua, env);
             }
             else
             {
-                Console.WriteLine("run default entry lua/main.lua\n");
+                // Console.WriteLine("run default entry lua/main.lua");
                 Console.WriteLine("osx usage: mono cslua.exe path/to/entry.lua");
-                Console.WriteLine("windows usage: cslua.exe path/to/entry.lua\n");
+                Console.WriteLine("windows usage: cslua.exe path/to/entry.lua");
+                Console.Write("Console Module.\ncslua$ ");
+                var cmd = Console.ReadLine();
+                while (cmd != "quit" && cmd != "exit")
+                {
+                    if (!cmd.Contains(" ") && !cmd.Contains("(") && !cmd.Contains("="))
+                        cmd = "print(" + cmd + ")";
+                    luaenv.DoString(cmd);
+                    Console.Write("$ ");
+                    cmd = Console.ReadLine();
+                }
             }
-
-            var initlua = ExecutableDir + "/init.lua";
-            var l = LuaCallCSharpTypes.L;
-            
-            LuaEnv luaenv = LuaEnvSingleton.Instance;
-            
-            if(File.Exists(initlua))
-                luaenv.DoFile(initlua);
-            if (File.Exists(mainlua))
-                luaenv.DoFile(mainlua);
         }
     }
 }
