@@ -87,7 +87,7 @@ namespace ExcelDiff
         public static void Diff(string filePath1, string filePath2)
         {
             StringBuilder outstring = new StringBuilder(2048);
-            outstring.Append(string.Format("{{\n\ta=\"{0}\",\n\tb=\"{1}\",\n\tsheets={{", filePath1, filePath2));
+            outstring.Append(string.Format("]]--\n{{\n\ta=\"{0}\",\n\tb=\"{1}\",\n\tsheets={{", filePath1, filePath2));
             //Console.WriteLine("diff {0} {1}", filePath1, filePath2);
             if (!File.Exists(filePath1) || !File.Exists(filePath2)
                || filePath1 == "/dev/null" || filePath2 == "/dev/null")
@@ -130,7 +130,7 @@ namespace ExcelDiff
                 var sheetR = book2.GetSheet(sheetL.SheetName);
 
                 var headL = sheetL.Row(sheetL.FirstRowNum);
-                sheetout.Append(string.Format("\n\t[\"{0}\"]={{\n\t\thead={{", sheetL.SheetName));
+                sheetout.Append(string.Format("\n\t{{\n\t\tname=\"{0}\",\n\t\thead={{", sheetL.SheetName));
                 for (int j = headL.FirstCellNum; j < headL.LastCellNum && j < MaxColuNum; ++j)
                 {
                     sheetout.Append(string.Format("\n\t\t\t[{1}]=\"{0}\",", headL.Cell(j).SValue().Replace("\"", "\\\"").Replace("\n", "\\n").Replace("\r", "\\r"), j+1));
@@ -220,8 +220,7 @@ namespace ExcelDiff
                     outstring.Append(sheetout);
 
             }//foreach sheet
-
-            outstring.Append(string.Format("\n\t}},--sheets\n\tcompared={0},different={1}\n}},", TotalCellCount, DiffCellCount));
+            outstring.Append(string.Format("\n\t}},--sheets\n\tcompared={0},different={1}\n}},\n--[[\n", TotalCellCount, DiffCellCount));
             if (bookcount > 0)
             {
                 Console.Write(outstring);
