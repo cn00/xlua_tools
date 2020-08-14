@@ -15,8 +15,10 @@ namespace Getjp
 {
     class Program
     {
-        // const string regular = "[^\x00-\xff「」（）【】■～…]";
-        const string regular = "[\u3021-\u3126]";
+        const string regular = "[\u3021-\u3126]";//jp //\u4e00-\u9fa5
+        //const string regular = "[\u4e00-\u9fa5]"; //zh
+        // const string regular = "[\u3021-\u3126\u4e00-\u9fa5]"; //jp+zh
+
         private static int delta_lang_idx = 45000;
 
         public class Record
@@ -118,7 +120,7 @@ namespace Getjp
         static void Main(string[] args)
         {
             Console.WriteLine("输入查找路径:");
-            var inputdir = "../../../Classes";
+            var inputdir = Console.ReadLine().Trim();
             var stringCount = 0;
 
 
@@ -177,24 +179,30 @@ namespace Getjp
                     || f.EndsWith(".cpp")
                     || f.EndsWith(".hpp")
                     || f.EndsWith(".json")
-                ).Where(f => 
-                       !f.Contains("/vitamin/Scene/debug/")
-                    && !f.Contains("/vitamin/images/")
-                    && !f.Contains("masterData")
-                    && !f.Contains("stable.json")
-                    ))
+                    || f.EndsWith(".sql")
+                )
+                // .Where(f => 
+                //        !f.Contains("/vitamin/Scene/debug/")
+                //     && !f.Contains("/vitamin/images/")
+                //     && !f.Contains("masterData")
+                //     && !f.Contains("stable.json")
+                //     )
+            )
             {
+                Console.WriteLine("{0}", f);
+
                 var lineCount = 0;
                 //var stream = new StreamReader(f);
                 var alllines = File.ReadAllLines(f);
                 //while(stream.Peek() > 0)
-                foreach (var line in alllines)
+                foreach (var l in alllines)
                 {
 //                    Console.WriteLine(">>>>>>{0}", f.upath());
                     //var line = stream.ReadLine();
                     ++lineCount;
+                    var line = l.Trim('\t', ' ');
 
-                    if (line.Contains("CCLOG") || line.Contains(":log("))
+                    if (line.StartsWith("CCLOG") || line.Contains(":log(")||line.StartsWith("echo"))
                     {
                         continue;
                     }
@@ -206,20 +214,64 @@ namespace Getjp
                         continue;
                     }
 
-                    // "xxxxx"
-                    var matches = Regex.Matches(line, "\"[^\"]*" + regular + "+[^\"]*\"");
-                    foreach (var i in matches)
+                    // // "xxxxx"
+                    // var matches = Regex.Matches(line, "\"[^\"']*" + regular + "+[^\"]*\"");
+                    // foreach (var i in matches)
+                    // {
+                    //     ++delta_lang_idx;
+                    //     ++stringCount;
+                    //     row = sheet_jp.Row(stringCount);
+                    //     var s0 = i.ToString().TrimStart('"').TrimEnd('"').Replace("\n", "\\n");
+                    //     row.Cell(0).SetCellValue(s0);
+                    //     row.Cell(1).SetCellValue("译文");
+                    //     row.Cell(2).SetCellValue(lineCount);
+                    //     row.Cell(3).SetCellValue(f.upath());
+                    //     row.Cell(4).SetCellValue(line.Trim());
+                    //     row.Cell(5).SetCellValue(string.Format("{0:000000}", (delta_lang_idx)));
+                    //     var s = string.Format("{0:000000}#{1}#{2}#{3}\n", delta_lang_idx, f.upath(), lineCount, s0);
+                    //     textStream.Write(s);
+                    //     fini.WriteLine(string.Format("{0:000000}={1}", delta_lang_idx, i.ToString().TrimStart('"').TrimEnd('"')));
+                    //     Console.WriteLine("{0}:{1}:{2}", stringCount, lineCount, i, f.upath());
+                    // }
+
+                    // 'xxxx'
+                    var matches2 = Regex.Matches(line, "'[^'\"]*" + regular + "+[^']*'");
+                    foreach (var i in matches2)
                     {
                         ++delta_lang_idx;
                         ++stringCount;
                         row = sheet_jp.Row(stringCount);
-                        var s0 = i.ToString().TrimStart('"').TrimEnd('"').Replace("\n", "\\n");
+                        var s0 = i.ToString().TrimStart('\'').TrimEnd('\'').Replace("\n", "\\n");
+                        if (s0.Length > 32766)
+                        {
+                            Console.WriteLine("too long match [{0} ...] skip", s0.Substring(0, 20));
+                            continue;
+                        }
                         row.Cell(0).SetCellValue(s0);
                         row.Cell(1).SetCellValue("译文");
                         row.Cell(2).SetCellValue(lineCount);
-                        row.Cell(3).SetCellValue(f.upath());
-                        row.Cell(4).SetCellValue(line.Replace(i.ToString(),
-                            string.Format("CN_LANGUAUE(\"{0:000000}\")", delta_lang_idx)));
+                        row.Cell(3).SetCellValue(f);
+                        // row.Cell(4).SetCellValue(line);
+                        row.Cell(5).SetCellValue(string.Format("{0:000000}", (delta_lang_idx)));
+                        var s = string.Format("{0:000000}#{1}#{2}#{3}\n", delta_lang_idx, f.upath(), lineCount, s0);
+                        textStream.Write(s);
+                        fini.WriteLine(string.Format("{0:000000}={1}", delta_lang_idx, i.ToString().TrimStart('"').TrimEnd('"')));
+                        Console.WriteLine("{0}:{1}:{2}", stringCount, lineCount, i, f.upath());
+                    }
+                    
+                    //php >xxxx<
+                    var matches3 = Regex.Matches(line, ">[^>\"']*" + regular + "+[^<\"']*<");
+                    foreach (var i in matches3)
+                    {
+                        ++delta_lang_idx;
+                        ++stringCount;
+                        row = sheet_jp.Row(stringCount);
+                        var s0 = i.ToString().TrimStart('>').TrimEnd('<').Replace("\n", "\\n");
+                        row.Cell(0).SetCellValue(s0);
+                        row.Cell(1).SetCellValue("译文");
+                        row.Cell(2).SetCellValue(lineCount);
+                        row.Cell(3).SetCellValue(f);
+                        // row.Cell(4).SetCellValue(line);
                         row.Cell(5).SetCellValue(string.Format("{0:000000}", (delta_lang_idx)));
                         var s = string.Format("{0:000000}#{1}#{2}#{3}\n", delta_lang_idx, f.upath(), lineCount, s0);
                         textStream.Write(s);
@@ -227,25 +279,6 @@ namespace Getjp
                         Console.WriteLine("{0}:{1}:{2}", stringCount, lineCount, i, f.upath());
                     }
 
-                    // 'xxxx'
-                    var matches2 = Regex.Matches(line, "'[^\"]*" + regular + "+[^']*'");
-                    foreach (var i in matches2)
-                    {
-                        ++delta_lang_idx;
-                        ++stringCount;
-                        row = sheet_jp.Row(stringCount);
-                        var s0 = i.ToString().TrimStart('\'').TrimEnd('\'').Replace("\n", "\\n");
-                        row.Cell(0).SetCellValue(s0);
-                        row.Cell(1).SetCellValue("译文");
-                        row.Cell(2).SetCellValue(lineCount);
-                        row.Cell(3).SetCellValue(f);
-                        row.Cell(4).SetCellValue(line);
-                        row.Cell(5).SetCellValue(string.Format("{0:000000}", (delta_lang_idx)));
-                        var s = string.Format("{0:000000}#{1}#{2}#{3}\n", delta_lang_idx, f.upath(), lineCount, s0);
-                        textStream.Write(s);
-                        fini.WriteLine(string.Format("{0:000000}={1}", delta_lang_idx, i.ToString().TrimStart('"').TrimEnd('"')));
-                        Console.WriteLine("{0}:{1}:{2}", stringCount, lineCount, i, f.upath());
-                    }
                 } //while
 
                 textStream.Flush();
@@ -264,8 +297,8 @@ namespace Getjp
             excelStream.Close();
             fini.Close();
 
-            Console.WriteLine("按 Enter 退出");
-            Console.ReadLine();
+            // Console.WriteLine("按 Enter 退出");
+            // Console.ReadLine();
         }
     }
 }
