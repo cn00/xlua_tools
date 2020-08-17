@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace KS3
+namespace cslua
 {
     public class Util
     {

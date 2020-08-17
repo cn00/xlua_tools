@@ -78,6 +78,7 @@ local function Mysql2Excel(source, tables, user, pward, host, excelPath)
 	outStream.Position = 0;
 	wb:Write(outStream);
 	outStream:Close();
+	print("done")
 end
 
 local function Excel2Sql(source, user, pward, host, excelPath)
@@ -151,34 +152,10 @@ end
 -- t = {fetch()}
 --[[ t =
 {
-	[1] = "1",
-	[2] = "352",
-	[3] = "1",
-	[4] = "1",
-	[5] = "1",
-	[6] = "1",
-	[7] = "1",
-	[8] = "1",
-	[9] = "861",
-	[10] = "984",
-	[11] = "615",
-	[12] = "1",
-	[13] = "1",
-	[14] = "0",
-	[15] = "723",
-	[16] = "1298",
-	[18] = "1",
-	[19] = "1",
-	[20] = "1",
-	[21] = "2016-11-01 00:00:00",
-	[22] = "0",
-	[23] = "2016-11-21 16:09:18",
-	[24] = "2017-07-27 20:04:07",
-	[25] = "liber_takahira",
-	[26] = "1",
-	[27] = "2017-07-28 15:56:38",
-	[28] = "liber_takahira",
-	[29] = "",
+	"1",
+	"352",
+	"1",
+	...
 }
 ]]
 
@@ -188,31 +165,7 @@ end
 	["variation_no"] = "1",
 	["rf_flag"] = "1",
 	["rarity"] = "1",
-	["comedy"] = "984",
-	["up_date"] = "2017-07-27 20:04:07",
-	["attr_type"] = "1",
-	["skill_adlib_id"] = "1",
-	["action"] = "861",
-	["album_flag"] = "1",
-	["rf_date"] = "2017-07-28 15:56:38",
-	["remarks"] = "",
-	["rf_admin"] = "liber_takahira",
-	["sd_variation_no"] = "1",
-	["up_admin"] = "liber_takahira",
-	["profile_id"] = "1",
-	["in_date"] = "2016-11-21 16:09:18",
-	["backstage_name_id"] = "723",
-	["serious"] = "615",
-	["bloom_group_id"] = "1",
-	["chara_id"] = "1",
-	["card_id"] = "1",
-	["section_id"] = "1",
-	["flavor_id"] = "1298",
-	["op_date"] = "2016-11-01 00:00:00",
-	["card_name_id"] = "352",
-	["bloom"] = "0",
-	["skill_star_id"] = "1",
-	["dl_flag"] = "0",
+	...
 }
 ]]
 

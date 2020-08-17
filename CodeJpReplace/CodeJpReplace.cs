@@ -17,7 +17,7 @@ namespace replace
         static void Main(string[] args)
         {
             Console.WriteLine("请输入翻译 Excel 文档:");
-            var inputdir = Console.ReadLine().upath();
+            var inputdir = Console.ReadLine().Trim().upath();
 
             var excelName = inputdir.TrimStart(new char[] {'"'}).TrimEnd(new char[] { '"' });// inputdir + "/" + inputdir.Substring(inputdir.LastIndexOf(Path.DirectorySeparatorChar) + 1) + ".xlsx";
             var excelStream = new FileStream(excelName, FileMode.Open);
@@ -51,21 +51,22 @@ namespace replace
                     
                     // var lineno = (int)row.Cell(2).NumericCellValue;
 
-                    if(string.IsNullOrEmpty(tstr))
-                        continue;
-                    LineReplace(fname, ostr, tstr, sidx);
+                    // if(string.IsNullOrEmpty(tstr))
+                    //     continue;
+                    // LineReplace(fname, ostr, tstr, sidx);
 
-                    // // 全文替换
-                    // var rstream = new StreamReader(fname);
-                    // var str = rstream.ReadToEnd();
-                    // rstream.Close();
-                    //
-                    // str = str.Replace(ostr, tstr);
-                    //
-                    // var wstream = new StreamWriter(fname);
-                    // wstream.Write(str);
-                    // wstream.Flush();
-                    // wstream.Close();
+                    if (!File.Exists(fname)) continue;
+                    // 全文替换
+                    var rstream = new StreamReader(fname);
+                    var str = rstream.ReadToEnd();
+                    rstream.Close();
+                    
+                    str = str.Replace(ostr, tstr);
+                    
+                    var wstream = new StreamWriter(fname);
+                    wstream.Write(str);
+                    wstream.Flush();
+                    wstream.Close();
 
                     //// 用行号指定替换
                     //var lines = File.ReadAllLines(fname);
@@ -79,11 +80,11 @@ namespace replace
             }
             catch(Exception e)
             {
-                Console.WriteLine("\n\n翻译内容工作表名必须是 [Sheet], 原文在第 1 列, 译文在第 2 列, 文件名在第 4 列\n\n\n{0}", e);
+                Console.WriteLine("\n\n{0}", e);
             }
 
-            Console.WriteLine("按 Enter 退出");
-            Console.ReadLine();
+            // Console.WriteLine("按 Enter 退出");
+            // Console.ReadLine();
         }
 
         // static void DocReplace(string fpath, string ostr, string nstr, string sidx)

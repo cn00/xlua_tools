@@ -3,7 +3,7 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using NPOI.SS.Formula.Functions;
+// using NPOI.SS.Formula.Functions;
 using XLua;
 
 namespace CSLua
@@ -87,11 +87,11 @@ namespace CSLua
                     };
                     var customAssemblys = new List<string>()
                     {
-                        "Mono.Data.Sqlite",
-                        "NPOI",
-                        "NPOI.OOXML",
-                        "NPOI.OpenXml4Net",
-                        "NPOI.OpenXmlFormats",
+                        // "Mono.Data.Sqlite",
+                        // "NPOI",
+                        // "NPOI.OOXML",
+                        // "NPOI.OpenXml4Net",
+                        // "NPOI.OpenXmlFormats",
                     };
                     var assemblies = AppDomain.CurrentDomain.GetAssemblies()
                         .Concat(customAssemblys.Select(s => Assembly.Load(s)));

@@ -6,6 +6,20 @@
 -- To change this template use File | Settings | File Templates.
 --
 
+local print = function(...)
+    _G.print("main.lua", ...)
+end
+
+local argv = argv
+local thisdir = string.gmatch( argv[0], ".*/")()
+print("thisdir:", thisdir)
+for i,v in pairs(argv) do
+	print("argv: ", i,v)
+end
+package.path  = package.path .. ";" .. thisdir .."?.lua"
+
+-- if true then return end
+
 local CS = CS
 local System = CS.System
 local NPOI = CS.NPOI
@@ -15,10 +29,9 @@ local XWorkbook = NPOI.XSSF.UserModel.XSSFWorkbook
 
 local util = require "util"
 local dump = require "dump"
+local sqlite = require "lsqlite3"
 
-local print = function(...)
-    _G.print("main.lua", ...)
-end
+print("package.path=", package.path)
 
 -- -- 更新 LuaCallCSharpTypes.cs
 -- local LuaCallCSharpTypesSrc = {}
@@ -51,9 +64,10 @@ end
 -- end
 
 
-local db = Mono.Data.Sqlite.SqliteConnection("URI=file:strings.sqlite3;version=3");
-db:Open();
-
+local db = sqlite.open("/Volumes/Data/a3/c3/client/Unity/Assets/Application/Resource/Editor/stringdb/strings.sqlite3");
+print("sqlite3db", db)
+db:close()
+print("sqlite3db", db)
 
 -- -- https://www.sqlitetutorial.net/
 -- function sqlitetest()
@@ -112,7 +126,6 @@ db:Open();
 --     TransExcel(path, db, "zh", "v202")
 -- end)
 
-db:Close()
 
 
 local sqlutil = require "sqlutil"

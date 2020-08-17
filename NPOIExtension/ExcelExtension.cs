@@ -111,14 +111,14 @@ namespace NPOI
                 frefix = ColumnNames[(i / 26)-1];
             return frefix + ColumnNames[i%26];
         }
-        public static ICell Cell(this IRow row, int i)
-        {
-            return row.GetCell(i) ?? row.CreateCell(i);
-        }
-        public static ICell Cell(this ISheet sheet, int i, int j)
-        {
-            return sheet.Row(i).Cell(j);
-        }
+        // public static ICell Cell(this IRow row, int i)
+        // {
+        //     return row.GetCell(i) ?? row.CreateCell(i);
+        // }
+        // public static ICell Cell(this ISheet sheet, int i, int j)
+        // {
+        //     return sheet.Row(i).Cell(j);
+        // }
 
     }
 }

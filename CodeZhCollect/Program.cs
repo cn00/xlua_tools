@@ -18,7 +18,7 @@ namespace CodeZhCollect
         static void Main(string[] args)
         {
             Console.WriteLine("输入查找路径:");
-            var inputdir = Console.ReadLine() ?? "Resources/vitamin/data";
+            var inputdir = Console.ReadLine().Trim();
             var stringCount = 0;
 
 
@@ -58,7 +58,7 @@ namespace CodeZhCollect
                                            && !f.Contains("masterData")
                                        ))
             {
-                var sheet = workbook.Sheet(string.Format("{0:00}-{1}", fidx, f.Substring(f.LastIndexOf("/")+1).Substring(0, 10)));
+                var sheet = workbook.Sheet(string.Format("{0:00}-{1}", fidx, Path.GetFileName(f)));
                 var info = sheet.Row(0);
                 info.Cell(0).SetCellValue(f);
                 var head = sheet.Row(1);

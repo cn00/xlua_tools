@@ -1,13 +1,10 @@
 ﻿
 using System;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
-using NPOI.OpenXml4Net.OPC;
 using XLua;
-using Workbook = NPOI.XSSF.UserModel.XSSFWorkbook;
 
-namespace CSLua
+namespace cslua
 {
     public class LuaEnvSingleton  {
 	
@@ -18,13 +15,14 @@ namespace CSLua
             {
                 if(instance == null)
                 {
-                    instance = new LuaEnv();
-                    #if XLUA_GENERAL
-                    instance.DoString(@"package.path = package.path
-					    ..';lua/?.lua'
-                        ..';../lua/?.lua'"
-                    );
-                    #endif
+                    try
+                    {
+                        instance = new LuaEnv();
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }
                 }
 
                 return instance;
@@ -43,17 +41,32 @@ namespace CSLua
             // {
             //     Console.WriteLine("args{0}: {1}", i, args[i]);
             // }
+
+            // var w = AppDomain.CurrentDomain.GetAssemblies();
+            // var asm = Assembly.LoadFrom("");
+            // asm.GetExportedTypes();
+
+            // Activator.CreateInstance(typeof(String));
             
-            var l = LuaCallCSharpTypes.L;
-            LuaEnv luaenv = LuaEnvSingleton.Instance;
-            
+            // var l = LuaCallCSharpTypes.L;
+
             ExecutableDir = Application.ExecutablePath.Replace(Path.GetFileName(Application.ExecutablePath), "");
+        
+            LuaEnv luaenv = LuaEnvSingleton.Instance;
+            luaenv.DoString(@"package.path = package.path .. ';lua/?.lua' .. ';../lua/?.lua';"
+                            + string.Format("package.path = package.path .. ';{0}/?.lua;'", ExecutableDir)
+                            +       "package.cpath = package.cpath .. ';./lib?.dylib;./?.dylib';"
+                            + string.Format("package.cpath = package.cpath .. ';{0}/lib?.dylib;{0}/?.dylib'", ExecutableDir)
+            );
+            
+            var initlua = ExecutableDir + "init.lua";
+            if(File.Exists(initlua))
+                luaenv.DoFile(initlua);
+            
             var mainlua = ExecutableDir + "lua/main.lua";
             if (args.Length > 0)
             {
                 mainlua = args[0];
-            
-                var initlua = ExecutableDir + "init.lua";
             
                 LuaTable env =luaenv.NewTable();
                 env.Set("__index",    luaenv.Global);
@@ -68,26 +81,49 @@ namespace CSLua
                 env.Set("argv", argv);
                 env.SetMetaTable(env);
 
-                if(File.Exists(initlua))
-                    luaenv.DoFile(initlua);
                 if (File.Exists(mainlua))
                     luaenv.DoFile(mainlua, env);
             }
             else
             {
                 // Console.WriteLine("run default entry lua/main.lua");
-                Console.WriteLine("osx usage: mono cslua.exe path/to/entry.lua");
-                Console.WriteLine("windows usage: cslua.exe path/to/entry.lua");
-                Console.Write("Console Module.\ncslua$ ");
+                Console.WriteLine(" usage:\n\tosx/unix: mono cslua.exe path/to/entry.lua");
+                Console.WriteLine("\twindows: cslua.exe path/to/entry.lua");
+                Console.WriteLine("Or type lua code in Interaction Mode\nGood luck.");
+                Console.Write("xlua> ");
+                var history = File.AppendText("cslua.history.lua");
                 var cmd = Console.ReadLine();
                 while (cmd != "quit" && cmd != "exit")
                 {
-                    if (!cmd.Contains(" ") && !cmd.Contains("(") && !cmd.Contains("="))
+                    // var c = Console.ReadKey();
+                    // Console.WriteLine(c.Key);
+                    
+                    cmd = cmd.Trim().Replace("\0", "");
+                    if (cmd != "" && !cmd.Contains(" ") && !cmd.Contains("(") && !cmd.Contains("="))
                         cmd = "print(" + cmd + ")";
-                    luaenv.DoString(cmd);
-                    Console.Write("$ ");
+
+                    try
+                    {
+                        if (cmd.Length > 0)
+                        {
+                            luaenv.DoString(cmd);
+                        }
+                    }
+                    catch (LuaException e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message + "\n#trace: \n" + e.StackTrace);
+                    }
+
+                    history.WriteLine(cmd);
+                    history.Flush();
+                    Console.Write("> ");
                     cmd = Console.ReadLine();
                 }
+                history.Close();
             }
         }
     }
