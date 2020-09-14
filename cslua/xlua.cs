@@ -87,11 +87,11 @@ namespace cslua
             else
             {
                 // Console.WriteLine("run default entry lua/main.lua");
-                Console.WriteLine(" usage:\n\tosx/unix: mono cslua.exe path/to/entry.lua");
-                Console.WriteLine("\twindows: cslua.exe path/to/entry.lua");
+                Console.WriteLine(" usage:\n\tosx/unix: mono xlua.exe path/to/entry.lua");
+                Console.WriteLine("\twindows: xlua.exe path/to/entry.lua");
                 Console.WriteLine("Or type lua code in Interaction Mode\nGood luck.");
                 Console.Write("xlua> ");
-                var history = File.AppendText("cslua.history.lua");
+                var history = File.AppendText("xlua.history.lua");
                 var cmd = Console.ReadLine();
                 while (cmd != "quit" && cmd != "exit")
                 {
@@ -99,14 +99,26 @@ namespace cslua
                     // Console.WriteLine(c.Key);
                     
                     cmd = cmd.Trim().Replace("\0", "");
-                    if (cmd != "" && !cmd.Contains(" ") && !cmd.Contains("(") && !cmd.Contains("="))
-                        cmd = "print(" + cmd + ")";
+                    if (cmd != "" 
+                        // && !cmd.Contains(" ") 
+                        && !cmd.Contains("=") 
+                        // && !cmd.Contains("(")
+                     )
+                        cmd = "return " + cmd;
 
                     try
                     {
                         if (cmd.Length > 0)
                         {
-                            luaenv.DoString(cmd);
+                            var ret = luaenv.DoString(cmd);
+                            if (ret != null && ret.Length > 0)
+                            {
+                                foreach (var o in ret)
+                                {
+                                    var v = o is null ? "nil" : o.ToString();
+                                    Console.WriteLine(v);
+                                }
+                            }
                         }
                     }
                     catch (LuaException e)
