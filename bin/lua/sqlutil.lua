@@ -1,12 +1,15 @@
 local CS = CS
 local System = CS.System
-local NPOI = CS.NPOI
 local Mono = CS.Mono
+
+xlua.load_assembly("NPOI.OOXML")
+local NPOI = CS.NPOI
 local XWorkbook = NPOI.XSSF.UserModel.XSSFWorkbook
 
 local util = require "util"
 local dump = require "dump"
 
+local sqlite3 = require "lsqlite3"
 local luasql = require "luasql.mysql"
 -- for k,v in pairs(luasql) do
 -- 	print(k,v)
@@ -30,6 +33,45 @@ local function test()
 	-- print("close", res:close())
 end
 
+local function _MysqlSQL2Sheet(conn, sql, sheet)
+	local res, err = conn:execute(sql)
+	if err ~= nil then print(err) return end
+
+	print(tab, dump(res:getcolnames()), res:numrows())
+	local row = sheet:GetRow(0) or sheet:CreateRow(0)
+	for k,v in pairs(res:getcolnames()) do
+		local cell = row:GetCell(k-1) or row:CreateCell(k-1)
+		cell:SetCellValue(v)
+	end
+
+	for i=0,res:numrows()-1 do
+		local t = {res:fetch()}
+		local row = sheet:GetRow(i+1) or sheet:CreateRow(i+1)
+		for ii, vv in pairs(t) do
+			local cell = row:GetCell(ii-1) or row:CreateCell(ii-1)
+			cell:SetCellValue(vv)
+		end
+	end
+	res:close()
+end
+
+local function MysqlSQL2Excel(source, SheetName, sql, user, pward, host, excelPath)
+	local conn, err = luasql.mysql():connect(source, user, pward, host)
+	if err ~= nil then print(err) return end
+
+	local wb = XWorkbook()
+	local sheet = wb:CreateSheet()
+	sheet.SheetName = SheetName
+	_MysqlSQL2Sheet(conn, sql, sheet)
+
+	print("saving ...")
+	System.IO.File.Delete(excelPath)
+	local outStream = System.IO.FileStream(excelPath, System.IO.FileMode.CreateNew);
+	outStream.Position = 0;
+	wb:Write(outStream);
+	outStream:Close();
+end
+
 local function Mysql2Excel(source, tables, user, pward, host, excelPath)
 	local conn, err = luasql.mysql():connect(source, user, pward, host)
 	if err ~= nil then print(err) return end
@@ -51,25 +93,98 @@ local function Mysql2Excel(source, tables, user, pward, host, excelPath)
 		local sheet = wb:CreateSheet()
 		sheet.SheetName = tab
 		local sql = "select * from " .. tab ..";"
-		local res, err = conn:execute(sql)
-		if err ~= nil then print(err) return end
+		_MysqlSQL2Sheet(conn, sql, sheet)
+	end
+	conn:close()
 
-		print(tab, dump(res:getcolnames()), res:numrows())
-	    local row = sheet:GetRow(0) or sheet:CreateRow(0)
-		for k,v in pairs(res:getcolnames()) do
-		    local cell = row:GetCell(k-1) or row:CreateCell(k-1)
-			cell:SetCellValue(v)
-		end
+	print("saving ...")
+	System.IO.File.Delete(excelPath)
+	local outStream = System.IO.FileStream(excelPath, System.IO.FileMode.CreateNew);
+	outStream.Position = 0;
+	wb:Write(outStream);
+	outStream:Close();
+end
 
-		for i=0,res:numrows()-1 do
-			local t = {res:fetch()}
-			local row = sheet:GetRow(i+1) or sheet:CreateRow(i+1)
-			for ii, vv in ipairs(t) do
-				local cell = row:GetCell(ii-1) or row:CreateCell(ii-1)
-				cell:SetCellValue(vv)
-			end
+local function _SqliteSQL2Sheet( db, sql, sheet )
+	local numrows = 0
+	local contents = {}
+	local head = nil
+	local ok = db:execute(sql, function ( hd, n, vs, ns )
+		numrows = numrows + 1
+		head = ns
+		-- print("callback", hd, n, dump(vs), dump(ns))
+		local res =  {table.unpack(vs)}
+		contents[1+#contents] = res
+		return sqlite3.OK
+	end)
+	if ok ~= sqlite3.OK then print(ok, db:errmsg(), sql) return end
+	print(tab, dump(head), numrows)
+
+	-- head
+	local row = sheet:GetRow(0) or sheet:CreateRow(0)
+	for k,v in pairs(head) do
+		local cell = row:GetCell(k-1) or row:CreateCell(k-1)
+		cell:SetCellValue(v)
+	end
+
+	--content
+	for i=0,numrows-1 do
+		local t = contents[i+1]
+		-- print("numrows", i, dump(t))
+		local row = sheet:GetRow(i+1) or sheet:CreateRow(i+1)
+		for ii, vv in pairs(t) do
+			local cell = row:GetCell(ii-1) or row:CreateCell(ii-1)
+			cell:SetCellValue(vv)
 		end
-		res:close()
+	end
+end
+
+local function SqliteSQL2Excel(dbpath, SheetName, sql, excelPath )
+	local db, err = sqlite3.open(dbpath)
+	if(err ~= sqlite3.OK)then 
+		print("open error", db:errmsg()) 
+		return 
+	end
+	local wb = XWorkbook()
+	local sheet = wb:CreateSheet()
+	sheet.SheetName = SheetName
+	_SqliteSQL2Sheet( db, sql, sheet )
+
+	print("saving ...")
+	System.IO.File.Delete(excelPath)
+	local outStream = System.IO.FileStream(excelPath, System.IO.FileMode.CreateNew);
+	outStream.Position = 0;
+	wb:Write(outStream);
+	outStream:Close();
+	print("done")
+end
+
+local function Sqlite2Excel(dbpath, tables, excelPath )
+	local db, err = sqlite3.open(dbpath)
+	if(err ~= sqlite3.OK)then 
+		print("open error", db:errmsg()) 
+		return 
+	end
+
+	if tables == nil then
+		print("export all tables")
+		tables = {}
+		local sql = 'select name from sqlite_master where type = "table";'
+		local ok = db:execute(sql, function (hd, n, vs, ns )
+			local res = {table.unpack(vs)}
+			tables[1+#tables] = res[1]
+			return sqlite3.OK
+		end)
+		if err ~= sqlite3.OK then print(db:errmsg()) return end
+	end
+	print(source, dump(tables))
+
+	local wb = XWorkbook()
+	for it,tab in ipairs(tables) do
+		local sheet = wb:CreateSheet()
+		sheet.SheetName = tab
+		local sql = "select * from " .. tab ..";"
+		_SqliteSQL2Sheet( db, sql, sheet )
 	end
 
 	print("saving ...")
@@ -106,12 +221,11 @@ local function Excel2Sql(source, user, pward, host, excelPath)
 			end
 			keys[1+#keys] = last .. ","
 		end
-		keys[#keys] = last
+		keys[1+#keys] = "PRIMARY KEY (`id`)"
 
 		values[1+#values] = "drop table if exists `" .. tab .. "`;"
 		sql = "create table `" .. tab .. "` (\n\t" 
 			.. table.concat(keys, "\n\t")
-			.. ", PRIMARY KEY (`id`)"
 			.. "\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
 		print(sql)
 		values[1+#values] = sql
@@ -171,6 +285,9 @@ end
 
 return {
 	test = test,
+	Sqlite2Excel = Sqlite2Excel,
+	SqliteSQL2Excel = SqliteSQL2Excel,
 	Mysql2Excel = Mysql2Excel,
+	MysqlSQL2Excel = MysqlSQL2Excel,
 	Excel2Sql = Excel2Sql,
 }
