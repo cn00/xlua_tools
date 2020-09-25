@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26228.10
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "unicode2str", "unicode2str\unicode2str.csproj", "{E4D1BB94-B158-46D1-BD70-A545AAE4D859}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelJpCollect", "ExcelJpCollect\ExcelJpCollect.csproj", "{DDB4C12A-633B-42C6-ABDC-4A931BE64D9A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeJpReplace", "CodeJpReplace\CodeJpReplace.csproj", "{761D4EB3-800B-466F-830D-9AE0284DD5C1}"
@@ -23,15 +21,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPOI.OpenXmlFormats", "npoi
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "LibShared", "LibShared\LibShared.shproj", "{3248EA5E-2185-4F83-BC61-E4A7306BDDD1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamRedirect", "StreamRedirect\StreamRedirect.csproj", "{AACF4226-1C12-4A7D-A248-FA0FB1ED4C38}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocketTest", "SocketTest\SocketTest.csproj", "{A73466DD-4EBF-4DAC-B190-C8CB3533DF18}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocketServer", "SocketTestServer\SocketServer.csproj", "{CF77DA73-EF59-409A-9BF3-8E26451D2593}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelDiff", "ExcelDiff\ExcelDiff.csproj", "{55BBD4C0-AD4C-4F02-BA0B-C889E0F2C09C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocketLog", "SocketLog\SocketLog.csproj", "{C7C7CCB6-C3B0-4660-B5AB-4F34CDC13AFF}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "NPOIExtension", "NPOIExtension\NPOIExtension.shproj", "{4D221F6F-077A-477E-9C55-F458641937F2}"
 EndProject
@@ -53,7 +43,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelGrep", "ExcelGrep\Exce
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XLua.Mini", "xlua\General\vs2013\XLua.Mini.csproj", "{9A2C7D34-0697-31AB-4FD5-E250BB7E0F00}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cslua", "cslua\cslua.csproj", "{02B75C01-9C92-4DA4-9854-ED4B42C87D00}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xlua", "cslua\xlua.csproj", "{02B75C01-9C92-4DA4-9854-ED4B42C87D00}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KS3", "KS3\KS3.csproj", "{6589DD45-643C-43B8-8D30-54D1FF82467F}"
 EndProject
@@ -85,14 +75,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E4D1BB94-B158-46D1-BD70-A545AAE4D859}..net 2 Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E4D1BB94-B158-46D1-BD70-A545AAE4D859}..net 2 Release|Any CPU.Build.0 = Release|Any CPU
-		{E4D1BB94-B158-46D1-BD70-A545AAE4D859}..net 4 Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E4D1BB94-B158-46D1-BD70-A545AAE4D859}..net 4 Release|Any CPU.Build.0 = Release|Any CPU
-		{E4D1BB94-B158-46D1-BD70-A545AAE4D859}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E4D1BB94-B158-46D1-BD70-A545AAE4D859}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E4D1BB94-B158-46D1-BD70-A545AAE4D859}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E4D1BB94-B158-46D1-BD70-A545AAE4D859}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DDB4C12A-633B-42C6-ABDC-4A931BE64D9A}..net 2 Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DDB4C12A-633B-42C6-ABDC-4A931BE64D9A}..net 2 Release|Any CPU.Build.0 = Release|Any CPU
 		{DDB4C12A-633B-42C6-ABDC-4A931BE64D9A}..net 4 Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -149,30 +131,6 @@ Global
 		{A6874784-2875-4F40-9E8F-8385A640F5D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6874784-2875-4F40-9E8F-8385A640F5D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6874784-2875-4F40-9E8F-8385A640F5D6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AACF4226-1C12-4A7D-A248-FA0FB1ED4C38}..net 2 Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AACF4226-1C12-4A7D-A248-FA0FB1ED4C38}..net 2 Release|Any CPU.Build.0 = Release|Any CPU
-		{AACF4226-1C12-4A7D-A248-FA0FB1ED4C38}..net 4 Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AACF4226-1C12-4A7D-A248-FA0FB1ED4C38}..net 4 Release|Any CPU.Build.0 = Release|Any CPU
-		{AACF4226-1C12-4A7D-A248-FA0FB1ED4C38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AACF4226-1C12-4A7D-A248-FA0FB1ED4C38}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AACF4226-1C12-4A7D-A248-FA0FB1ED4C38}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AACF4226-1C12-4A7D-A248-FA0FB1ED4C38}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A73466DD-4EBF-4DAC-B190-C8CB3533DF18}..net 2 Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A73466DD-4EBF-4DAC-B190-C8CB3533DF18}..net 2 Release|Any CPU.Build.0 = Release|Any CPU
-		{A73466DD-4EBF-4DAC-B190-C8CB3533DF18}..net 4 Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A73466DD-4EBF-4DAC-B190-C8CB3533DF18}..net 4 Release|Any CPU.Build.0 = Release|Any CPU
-		{A73466DD-4EBF-4DAC-B190-C8CB3533DF18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A73466DD-4EBF-4DAC-B190-C8CB3533DF18}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A73466DD-4EBF-4DAC-B190-C8CB3533DF18}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A73466DD-4EBF-4DAC-B190-C8CB3533DF18}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CF77DA73-EF59-409A-9BF3-8E26451D2593}..net 2 Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CF77DA73-EF59-409A-9BF3-8E26451D2593}..net 2 Release|Any CPU.Build.0 = Release|Any CPU
-		{CF77DA73-EF59-409A-9BF3-8E26451D2593}..net 4 Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CF77DA73-EF59-409A-9BF3-8E26451D2593}..net 4 Release|Any CPU.Build.0 = Release|Any CPU
-		{CF77DA73-EF59-409A-9BF3-8E26451D2593}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CF77DA73-EF59-409A-9BF3-8E26451D2593}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CF77DA73-EF59-409A-9BF3-8E26451D2593}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CF77DA73-EF59-409A-9BF3-8E26451D2593}.Release|Any CPU.Build.0 = Release|Any CPU
 		{55BBD4C0-AD4C-4F02-BA0B-C889E0F2C09C}..net 2 Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{55BBD4C0-AD4C-4F02-BA0B-C889E0F2C09C}..net 2 Release|Any CPU.Build.0 = Debug|Any CPU
 		{55BBD4C0-AD4C-4F02-BA0B-C889E0F2C09C}..net 4 Release|Any CPU.ActiveCfg = Debug|Any CPU
@@ -181,14 +139,6 @@ Global
 		{55BBD4C0-AD4C-4F02-BA0B-C889E0F2C09C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55BBD4C0-AD4C-4F02-BA0B-C889E0F2C09C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55BBD4C0-AD4C-4F02-BA0B-C889E0F2C09C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C7C7CCB6-C3B0-4660-B5AB-4F34CDC13AFF}..net 2 Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C7C7CCB6-C3B0-4660-B5AB-4F34CDC13AFF}..net 2 Release|Any CPU.Build.0 = Release|Any CPU
-		{C7C7CCB6-C3B0-4660-B5AB-4F34CDC13AFF}..net 4 Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C7C7CCB6-C3B0-4660-B5AB-4F34CDC13AFF}..net 4 Release|Any CPU.Build.0 = Release|Any CPU
-		{C7C7CCB6-C3B0-4660-B5AB-4F34CDC13AFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C7C7CCB6-C3B0-4660-B5AB-4F34CDC13AFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C7C7CCB6-C3B0-4660-B5AB-4F34CDC13AFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C7C7CCB6-C3B0-4660-B5AB-4F34CDC13AFF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7C1F496A-C315-4D2C-86AD-92BB6686A208}..net 2 Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C1F496A-C315-4D2C-86AD-92BB6686A208}..net 2 Release|Any CPU.Build.0 = Release|Any CPU
 		{7C1F496A-C315-4D2C-86AD-92BB6686A208}..net 4 Release|Any CPU.ActiveCfg = Release|Any CPU
