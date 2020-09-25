@@ -1,10 +1,11 @@
 ﻿
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using XLua;
 
-namespace cslua
+namespace xlua
 {
     public class LuaEnvSingleton  {
 	
@@ -30,12 +31,12 @@ namespace cslua
         }
     }
 
-    internal class cslua
+    internal class xlua
     {
         public static string ExecutableDir;
         public static void Main(string[] args)
         {
-            // args = new[] {"/Volumes/Data/a3/c2/client/Unity/Tools/excel/lua/sqlutil.lua"};
+            // args = new[] {"/Volumes/Data/a3/c3/client/Unity/Tools/excel/lua/ks3.lua"};
             
             // for (int i = 0; i < args.Length; i++)
             // {
@@ -53,6 +54,7 @@ namespace cslua
             ExecutableDir = Application.ExecutablePath.Replace(Path.GetFileName(Application.ExecutablePath), "");
         
             LuaEnv luaenv = LuaEnvSingleton.Instance;
+            var L = luaenv.L;
             luaenv.DoString(@"package.path = package.path .. ';lua/?.lua' .. ';../lua/?.lua';"
                             + string.Format("package.path = package.path .. ';{0}/?.lua;'", ExecutableDir)
                             +       "package.cpath = package.cpath .. ';./lib?.dylib;./?.dylib';"
@@ -104,8 +106,15 @@ namespace cslua
                         && !cmd.Contains("=") 
                         // && !cmd.Contains("(")
                      )
-                        cmd = "return " + cmd;
-
+                    {
+                        if(!cmd.Contains(",")
+                            && !cmd.Contains(" ") 
+                        )
+                            cmd = "return  tostring(" + cmd + ")";
+                        else
+                            cmd = "return " + cmd;
+                    }
+                    
                     try
                     {
                         if (cmd.Length > 0)
@@ -115,9 +124,12 @@ namespace cslua
                             {
                                 foreach (var o in ret)
                                 {
-                                    var v = o is null ? "nil" : o.ToString();
-                                    Console.WriteLine(v);
+                                    // ObjectTranslatorPool.Instance.Find(L).PushAny(L, o);
+                                    // var v = o is null ? XLua.LuaDLL.Lua.lua_tostring(L, -1) : o.ToString();
+                                    var v = o is null ? "nil or native_ptr try tostring(obj) again" : o.ToString();
+                                    Console.Write("{0}\t", v);
                                 }
+                                Console.Write("\n");
                             }
                         }
                     }
