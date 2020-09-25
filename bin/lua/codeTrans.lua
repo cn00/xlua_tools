@@ -170,11 +170,11 @@ function TransOne( fpath, regular_jp, t )
 		if v.v and (v.v:match("bdfy") or v.v:match("bf")) then v.zh = "bf:" .. v.zh .. ":fb" end
 		-- print('replace', regular_jp, i, v.s, v.zh)
 		if t == 'sh' then
-			s = CS.cslua.Util.Replace(s, ("'" .. v.s .. "'"), ("'" .. v.zh .. "'"))
+			s = CS.xlua.Util.Replace(s, ("'" .. v.s .. "'"), ("'" .. v.zh .. "'"))
 		elseif t == 'c' then
-			s = CS.cslua.Util.Replace(s, ('"' .. v.s .. '"'), ('"' .. v.zh .. '"'))
+			s = CS.xlua.Util.Replace(s, ('"' .. v.s .. '"'), ('"' .. v.zh .. '"'))
 		elseif t == 'xml' then
-			s = CS.cslua.Util.Replace(s, ( v.s ), ( v.zh ))
+			s = CS.xlua.Util.Replace(s, ( v.s ), ( v.zh ))
 		end
 	end
 	f = io.open(fpath, "w")
