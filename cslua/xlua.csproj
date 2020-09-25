@@ -7,7 +7,7 @@
     <ProjectGuid>{02B75C01-9C92-4DA4-9854-ED4B42C87D00}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>cslua</RootNamespace>
+    <RootNamespace>xlua</RootNamespace>
     <AssemblyName>xlua</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -49,7 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaiduFanyi.cs" />
-    <Compile Include="cslua.cs" />
+    <Compile Include="xlua.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="XLuaConfig.cs" />
@@ -77,8 +77,59 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\bin\lua\.DS_Store">
+      <Link>lua\.DS_Store</Link>
+    </Content>
+    <Content Include="..\bin\lua\bf.lua">
+      <Link>lua\bf.lua</Link>
+    </Content>
+    <Content Include="..\bin\lua\codeTrans.lua">
+      <Link>lua\codeTrans.lua</Link>
+    </Content>
+    <Content Include="..\bin\lua\CollectExcelDic.lua">
+      <Link>lua\CollectExcelDic.lua</Link>
+    </Content>
+    <Content Include="..\bin\lua\CollectExcelDiff2Dic.lua">
+      <Link>lua\CollectExcelDiff2Dic.lua</Link>
+    </Content>
+    <Content Include="..\bin\lua\CollectImg2Excel.lua">
+      <Link>lua\CollectImg2Excel.lua</Link>
+    </Content>
+    <Content Include="..\bin\lua\dump.lua">
+      <Link>lua\dump.lua</Link>
+    </Content>
+    <Content Include="..\bin\lua\Excel2Sqlite.lua">
+      <Link>lua\Excel2Sqlite.lua</Link>
+    </Content>
+    <Content Include="..\bin\lua\ExcelDiff.lua">
+      <Link>lua\ExcelDiff.lua</Link>
+    </Content>
+    <Content Include="..\bin\lua\json-0.1.1.lua">
+      <Link>lua\json-0.1.1.lua</Link>
+    </Content>
+    <Content Include="..\bin\lua\json.lua">
+      <Link>lua\json.lua</Link>
+    </Content>
     <Content Include="..\bin\lua\main.lua">
       <Link>lua\main.lua</Link>
+    </Content>
+    <Content Include="..\bin\lua\mergevoice.lua">
+      <Link>lua\mergevoice.lua</Link>
+    </Content>
+    <Content Include="..\bin\lua\sqlutil.lua">
+      <Link>lua\sqlutil.lua</Link>
+    </Content>
+    <Content Include="..\bin\lua\TransExcel.lua">
+      <Link>lua\TransExcel.lua</Link>
+    </Content>
+    <Content Include="..\bin\lua\UseDll.lua">
+      <Link>lua\UseDll.lua</Link>
+    </Content>
+    <Content Include="..\bin\lua\util.lua">
+      <Link>lua\util.lua</Link>
+    </Content>
+    <Content Include="..\bin\lua\yaml.lua">
+      <Link>lua\yaml.lua</Link>
     </Content>
     <Content Include="Properties\link.xml" />
   </ItemGroup>
