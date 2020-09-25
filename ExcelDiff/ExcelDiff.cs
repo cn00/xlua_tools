@@ -92,7 +92,7 @@ namespace ExcelDiff
             if (!File.Exists(filePath1) || !File.Exists(filePath2)
                || filePath1 == "/dev/null" || filePath2 == "/dev/null")
             {
-                outstring.Append("},\n\tmsg = \"warning: diff with null file, skip compare\",\n},");
+                outstring.Append("},\n\tmsg = \"warning: diff with null file, skip compare\",\n},\n--[[");
                 Console.WriteLine(outstring);
                 return;
             }
@@ -130,10 +130,10 @@ namespace ExcelDiff
                 var sheetR = book2.GetSheet(sheetL.SheetName);
 
                 var headL = sheetL.Row(sheetL.FirstRowNum);
-                sheetout.Append(string.Format("\n\t{{\n\t\tname=\"{0}\",\n\t\thead={{", sheetL.SheetName));
+                sheetout.Append(string.Format("\n\t{{\n\t\tname=\"{0}\",\n\t\thead={{\n\t\t\t", sheetL.SheetName));
                 for (int j = headL.FirstCellNum; j < headL.LastCellNum && j < MaxColuNum; ++j)
                 {
-                    sheetout.Append(string.Format("\n\t\t\t[{1}]=\"{0}\",", headL.Cell(j).SValue().Replace("\"", "\\\"").Replace("\n", "\\n").Replace("\r", "\\r"), j+1));
+                    sheetout.Append(string.Format("\"{0}\",", headL.Cell(j).SValue().Replace("\"", "\\\"").Replace("\n", "\\n").Replace("\r", "\\r"), j+1));
                 }
                 sheetout.Append("\n\t\t},");
                 sheetout.Append(string.Format("\n\t\tL_LastRowNum={0},\n\t\tR_LastRowNum={1},", sheetL.LastRowNum, sheetR.LastRowNum));
