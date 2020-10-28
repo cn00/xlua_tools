@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Android.OS;
+//using Android.OS;
 using app.Models;
 using NPOI;
 using NPOI.XSSF.UserModel;
@@ -27,8 +27,10 @@ namespace app.Services
             if(stream == null)switch (Device.RuntimePlatform)
             {
                 case Device.Android:
-                    stream = Android.App.Application.Context.Assets.Open(fpath);
-                    break;
+#if ANDROID
+                        stream = Android.App.Application.Context.Assets.Open(fpath);
+#endif
+                        break;
                 case Device.iOS:
                 case Device.UWP:
                 case Device.macOS:
