@@ -25,6 +25,25 @@ local function test()
 	print(dump(res:getcolnames()), res:numrows())
 	for i=0,res:numrows()-1 do
 		local t = {res:fetch()}
+		-- t = {fetch()}
+		--[[ t =
+		{
+			"1",
+			"352",
+			"1",
+			...
+		}
+		]]
+
+		-- t = fetch(t, "a")
+		--[[ t = 
+		{
+			["variation_no"] = "1",
+			["rf_flag"] = "1",
+			["rarity"] = "1",
+			...
+		}
+		]]
 		-- local t = {}
 		-- res:fetch(t, "a")
 		print(i, res:fetch())
@@ -263,26 +282,7 @@ local function Excel2Sql(source, user, pward, host, excelPath)
 	
 end
 
--- t = {fetch()}
---[[ t =
-{
-	"1",
-	"352",
-	"1",
-	...
-}
-]]
-
--- fetch(t, "a")
---[[ t = 
-{
-	["variation_no"] = "1",
-	["rf_flag"] = "1",
-	["rarity"] = "1",
-	...
-}
-]]
-
+-------------------------------------
 return {
 	test = test,
 	Sqlite2Excel = Sqlite2Excel,

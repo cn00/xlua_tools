@@ -2,7 +2,18 @@ local CS = CS
 local System = CS.System
 
 local lfs = require "lfs"
-local function GetFiles(root, fileAct, filter)
+
+
+-- 分隔字符串
+function split(self, sep)
+    local sep, fields = sep or "\t", {}
+    local pattern = string.format("([^%s]+)", sep)
+    self:gsub(pattern, function(c) fields[#fields+1] = c end)
+    return fields
+end
+
+local function GetFiles(root, fileAct, filter, includechild)
+    if includechild == nil then includechild = true end
     -- print("GetFiles", root)
     for entry in lfs.dir(root) do
         if entry ~= '.' and entry ~= '..' then
@@ -14,14 +25,26 @@ local function GetFiles(root, fileAct, filter)
                 goto continue
             end
             -- print(traverpath)
-            if (attr.mode == "directory") then
+            if (attr.mode == "directory" and includechild) then
                 GetFiles(traverpath, fileAct, filter)
             elseif attr.mode == "file" then
                 if fileAct then
                     -- print("filter", filter)
-                    if filter ~= nil and type(filter) == "function" then
-                        if  filter(traverpath) then fileAct(traverpath) end
-                    else
+                    if filter ~= nil then
+                        if type(filter) == "string" then
+                            local lastname = traverpath:match("%w+$")
+                            local lastnames = split(filter, "|")
+                            for i,v in ipairs(lastnames) do
+                                -- print(i,v,lastname, traverpath)
+                                if v == lastname then
+                                    fileAct(traverpath) 
+                                    break
+                                end
+                            end
+                        elseif type(filter) == "function" and filter(traverpath) then 
+                            fileAct(traverpath) 
+                        end
+                    else -- all files
                         fileAct(traverpath)
                     end
                 end
@@ -79,7 +102,7 @@ local function OpenExcel( path )
     return wb
 end
 
-function BFTrans( strt )
+function BF( strt )
     local bf=CS.Baidu.Fanyi.Do
     local json = require "json"
     local t = strt
@@ -92,13 +115,13 @@ function BFTrans( strt )
     for i = 1, #t do
         local si = t[i]:gsub("\n", "嗯嗯嗯嗯嗯")
         batchl = batchl + #si
-        batch[batchi] = si
-        batchi = batchi + 1
         -- print("for", i, si)
         if(batchl > limitl or i == #t)then
+            if(i == #t)then batch[batchi] = si end
+
             local src = table.concat( batch, "\n" )
             local js = bf(src)
-            print("js", i, js)
+            -- print("js", i, js)
             -- {"from":"jp","to":"zh","trans_result":[{"src":"リンクスキル","dst":"链接技能"},{"src":"グループID","dst":"组ID"},{"src":"※グループIDが同じ場合高価値の大きいほうが発動","dst":"※群ID相同时，高值的一方发动"}]}	
             local transt = json.decode(js)
             table.insert( result, transt.trans_result)
@@ -107,6 +130,8 @@ function BFTrans( strt )
             batchi = 1
             batch = {}
         end
+        batch[batchi] = si
+        batchi = batchi + 1
     end
     return result
 end
@@ -201,11 +226,12 @@ local function dump(obj, breakline)
 end
 
 return {
+    split = split,
     OpenExcel = OpenExcel,
     SaveWorkbook = SaveWorkbook,
     loadNPIO = loadNPIO,
 	JpMatch = JpMatch,
     GetFiles = GetFiles,
-    BFTrans = BFTrans,
+    BF = BF,
     dump = dump
 }

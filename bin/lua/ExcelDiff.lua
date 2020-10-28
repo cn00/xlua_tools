@@ -3,6 +3,7 @@ local System = CS.System
 local StringBuilder = System.Text.StringBuilder
 
 local util = require "util"
+local excel = require "util.excel"
 local dump = require "dump"
 
 local TotalCellCount = 0;
