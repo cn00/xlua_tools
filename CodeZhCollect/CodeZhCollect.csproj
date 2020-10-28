@@ -1,57 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{10E49167-61D1-4D7B-8301-07F9D7B3243F}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>CodeZhCollect</RootNamespace>
-    <AssemblyName>CodeZhCollect</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>$(SolutionDir)/bin/</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ExternalConsole>true</ExternalConsole>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <Optimize>true</Optimize>
-    <OutputPath>$(SolutionDir)/bin/</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ExternalConsole>true</ExternalConsole>
-  </PropertyGroup>
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <LangVersion>8</LangVersion>
+	<DefineConstants>THREAD_SAFE;XLUA_GENERAL;GEN_CODE_MINIMIZE</DefineConstants>
+	<TargetFramework>netcoreapp3.1</TargetFramework>
+	<OutputType>Exe</OutputType>
+    </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <ProjectReference Include="..\npoi\main\NPOI.Core.csproj" />
+    <ProjectReference Include="..\npoi\ooxml\NPOI.OOXML.Core.csproj" />
+    <ProjectReference Include="..\npoi\openxml4Net\NPOI.OpenXml4Net.Core.csproj" />
+    <ProjectReference Include="..\npoi\OpenXmlFormats\NPOI.OpenXmlFormats.Core.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\npoi\main\NPOI.csproj">
-      <Project>{10FA8538-157A-4380-A4F6-8E2C3EE92CAE}</Project>
-      <Name>NPOI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\npoi\ooxml\NPOI.OOXML.csproj">
-      <Project>{6BEED965-B9A0-4FFA-B96D-0F380A97331A}</Project>
-      <Name>NPOI.OOXML</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\npoi\ooxml\openxml4Net\NPOI.OpenXml4Net.csproj">
-      <Project>{C9F265B7-ECE3-4755-B0B1-79536575C2A9}</Project>
-      <Name>NPOI.OpenXml4Net</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\npoi\ooxml\OpenXmlFormats\NPOI.OpenXmlFormats.csproj">
-      <Project>{A6874784-2875-4F40-9E8F-8385A640F5D6}</Project>
-      <Name>NPOI.OpenXmlFormats</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="..\NPOIExtension\NPOIExtension.projitems" Label="Shared" Condition="Exists('..\NPOIExtension\NPOIExtension.projitems')" />
-  <Import Project="..\LibShared\LibShared.projitems" Label="Shared" Condition="Exists('..\LibShared\LibShared.projitems')" />
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\LibShared\LibShared.projitems" Label="Shared" />
 </Project>

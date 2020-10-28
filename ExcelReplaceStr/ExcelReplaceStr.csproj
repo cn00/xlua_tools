@@ -1,72 +1,16 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\LibShared\LibShared.projitems" Label="Shared" Condition="Exists('..\LibShared\LibShared.projitems')" />
-  <Import Project="..\NPOIExtension\NPOIExtension.projitems" Label="Shared" Condition="Exists('..\NPOIExtension\NPOIExtension.projitems')" />
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7C1F496A-C315-4D2C-86AD-92BB6686A208}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>ExcelRpelaceStr</RootNamespace>
-    <AssemblyName>ExcelRpelaceStr</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>$(SolutionDir)/bin/</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>$(SolutionDir)/bin/</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="ExcelReplaceStr.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\npoi\main\NPOI.csproj">
-      <Project>{10fa8538-157a-4380-a4f6-8e2c3ee92cae}</Project>
-      <Name>NPOI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\npoi\ooxml\NPOI.OOXML.csproj">
-      <Project>{6beed965-b9a0-4ffa-b96d-0f380a97331a}</Project>
-      <Name>NPOI.OOXML</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\npoi\ooxml\openxml4Net\NPOI.OpenXml4Net.csproj">
-      <Project>{c9f265b7-ece3-4755-b0b1-79536575c2a9}</Project>
-      <Name>NPOI.OpenXml4Net</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\npoi\ooxml\OpenXmlFormats\NPOI.OpenXmlFormats.csproj">
-      <Project>{a6874784-2875-4f40-9e8f-8385a640f5d6}</Project>
-      <Name>NPOI.OpenXmlFormats</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <LangVersion>8</LangVersion>
+        <OutputType>Exe</OutputType>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\npoi\main\NPOI.Core.csproj" />
+      <ProjectReference Include="..\npoi\ooxml\NPOI.OOXML.Core.csproj" />
+      <ProjectReference Include="..\npoi\openxml4Net\NPOI.OpenXml4Net.Core.csproj" />
+      <ProjectReference Include="..\npoi\OpenXmlFormats\NPOI.OpenXmlFormats.Core.csproj" />
+    </ItemGroup>
+
 </Project>
