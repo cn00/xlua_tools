@@ -1,8 +1,8 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using XLua;
 
 namespace xlua
@@ -51,7 +51,7 @@ namespace xlua
             
             // var l = LuaCallCSharpTypes.L;
 
-            ExecutableDir = Application.ExecutablePath.Replace(Path.GetFileName(Application.ExecutablePath), "");
+            ExecutableDir = AppDomain.CurrentDomain.BaseDirectory;// Application.ExecutablePath.Replace(Path.GetFileName(Application.ExecutablePath), "");
         
             LuaEnv luaenv = LuaEnvSingleton.Instance;
             var L = luaenv.L;
@@ -104,7 +104,7 @@ namespace xlua
                     if (cmd != "" 
                         // && !cmd.Contains(" ") 
                         && !cmd.Contains("=") 
-                        // && !cmd.Contains("(")
+                        && !cmd.Contains("print")
                      )
                     {
                         if(!cmd.Contains(",")

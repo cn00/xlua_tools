@@ -38,8 +38,7 @@ namespace CodeZhCollect
                 workbook = new XSSFWorkbook();
             }
 
-            var sheet_jp = workbook.Sheet("jp"); //创建工作表
-            var sheet_jp_delta = workbook.Sheet("jp_delta"); //创建工作表
+            var sheet_jp = workbook.GetSheet("jp") ?? workbook.CreateSheet("jp"); //创建工作表
 
             int fidx = 1;
             foreach (var f in Directory.GetFiles(inputdir, "*.*", SearchOption.AllDirectories)

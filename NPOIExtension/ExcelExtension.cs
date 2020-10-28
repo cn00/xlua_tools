@@ -1,7 +1,5 @@
-﻿using System;
-using NPOI.HSSF.UserModel;
+﻿
 using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
 using System.Collections.Generic;
 
 namespace NPOI
@@ -74,28 +72,17 @@ namespace NPOI
             return svalue;
         }
 
+        
         public static List<ISheet> AllSheets(this IWorkbook workbook)
         {
             List<ISheet> sheets = new List<ISheet>();
-            if(workbook is HSSFWorkbook)
+            for(int i = 0; i < workbook.NumberOfSheets; ++i)
             {
-                HSSFWorkbook book = workbook as HSSFWorkbook;
-                for(int i = 0; i < book.NumberOfSheets; ++i)
-                {
-                    sheets.Add(book.GetSheetAt(i));
-                }
-            }
-            else if(workbook is XSSFWorkbook)
-            {
-                XSSFWorkbook book = workbook as XSSFWorkbook;
-                for(int i = 0; i < book.NumberOfSheets; ++i)
-                {
-                    sheets.Add(book.GetSheetAt(i));
-                }
+                sheets.Add(workbook.GetSheetAt(i));
             }
             return sheets;
         }
-
+        
         public static ISheet Sheet(this IWorkbook workbook, string name)
         {
             return workbook.GetSheet(name) ?? workbook.CreateSheet(name);

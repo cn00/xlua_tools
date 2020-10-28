@@ -106,12 +106,12 @@ namespace Getjp
                 else
                 {
                     var row = deltaSheet.Row(deltaIdx);
-                    row.Cell(0).SetCellValue(rowl.Cell(0).SValue());
-                    row.Cell(1).SetCellValue(rowl.Cell(1).SValue());
-                    row.Cell(2).SetCellValue(rowl.Cell(2).SValue());
-                    row.Cell(3).SetCellValue(rowl.Cell(3).SValue());
-                    row.Cell(4).SetCellValue(rowl.Cell(4).SValue());
-                    row.Cell(5).SetCellValue(rowl.Cell(5).SValue());
+                    row.Cell(0).SetCellValue(rowl.Cell(0).SValue);
+                    row.Cell(1).SetCellValue(rowl.Cell(1).SValue);
+                    row.Cell(2).SetCellValue(rowl.Cell(2).SValue);
+                    row.Cell(3).SetCellValue(rowl.Cell(3).SValue);
+                    row.Cell(4).SetCellValue(rowl.Cell(4).SValue);
+                    row.Cell(5).SetCellValue(rowl.Cell(5).SValue);
                     ++deltaIdx;
                 }
             }
