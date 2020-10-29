@@ -4,9 +4,9 @@
         <ToolbarItem Text="Add" Clicked="AddItem_Clicked" />
     </ContentPage.ToolbarItems>
     <RefreshView IsRefreshing="{Binding IsBusy, Mode=TwoWay}" Command="{Binding LoadItemsCommand}">
-        <CollectionView x:Name="ItemsCollectionView" ItemsSource="{Binding Items}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
+        <ListView x:Name="ItemsCollectionView" ItemsSource="{Binding Items}">
+            <ListView.ItemTemplate>
+                <DataTemplate><ViewCell>
                     <StackLayout Padding="10">
                         <StackLayout Padding="10" Orientation="Horizontal">
                             <Label Text="{Binding Id}"  LineBreakMode="NoWrap" Style="{DynamicResource ListItemTextStyle}" FontSize="16" />
@@ -20,8 +20,8 @@
                             </TapGestureRecognizer>
                         </StackLayout.GestureRecognizers>
                     </StackLayout>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+                    </ViewCell></DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </RefreshView>
 </ContentPage>
