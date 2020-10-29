@@ -134,7 +134,67 @@
     <ProjectReference Include="..\app\app.csproj">
       <Project>{48224037-C134-44A7-B962-0FA840D4D1A3}</Project>
       <Name>app</Name>
+      <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\xlua\General\vs2013\XLua.Mini.csproj">
+      <Project>{9A2C7D34-0697-31AB-4FD5-E250BB7E0F00}</Project>
+      <Name>XLua.Mini</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\npoi\main\NPOI.Core.csproj">
+      <Project>{375E0BB7-2A71-440C-8F84-3D858B22501A}</Project>
+      <Name>NPOI.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\npoi\ooxml\NPOI.OOXML.Core.csproj">
+      <Project>{54FEE852-8725-4AF6-9800-88EE373C3495}</Project>
+      <Name>NPOI.OOXML.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\npoi\openxml4Net\NPOI.OpenXml4Net.Core.csproj">
+      <Project>{32C167AA-1978-4932-9F91-EDD4865BF164}</Project>
+      <Name>NPOI.OpenXml4Net.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\npoi\OpenXmlFormats\NPOI.OpenXmlFormats.Core.csproj">
+      <Project>{108EF9E9-D868-45BA-BA7A-E2AB3145CF9A}</Project>
+      <Name>NPOI.OpenXmlFormats.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <NativeReference Include="..\..\xlua\build\build_osx\bin\Release\libexpat.dylib">
+      <Kind>Dynamic</Kind>
+      <SmartLink>False</SmartLink>
+    </NativeReference>
+    <NativeReference Include="..\..\xlua\build\build_osx\bin\Release\liblfb.dylib">
+      <Kind>Dynamic</Kind>
+      <SmartLink>False</SmartLink>
+    </NativeReference>
+    <NativeReference Include="..\..\xlua\build\build_osx\bin\Release\liblfs.dylib">
+      <Kind>Dynamic</Kind>
+      <SmartLink>False</SmartLink>
+    </NativeReference>
+    <NativeReference Include="..\..\xlua\build\build_osx\bin\Release\liblsqlite3.dylib">
+      <Kind>Dynamic</Kind>
+      <SmartLink>False</SmartLink>
+    </NativeReference>
+    <NativeReference Include="..\..\xlua\build\build_osx\bin\Release\liblua.dylib">
+      <Kind>Dynamic</Kind>
+      <SmartLink>False</SmartLink>
+    </NativeReference>
+    <NativeReference Include="..\..\xlua\build\build_osx\bin\Release\libluasql.dylib">
+      <Kind>Dynamic</Kind>
+      <SmartLink>False</SmartLink>
+    </NativeReference>
+    <NativeReference Include="..\..\xlua\build\build_osx\bin\Release\liblxp.dylib">
+      <Kind>Dynamic</Kind>
+      <SmartLink>False</SmartLink>
+    </NativeReference>
+    <NativeReference Include="..\..\xlua\build\build_osx\bin\Release\libp7zip.dylib">
+      <Kind>Dynamic</Kind>
+      <SmartLink>False</SmartLink>
+    </NativeReference>
+    <NativeReference Include="..\..\xlua\build\build_osx\bin\Release\libxlua.dylib">
+      <Kind>Dynamic</Kind>
+      <SmartLink>False</SmartLink>
+    </NativeReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
   <Import Project="..\..\packages\Xamarin.Forms.4.8.0.1560\build\Xamarin.Forms.targets" Condition="Exists('..\..\packages\Xamarin.Forms.4.8.0.1560\build\Xamarin.Forms.targets')" />

@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DebugType>portable</DebugType>
+    <DebugType>full</DebugType>
     <DefineConstants>TRACE;ANDROID;;DEBUG;NETSTANDARD;NETSTANDARD2_1;ANDROID;</DefineConstants>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
@@ -28,8 +28,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Assets\a3-strings-305-202010151020.xlsx" />
+    <None Remove="Assets/lua/**/*" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assets\a3-strings-305-202010151020.xlsx" />
+    <EmbeddedResource Include="Assets/lua/**/*" />
   </ItemGroup>
 </Project>

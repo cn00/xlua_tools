@@ -1,8 +1,6 @@
 using AppKit;
 using Foundation;
 
-using Foundation;
-
 namespace app.OSX
 {
     [Register("AppDelegate")]
@@ -32,6 +30,7 @@ namespace app.OSX
         public override void WillTerminate(NSNotification notification)
         {
             // Insert code here to tear down your application
+            base.WillTerminate(notification);
         }
     }
 }

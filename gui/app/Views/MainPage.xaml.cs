@@ -45,8 +45,8 @@ namespace app.Views
             {
                 Detail = newPage;
 
-                if (Device.RuntimePlatform == Device.Android)
-                    await Task.Delay(100);
+                // if (Device.RuntimePlatform == Device.Android)
+                    await Task.Delay(200);
 
                 IsPresented = false;
             }

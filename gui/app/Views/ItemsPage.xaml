@@ -9,7 +9,7 @@
                 <DataTemplate><ViewCell>
                     <StackLayout Padding="10">
                         <StackLayout Padding="10" Orientation="Horizontal">
-                            <Label Text="{Binding Id}"  LineBreakMode="NoWrap" Style="{DynamicResource ListItemTextStyle}" FontSize="16" />
+                            <Label Text="{Binding Id}"  LineBreakMode="NoWrap" Style="{DynamicResource ListItemTextStyle}" FontSize="16" TextColor="Gray"/>
                             <Label Text="{Binding Us}"  LineBreakMode="NoWrap" Style="{DynamicResource ListItemTextStyle}" FontSize="16" />
                             <Label Text="{Binding Ctg}" LineBreakMode="NoWrap" Style="{DynamicResource ListItemTextStyle}" FontSize="16" />
                             <Label Text="{Binding Text}" LineBreakMode="NoWrap" Style="{DynamicResource ListItemTextStyle}" FontSize="16" />
