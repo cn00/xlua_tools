@@ -27,8 +27,6 @@
     <MtouchArch>x86_64</MtouchArch>
     <MtouchLink>None</MtouchLink>
     <MtouchDebug>true</MtouchDebug>
-    <CodesignKey>iPhone Developer</CodesignKey>
-    <MtouchFastDev>true</MtouchFastDev>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -38,9 +36,6 @@
     <WarningLevel>4</WarningLevel>
     <MtouchLink>None</MtouchLink>
     <MtouchArch>x86_64</MtouchArch>
-    <DeviceSpecificBuild>true</DeviceSpecificBuild>
-    <MtouchFastDev>true</MtouchFastDev>
-    <MtouchUseLlvm>true</MtouchUseLlvm>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>true</DebugSymbols>
@@ -51,14 +46,11 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <MtouchArch>ARM64</MtouchArch>
-    <CodesignKey>Apple Development: cool_navy@qq.com (3SZSPFHS9S)</CodesignKey>
+    <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchLink>None</MtouchLink>
     <MtouchInterpreter>-all</MtouchInterpreter>
-<BuildIpa>true</BuildIpa>
-<CodesignProvision>iOS Team Provisioning Profile: app.cn00.app</CodesignProvision>
-<MtouchFastDev>true</MtouchFastDev>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
@@ -70,10 +62,6 @@
     <CodesignKey>Apple Development: cool_navy@qq.com (3SZSPFHS9S)</CodesignKey>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <CodesignProvision>iOS Team Provisioning Profile: com.cn00.app</CodesignProvision>
-    <DeviceSpecificBuild>true</DeviceSpecificBuild>
-    <MtouchFastDev>true</MtouchFastDev>
-    <MtouchUseLlvm>true</MtouchUseLlvm>
-    <MtouchInterpreter>-all</MtouchInterpreter>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
@@ -135,6 +123,9 @@
     <BundleResource Include="Resources\xamarin_logo%402x.png" />
     <BundleResource Include="Resources\xamarin_logo%403x.png" />
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
+    <BundleResource Include="..\app.Android\Assets\a3-strings-305-202010151020.xlsx">
+      <Link>Resources\Assets\a3-strings-305-202010151020.xlsx</Link>
+    </BundleResource>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -152,16 +143,13 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\app\app.csproj">
-      <Project>{48224037-C134-44A7-B962-0FA840D4D1A3}</Project>
+      <Project>{A868F288-3777-46F8-B91B-C62A447EC52C}</Project>
       <Name>app</Name>
     </ProjectReference>
     <ProjectReference Include="..\native.banding\app.iOS.native.csproj">
       <Project>{2A51E6F8-974F-49E1-9E31-B71DC1E91D02}</Project>
       <Name>app.iOS.native</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\Assets\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>
