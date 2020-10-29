@@ -7,7 +7,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>portable</DebugType>
-    <DefineConstants>TRACE;DEBUG;NETSTANDARD;NETSTANDARD2_1;ANDROID;</DefineConstants>
+    <DefineConstants>TRACE;ANDROID;;DEBUG;NETSTANDARD;NETSTANDARD2_1;ANDROID;</DefineConstants>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
@@ -17,6 +17,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Xamarin.Forms" Version="4.8.0.1560" />  
     <PackageReference Include="Xamarin.Essentials" Version="1.5.3.2" />
+    <PackageReference Include="xamstore-xamarin.mobile" Version="0.7.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\npoi\main\NPOI.Core.csproj" />
@@ -26,11 +27,9 @@
     <ProjectReference Include="..\..\xlua\General\vs2013\XLua.Mini.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Mono.Android">
-      <HintPath>..\..\..\..\..\..\Library\Frameworks\Xamarin.Android.framework\Versions\11.0.2.0\lib\xamarin.android\xbuild-frameworks\MonoAndroid\v9.0\Mono.Android.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.iOS">
-      <HintPath>..\..\..\..\..\..\Library\Frameworks\Xamarin.iOS.framework\Versions\14.0.0.0\lib\mono\Xamarin.iOS\Xamarin.iOS.dll</HintPath>
-    </Reference>
+    <None Remove="Assets\a3-strings-305-202010151020.xlsx" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\a3-strings-305-202010151020.xlsx" />
   </ItemGroup>
 </Project>

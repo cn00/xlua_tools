@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-//using Android.OS;
 using app.Models;
 using NPOI;
 using NPOI.XSSF.UserModel;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration;
+using Xamarin.Essentials;
+//using System.Reflection;
 
 namespace app.Services
 {
@@ -20,23 +21,34 @@ namespace app.Services
         public MockDataStore()
         {
             items = new List<Item>();
+
             Stream stream = null;
-            var fpath = "a3-strings-305-202010151020.xlsx";
-            if(File.Exists(fpath))
-                stream = File.OpenRead(fpath);
-            if(stream == null)switch (Device.RuntimePlatform)
+            var fname = "a3-strings-305-202010151020.xlsx";
+
+            string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), fname);
+            if (File.Exists(filePath))
             {
-                case Device.Android:
-#if ANDROID
-                        stream = Android.App.Application.Context.Assets.Open(fpath);
-#endif
-                        break;
-                case Device.iOS:
-                case Device.UWP:
-                case Device.macOS:
-                default:
-                    stream = File.OpenRead("Assets/a3-strings-305-202010151020.xlsx");
-                    break;
+                Console.WriteLine($"use LocalApplicationData [{filePath}]");
+                stream = File.OpenRead(filePath);
+            }
+            else
+            {
+                var assembly = this.GetType().Assembly;
+                stream = assembly.GetManifestResourceStream($"app.Assets.{fname}");
+                if (stream != null)
+                {
+                    Console.WriteLine($"use ManifestResourceStream [{fname}]");
+                    var fs = new FileStream(filePath, FileMode.CreateNew);
+                    stream.CopyTo(fs);
+                    fs.Close();
+                    stream.Position = 0;
+                }
+            }
+
+            if (stream == null)
+            {
+                Console.WriteLine($"GetManifestResourceStream [{fname}] not found");
+                return;
             }
 
             var t0 = DateTime.Now.ToFileTimeUtc();
@@ -54,15 +66,15 @@ namespace app.Services
                 for(var ri = start; ri < Math.Min(1000, i.LastRowNum); ++ri)
                 {
                     items.Add(new Item(){
-                        Id = i.Cell(ri, 0).SValue,//Guid.NewGuid().ToString(),
-                        Us = i.Cell(ri, 1).SValue,//Guid.NewGuid().ToString(),
+                        Id = i.Cell(ri, 0).SValue, //Guid.NewGuid().ToString(),
+                        Us = i.Cell(ri, 1).SValue, //Guid.NewGuid().ToString(),
                         Ctg = i.Cell(ri, 2).SValue,//Guid.NewGuid().ToString(),
                         Text = i.Cell(ri, 3).SValue,
                         Description = i.Cell(ri, 4).SValue,
                     });
                 }
             });
-            deltat("ReadExcelSheets");
+            deltat("ReadExcelSheets 1000 rows");
         }
 
         public void Add(Item item)
