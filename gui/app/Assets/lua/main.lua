@@ -24,7 +24,7 @@ package.path = package.path .. ";" .. System.AppDomain.CurrentDomain.BaseDirecto
 	.. Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) .. "/lua/?.lua;"
 print("package.path=", package.path)
 
--- local util = require "util"
+local util = require "util"
 local dump = require "dump"
 local sqlite = require "lsqlite3"
 print("sqlite", sqlite)

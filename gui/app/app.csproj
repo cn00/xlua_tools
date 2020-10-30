@@ -20,6 +20,7 @@
     <PackageReference Include="xamstore-xamarin.mobile" Version="0.7.1" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\npoi\extension\NPOIExtension.csproj" />
     <ProjectReference Include="..\..\npoi\main\NPOI.Core.csproj" />
     <ProjectReference Include="..\..\npoi\ooxml\NPOI.OOXML.Core.csproj" />
     <ProjectReference Include="..\..\npoi\openxml4Net\NPOI.OpenXml4Net.Core.csproj" />

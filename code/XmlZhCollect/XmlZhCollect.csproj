@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <LangVersion>8</LangVersion>
+	<DefineConstants>THREAD_SAFE;XLUA_GENERAL;GEN_CODE_MINIMIZE</DefineConstants>
+	<TargetFramework>netcoreapp3.1</TargetFramework>
+	<OutputType>Exe</OutputType>
+    </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\npoi\extension\NPOIExtension.csproj" />
+    <ProjectReference Include="..\..\npoi\main\NPOI.Core.csproj" />
+    <ProjectReference Include="..\..\npoi\ooxml\NPOI.OOXML.Core.csproj" />
+    <ProjectReference Include="..\..\npoi\openxml4Net\NPOI.OpenXml4Net.Core.csproj" />
+    <ProjectReference Include="..\..\npoi\OpenXmlFormats\NPOI.OpenXmlFormats.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LitJson" Version="0.16.0" />
+  </ItemGroup>
+</Project>
