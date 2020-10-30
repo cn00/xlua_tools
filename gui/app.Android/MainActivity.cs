@@ -25,8 +25,8 @@ namespace app.Droid
     {
         protected override void OnCreate(Bundle savedInstanceState)
         {
-            TabLayoutResource = Resource.Layout.Tabbar;
-            ToolbarResource = Resource.Layout.Toolbar;
+            TabLayoutResource = app.Droid.Resource.Layout.Tabbar;
+            ToolbarResource = app.Droid.Resource.Layout.Toolbar;
 
             base.OnCreate(savedInstanceState);
 

@@ -14,21 +14,20 @@ local CS = CS
 local System = CS.System
 local NPOI = CS.NPOI
 local Mono = CS.Mono
-local HWorkbook = NPOI.HSSF.UserModel.HSSFWorkbook
-local XWorkbook = NPOI.XSSF.UserModel.XSSFWorkbook
 
 local Environment = System.Environment
-package.cpath = package.cpath .. ";" .. System.AppDomain.CurrentDomain.BaseDirectory .. "lib?.dylib;"
+package.cpath = package.cpath .. ";" .. Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) .. "/../lib?.so;"
+package.cpath = package.cpath .. ";" .. Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) .. "/../lib?.dylib;"
 print("package.cpath=", package.cpath)
-package.path = package.path .. ";" .. System.AppDomain.CurrentDomain.BaseDirectory .. "?.lua;"
-	.. Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) .. "/lua/?.lua;"
+package.path = package.path .. ";" .. Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) .. "/lua/?.lua;"
 print("package.path=", package.path)
 
-local util = require "util"
-local dump = require "dump"
 local sqlite = require "lsqlite3"
 print("sqlite", sqlite)
+
 local luasql = require "luasql.mysql"
+--local util = require "util"
+--local dump = require "dump"
 print("luasql", luasql)
 local function testmysql()
 	local db, err = luasql.mysql():connect("a3_m_305", "a3", "654123", "10.23.22.233")
@@ -41,7 +40,7 @@ local function testmysql()
 	for i=0,res:numrows()-1 do
 		local t = {} -- res:fetch()
 		res:fetch(t, "a")
-		print(i, dump(t))
+		print(i, table.unpack(t))
 		-- print(i, dump(t))
 	end
 	-- print("close", res:close())

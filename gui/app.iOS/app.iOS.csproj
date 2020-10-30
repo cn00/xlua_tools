@@ -149,19 +149,30 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Xamarin.Forms" Version="4.8.0.1560" />  
     <PackageReference Include="Xamarin.Essentials" Version="1.5.3.2" />
+    <PackageReference Include="BouncyCastle.NetCore" Version="1.8.8" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\app.iOS.native\app.iOS.native.csproj">
+      <Project>{2a51e6f8-974f-49e1-9e31-b71dc1e91d02}</Project>
+      <Name>app.iOS.native</Name>
+    </ProjectReference>
     <ProjectReference Include="..\app\app.csproj">
       <Project>{48224037-C134-44A7-B962-0FA840D4D1A3}</Project>
       <Name>app</Name>
     </ProjectReference>
-    <ProjectReference Include="..\native.banding\app.iOS.native.csproj">
-      <Project>{2A51E6F8-974F-49E1-9E31-B71DC1E91D02}</Project>
-      <Name>app.iOS.native</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\Assets\" />
+  </ItemGroup>
+  <ItemGroup>
+    <NativeReference Include="libs\libexpat.dylib"><Kind>Dynamic</Kind> <SmartLink>False</SmartLink> <CopyToOutputDirectory>Always</CopyToOutputDirectory></NativeReference>
+    <NativeReference Include="libs\liblfb.dylib"><Kind>Dynamic</Kind> <SmartLink>False</SmartLink> <CopyToOutputDirectory>Always</CopyToOutputDirectory></NativeReference>
+    <NativeReference Include="libs\liblfs.dylib"><Kind>Dynamic</Kind> <SmartLink>False</SmartLink> <CopyToOutputDirectory>Always</CopyToOutputDirectory></NativeReference>
+    <NativeReference Include="libs\liblsqlite3.dylib"><Kind>Dynamic</Kind> <SmartLink>False</SmartLink> <CopyToOutputDirectory>Always</CopyToOutputDirectory></NativeReference>
+    <NativeReference Include="libs\liblua.dylib"><Kind>Dynamic</Kind> <SmartLink>False</SmartLink> <CopyToOutputDirectory>Always</CopyToOutputDirectory></NativeReference>
+    <NativeReference Include="libs\liblxp.dylib"><Kind>Dynamic</Kind> <SmartLink>False</SmartLink> <CopyToOutputDirectory>Always</CopyToOutputDirectory></NativeReference>
+    <NativeReference Include="libs\libp7zip.dylib"><Kind>Dynamic</Kind> <SmartLink>False</SmartLink> <CopyToOutputDirectory>Always</CopyToOutputDirectory></NativeReference>
+    <NativeReference Include="libs\libxlua.dylib"><Kind>Dynamic</Kind> <SmartLink>False</SmartLink> <CopyToOutputDirectory>Always</CopyToOutputDirectory></NativeReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>

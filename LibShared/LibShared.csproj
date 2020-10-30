@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <LangVersion>8</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\npoi\main\NPOI.Core.csproj" />
+      <ProjectReference Include="..\npoi\ooxml\NPOI.OOXML.Core.csproj" />
+      <ProjectReference Include="..\npoi\openxml4Net\NPOI.OpenXml4Net.Core.csproj" />
+      <ProjectReference Include="..\npoi\OpenXmlFormats\NPOI.OpenXmlFormats.Core.csproj" />
+    </ItemGroup>
+
+</Project>

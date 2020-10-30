@@ -69,9 +69,6 @@
     <Reference Include="Xamarin.Forms.Xaml">
       <HintPath>..\..\packages\Xamarin.Forms.4.8.0.1560\lib\Xamarin.Mac\Xamarin.Forms.Xaml.dll</HintPath>
     </Reference>
-    <Reference Include="BouncyCastle.Crypto">
-      <HintPath>..\..\packages\BouncyCastle.Crypto.dll.1.8.1\lib\BouncyCastle.Crypto.dll</HintPath>
-    </Reference>
     <Reference Include="Xamarin.Essentials">
       <HintPath>..\..\packages\Xamarin.Essentials.1.5.3.2\lib\netstandard2.0\Xamarin.Essentials.dll</HintPath>
     </Reference>

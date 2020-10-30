@@ -42,9 +42,29 @@ namespace app
         {
             InitializeComponent();
 
+            for (var i = Environment.SpecialFolder.Desktop; i < Environment.SpecialFolder.CDBurning; ++i)
+            {
+                try
+                {
+                    Console.WriteLine($"Environment.GetFolderPath({i}):{Environment.GetFolderPath(i)}");
+                }
+                catch (Exception e)
+                {
+                    // Console.WriteLine(e);
+                }
+            }
             try
             {
                 var lua = new LuaEnv();
+                lua.AddBuildin("mime.core", XLua.LuaDLL.Lua.LoadSocketMime);
+                lua.AddBuildin("lpeg", XLua.LuaDLL.Lua.LoadLpeg);
+                lua.AddBuildin("ffi", XLua.LuaDLL.Lua.LoadFfi);
+                lua.AddBuildin("lfb", XLua.LuaDLL.Lua.LoadLfb);
+                lua.AddBuildin("nslua", XLua.LuaDLL.Lua.LoadNSLua);
+                lua.AddBuildin("p7zip", XLua.LuaDLL.Lua.LoadP7zip);
+                lua.AddBuildin("lsqlite3", XLua.LuaDLL.Lua.LoadLSQLite3);
+                lua.AddBuildin("lxp", XLua.LuaDLL.Lua.LoadLxp);
+                lua.AddBuildin("luasql.mysql", XLua.LuaDLL.Lua.LoadLuaSqlMysql);
                 //lua.AddLoader(Require);
                 lua.DoString(Resource.GetStr("lua/main.lua"));
             }
