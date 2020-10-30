@@ -22,7 +22,7 @@ namespace xlua
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine(e);
+                        Debug.WriteLine(e);
                     }
                 }
 
@@ -40,7 +40,7 @@ namespace xlua
             
             // for (int i = 0; i < args.Length; i++)
             // {
-            //     Console.WriteLine("args{0}: {1}", i, args[i]);
+            //     Debug.WriteLine("args{0}: {1}", i, args[i]);
             // }
 
             // var w = AppDomain.CurrentDomain.GetAssemblies();
@@ -77,7 +77,7 @@ namespace xlua
                 LuaTable argv =luaenv.NewTable();
                 for(int i = 0; i < args.Length; ++i)
                 {
-                    // Console.WriteLine($"cs-argv[{i}] = {args[i]}");
+                    // Debug.WriteLine($"cs-argv[{i}] = {args[i]}");
                     argv.Set(i, args[i]);
                 }
                 env.Set("argv", argv);
@@ -88,17 +88,17 @@ namespace xlua
             }
             else
             {
-                // Console.WriteLine("run default entry lua/main.lua");
-                Console.WriteLine(" usage:\n\tosx/unix: mono xlua.exe path/to/entry.lua");
-                Console.WriteLine("\twindows: xlua.exe path/to/entry.lua");
-                Console.WriteLine("Or type lua code in Interaction Mode\nGood luck.");
+                // Debug.WriteLine("run default entry lua/main.lua");
+                Debug.WriteLine(" usage:\n\tosx/unix: mono xlua.exe path/to/entry.lua");
+                Debug.WriteLine("\twindows: xlua.exe path/to/entry.lua");
+                Debug.WriteLine("Or type lua code in Interaction Mode\nGood luck.");
                 Console.Write("xlua> ");
                 var history = File.AppendText("xlua.history.lua");
                 var cmd = Console.ReadLine();
                 while (cmd != "quit" && cmd != "exit")
                 {
                     // var c = Console.ReadKey();
-                    // Console.WriteLine(c.Key);
+                    // Debug.WriteLine(c.Key);
                     
                     cmd = cmd.Trim().Replace("\0", "");
                     if (cmd != "" 
@@ -135,11 +135,11 @@ namespace xlua
                     }
                     catch (LuaException e)
                     {
-                        Console.WriteLine(e.Message);
+                        Debug.WriteLine(e.Message);
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine(e.Message + "\n#trace: \n" + e.StackTrace);
+                        Debug.WriteLine(e.Message + "\n#trace: \n" + e.StackTrace);
                     }
 
                     history.WriteLine(cmd);

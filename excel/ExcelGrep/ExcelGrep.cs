@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -108,7 +109,7 @@ namespace ExcelGrep
             {
                 if (sheet.LastRowNum > MaxRowNum)
                 {
-                    Console.WriteLine($"{sheet.SheetName}:LastRowNum={sheet.LastRowNum} > MaxRowNum={MaxRowNum} skip last rows");
+                    Debug.WriteLine($"{sheet.SheetName}:LastRowNum={sheet.LastRowNum} > MaxRowNum={MaxRowNum} skip last rows");
                 }
                 for(int i = 0; i <= sheet.LastRowNum && i < MaxRowNum; ++i)
                 {
@@ -203,7 +204,7 @@ namespace ExcelGrep
                 var r = l.Split('|');
                 var id = r[0];
                 var s = r[1];
-                Console.WriteLine("{0},{1}",id, Encode(s));
+                Debug.WriteLine("{0},{1}",id, Encode(s));
             }
 
         }

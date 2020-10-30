@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -17,7 +18,7 @@ namespace app.Services
             string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), subpath);
             if (File.Exists(filePath))
             {
-                Console.WriteLine($"use LocalApplicationData [{filePath}]");
+                Debug.WriteLine($"use LocalApplicationData [{filePath}]");
                 stream = File.OpenRead(filePath);
             }
             else
@@ -26,7 +27,7 @@ namespace app.Services
                 stream = assembly.GetManifestResourceStream($"app.Assets.{subpath.Replace("/", ".")}");
                 if (stream != null)
                 {
-                    Console.WriteLine($"use ManifestResourceStream [{subpath}]");
+                    Debug.WriteLine($"use ManifestResourceStream [{subpath}]");
                     var dir = Path.GetDirectoryName(filePath);
                     Directory.CreateDirectory(dir);
                     var fs = new FileStream(filePath, FileMode.CreateNew);

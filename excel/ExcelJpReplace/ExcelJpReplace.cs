@@ -118,10 +118,10 @@ namespace ExcelJpReplace
                     if(ocell.StringCellValue == os)
                     {
                         ocell.SetCellValue(ts);
-                        Console.WriteLine(string.Format("\t[{4},{2},{3}]:[{0}] => [{1}]", os.Replace("\n", "\\n"), ts.Replace("\n", "\\n"), x, y, sname));
+                        Debug.WriteLine(string.Format("\t[{4},{2},{3}]:[{0}] => [{1}]", os.Replace("\n", "\\n"), ts.Replace("\n", "\\n"), x, y, sname));
                     }
                     else
-                        Console.WriteLine(string.Format("\t{0}[{1}] <=> [{2}] not match", i, os.Replace("\n", "\\n"), ocell.StringCellValue.Replace("\n", "\\n")));
+                        Debug.WriteLine(string.Format("\t{0}[{1}] <=> [{2}] not match", i, os.Replace("\n", "\\n"), ocell.StringCellValue.Replace("\n", "\\n")));
                 }
 
                 //File.Delete(originExcel);

@@ -157,8 +157,8 @@ namespace DebugSocket
             // Create a new listen socket
             this._socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-            Console.WriteLine("Copyright © 2017 - MazyModz. Created by Dennis Andersson. All rights reserved.\n\n");
-            Console.WriteLine("WebSocket Server Started\nListening on {0}:{1}\n", GetEndPoint().Address.ToString(), GetEndPoint().Port);
+            Debug.WriteLine("Copyright © 2017 - MazyModz. Created by Dennis Andersson. All rights reserved.\n\n");
+            Debug.WriteLine("WebSocket Server Started\nListening on {0}:{1}\n", GetEndPoint().Address.ToString(), GetEndPoint().Port);
 
             // Start the server
             start();
@@ -290,7 +290,7 @@ namespace DebugSocket
             }
             catch (Exception Exception)
             {
-                Console.WriteLine("An error has occured while trying to accept a connecting client.\n\n{0}", Exception.Message);
+                Debug.WriteLine("An error has occured while trying to accept a connecting client.\n\n{0}", Exception.Message);
             }
         }
 

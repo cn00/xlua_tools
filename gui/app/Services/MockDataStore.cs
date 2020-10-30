@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -27,7 +28,7 @@ namespace app.Services
             string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), fname);
             if (File.Exists(filePath))
             {
-                Console.WriteLine($"use LocalApplicationData [{filePath}]");
+                Debug.WriteLine($"use LocalApplicationData [{filePath}]");
                 stream = File.OpenRead(filePath);
             }
             else
@@ -36,7 +37,7 @@ namespace app.Services
                 stream = assembly.GetManifestResourceStream($"app.Assets.{fname}");
                 if (stream != null)
                 {
-                    Console.WriteLine($"use ManifestResourceStream [{fname}]");
+                    Debug.WriteLine($"use ManifestResourceStream [{fname}]");
                     var fs = new FileStream(filePath, FileMode.CreateNew);
                     stream.CopyTo(fs);
                     fs.Close();
@@ -46,7 +47,7 @@ namespace app.Services
 
             if (stream == null)
             {
-                Console.WriteLine($"GetManifestResourceStream [{fname}] not found");
+                Debug.WriteLine($"GetManifestResourceStream [{fname}] not found");
                 return;
             }
 
@@ -55,7 +56,7 @@ namespace app.Services
             {
                 var delta = (DateTime.Now.ToFileTimeUtc() - t0) / 10000000f;
                 t0 = DateTime.Now.ToFileTimeUtc();
-                Console.WriteLine($"{tag}: {delta}s");
+                Debug.WriteLine($"{tag}: {delta:F}s");
                 return delta;
             };
 

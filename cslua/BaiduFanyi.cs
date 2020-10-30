@@ -50,7 +50,7 @@ namespace Baidu
             myStreamReader.Close();
             myResponseStream.Close();
 
-            // Console.WriteLine(retString);
+            // Debug.WriteLine(retString);
             return UnicodeToString2(retString);
         }
 
@@ -118,7 +118,7 @@ namespace Baidu
             sb.Append(src.Substring(indexa));
             // var unique = matchs.GroupBy(i => i.Value).Select(g => g.First()); //.Select(i=>new{i.Value, S = Convert.ToChar(Convert.ToUInt16(i.Result("$1"), 16)).ToString()});//.OrderBy(i => i.Length).ThenBy(i => i.Value);
             // unique.ToList().ForEach(i => cp = cp.Replace(i.Value, Convert.ToChar(Convert.ToUInt16(i.Result("$1"), 16)).ToString()));
-            // Console.WriteLine("UnicodeToString2=" + sb.ToString());
+            // Debug.WriteLine("UnicodeToString2=" + sb.ToString());
             return sb.ToString();
         }
 

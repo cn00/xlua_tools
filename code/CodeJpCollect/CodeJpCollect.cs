@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -119,7 +120,7 @@ namespace Getjp
 
         static void Main(string[] args)
         {
-            Console.WriteLine("输入查找路径:");
+            Debug.WriteLine("输入查找路径:");
             var inputdir = Console.ReadLine().Trim();
             var stringCount = 0;
 
@@ -189,7 +190,7 @@ namespace Getjp
                 //     )
             )
             {
-                Console.WriteLine("{0}", f);
+                Debug.WriteLine("{0}", f);
 
                 var lineCount = 0;
                 //var stream = new StreamReader(f);
@@ -197,7 +198,7 @@ namespace Getjp
                 //while(stream.Peek() > 0)
                 foreach (var l in alllines)
                 {
-//                    Console.WriteLine(">>>>>>{0}", f.upath());
+//                    Debug.WriteLine(">>>>>>{0}", f.upath());
                     //var line = stream.ReadLine();
                     ++lineCount;
                     var line = l.Trim('\t', ' ');
@@ -210,7 +211,7 @@ namespace Getjp
                     var commLine = Regex.Matches(line, "^\\s*//*.*");
                     if (commLine.Count > 0)
                     {
-                        //Console.WriteLine(line);
+                        //Debug.WriteLine(line);
                         continue;
                     }
 
@@ -231,7 +232,7 @@ namespace Getjp
                     //     var s = string.Format("{0:000000}#{1}#{2}#{3}\n", delta_lang_idx, f.upath(), lineCount, s0);
                     //     textStream.Write(s);
                     //     fini.WriteLine(string.Format("{0:000000}={1}", delta_lang_idx, i.ToString().TrimStart('"').TrimEnd('"')));
-                    //     Console.WriteLine("{0}:{1}:{2}", stringCount, lineCount, i, f.upath());
+                    //     Debug.WriteLine("{0}:{1}:{2}", stringCount, lineCount, i, f.upath());
                     // }
 
                     // 'xxxx'
@@ -244,7 +245,7 @@ namespace Getjp
                         var s0 = i.ToString().TrimStart('\'').TrimEnd('\'').Replace("\n", "\\n");
                         if (s0.Length > 32766)
                         {
-                            Console.WriteLine("too long match [{0} ...] skip", s0.Substring(0, 20));
+                            Debug.WriteLine("too long match [{0} ...] skip", s0.Substring(0, 20));
                             continue;
                         }
                         row.Cell(0).SetCellValue(s0);
@@ -256,7 +257,7 @@ namespace Getjp
                         var s = string.Format("{0:000000}#{1}#{2}#{3}\n", delta_lang_idx, f.upath(), lineCount, s0);
                         textStream.Write(s);
                         fini.WriteLine(string.Format("{0:000000}={1}", delta_lang_idx, i.ToString().TrimStart('"').TrimEnd('"')));
-                        Console.WriteLine("{0}:{1}:{2}", stringCount, lineCount, i, f.upath());
+                        Debug.WriteLine("{0}:{1}:{2}", stringCount, lineCount, i, f.upath());
                     }
                     
                     //php >xxxx<
@@ -276,7 +277,7 @@ namespace Getjp
                         var s = string.Format("{0:000000}#{1}#{2}#{3}\n", delta_lang_idx, f.upath(), lineCount, s0);
                         textStream.Write(s);
                         fini.WriteLine(string.Format("{0:000000}={1}", delta_lang_idx, i.ToString().TrimStart('"').TrimEnd('"')));
-                        Console.WriteLine("{0}:{1}:{2}", stringCount, lineCount, i, f.upath());
+                        Debug.WriteLine("{0}:{1}:{2}", stringCount, lineCount, i, f.upath());
                     }
 
                 } //while
@@ -297,7 +298,7 @@ namespace Getjp
             excelStream.Close();
             fini.Close();
 
-            // Console.WriteLine("按 Enter 退出");
+            // Debug.WriteLine("按 Enter 退出");
             // Console.ReadLine();
         }
     }

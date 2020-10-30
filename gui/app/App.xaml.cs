@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -49,7 +50,7 @@ namespace app
             }
             catch(Exception e)
             {
-                Console.WriteLine($"lua error: {e.Message}\n {e.StackTrace}");
+                Debug.WriteLine($"lua error: {e.Message}\n {e.StackTrace}");
             }
 
             if (UseMockDataStore)

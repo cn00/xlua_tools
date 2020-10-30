@@ -128,7 +128,7 @@ namespace DebugSocket
             }
             catch(Exception e)
             {
-                Console.WriteLine(e);
+                Debug.WriteLine(e);
                 GetSocket().Close();
                 GetServer().ClientDisconnect(this);
                 //GetSocket().Dispose();

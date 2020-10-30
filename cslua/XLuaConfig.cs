@@ -97,7 +97,7 @@ namespace CSLua
                         .Concat(customAssemblys.Select(s => Assembly.Load(s)));
                     // foreach (var i in assemblies)
                     // {
-                    //     Console.WriteLine($"Domain assemblies: {i}");
+                    //     Debug.WriteLine($"Domain assemblies: {i}");
                     // }
 
                     var enginetypes = assemblies.Where(

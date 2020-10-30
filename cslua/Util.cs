@@ -84,7 +84,7 @@ namespace xlua
                 {
                     lock (ParallelLock)
                     {
-                        Console.WriteLine($"ManagedThreadId={Thread.CurrentThread.ManagedThreadId}");
+                        Debug.WriteLine($"ManagedThreadId={Thread.CurrentThread.ManagedThreadId}");
                         localFinally(lfinal);
                     }
                 }
