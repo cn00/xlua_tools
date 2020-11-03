@@ -71,18 +71,6 @@ namespace app
             {
                 var lua = LuaSys.Instance;
                 LuaSys.Instance.Init();
-                // var lua = new LuaEnv();
-                // td.Step("lua.new LuaEnv");
-                // lua.AddBuildin("mime.core", XLua.LuaDLL.Lua.LoadSocketMime);
-                // lua.AddBuildin("lpeg", XLua.LuaDLL.Lua.LoadLpeg);
-                // lua.AddBuildin("ffi", XLua.LuaDLL.Lua.LoadFfi);
-                // lua.AddBuildin("lfb", XLua.LuaDLL.Lua.LoadLfb);
-                // // lua.AddBuildin("nslua", XLua.LuaDLL.Lua.LoadNSLua);
-                // lua.AddBuildin("p7zip", XLua.LuaDLL.Lua.LoadP7zip);
-                // lua.AddBuildin("lsqlite3", XLua.LuaDLL.Lua.LoadLSQLite3);
-                // lua.AddBuildin("lxp", XLua.LuaDLL.Lua.LoadLxp);
-                // lua.AddBuildin("luasql.mysql", XLua.LuaDLL.Lua.LoadLuaSqlMysql);
-                // //lua.AddLoader(Require);
                 
                 td.Step("lua.AddBuildin");
                 lua.DoString(Resource.GetStr("lua/main.lua"));
@@ -94,8 +82,21 @@ namespace app
                 Debug.WriteLine($"lua error: {e.Message}\n {e.StackTrace}");
             }
 
+            mysqlTest();
+            td.Step("mysqlTest");
+
+        }
+
+        void mysqlTest()
+        {
+            if (DeviceInfo.Platform == DevicePlatform.Android)
+            {
+                Debug.WriteLine($"{DeviceInfo.Platform} not support.");
+                return;
+            }
+            // not support android
             var db = new MySql.Data.MySqlClient.MySqlConnection("Database=a3_m_308;Data Source=10.23.22.233;User Id=a3;Password=654123");
-            if (db!= null)
+            if (db != null)
             {
                 string myInsertQuery = "select * from m_string_item limit 100;";
                 MySqlCommand cmd = new MySqlCommand(myInsertQuery);
@@ -124,11 +125,9 @@ namespace app
                         sb.Clear();
                     }
 
-                } 
+                }
                 cmd.Connection.Close();
             }
-            td.Step("cmd.ExecuteReader");
-
         }
 
         protected override void OnSleep()
