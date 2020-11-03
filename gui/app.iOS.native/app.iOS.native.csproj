@@ -46,39 +46,15 @@
     <ItemGroup>
         <ObjcBindingCoreSource Include="Structs.cs" />
     </ItemGroup>
-    <ItemGroup>
-      <NativeReference Include="..\..\xlua\build\build_ios\bin\Release\libexpat.1.6.11.dylib">
-        <Kind>Dynamic</Kind>
-        <SmartLink>False</SmartLink>
-      </NativeReference>
-      <NativeReference Include="..\..\xlua\build\build_ios\bin\Release\liblfb.dylib">
-        <Kind>Dynamic</Kind>
-        <SmartLink>False</SmartLink>
-      </NativeReference>
-      <NativeReference Include="..\..\xlua\build\build_ios\bin\Release\liblfs.dylib">
-        <Kind>Dynamic</Kind>
-        <SmartLink>False</SmartLink>
-      </NativeReference>
-      <NativeReference Include="..\..\xlua\build\build_ios\bin\Release\liblsqlite3.dylib">
-        <Kind>Dynamic</Kind>
-        <SmartLink>False</SmartLink>
-      </NativeReference>
-      <NativeReference Include="..\..\xlua\build\build_ios\bin\Release\liblua.dylib">
-        <Kind>Dynamic</Kind>
-        <SmartLink>False</SmartLink>
-      </NativeReference>
-      <NativeReference Include="..\..\xlua\build\build_ios\bin\Release\liblxp.dylib">
-        <Kind>Dynamic</Kind>
-        <SmartLink>False</SmartLink>
-      </NativeReference>
-      <NativeReference Include="..\..\xlua\build\build_ios\bin\Release\libp7zip.dylib">
-        <Kind>Dynamic</Kind>
-        <SmartLink>False</SmartLink>
-      </NativeReference>
-      <NativeReference Include="..\..\xlua\build\build_ios\bin\Release\libxlua.dylib">
-        <Kind>Dynamic</Kind>
-        <SmartLink>False</SmartLink>
-      </NativeReference>
-    </ItemGroup>
+  <ItemGroup>
+    <NativeReference Include="libs\libexpat.dylib"><Kind>Dynamic</Kind> <SmartLink>False</SmartLink> <CopyToOutputDirectory>Always</CopyToOutputDirectory></NativeReference>
+    <NativeReference Include="libs\liblfb.dylib"><Kind>Dynamic</Kind> <SmartLink>False</SmartLink> <CopyToOutputDirectory>Always</CopyToOutputDirectory></NativeReference>
+    <NativeReference Include="libs\liblfs.dylib"><Kind>Dynamic</Kind> <SmartLink>False</SmartLink> <CopyToOutputDirectory>Always</CopyToOutputDirectory></NativeReference>
+    <NativeReference Include="libs\liblsqlite3.dylib"><Kind>Dynamic</Kind> <SmartLink>False</SmartLink> <CopyToOutputDirectory>Always</CopyToOutputDirectory></NativeReference>
+    <NativeReference Include="libs\liblua.dylib"><Kind>Dynamic</Kind> <SmartLink>False</SmartLink> <CopyToOutputDirectory>Always</CopyToOutputDirectory></NativeReference>
+    <NativeReference Include="libs\liblxp.dylib"><Kind>Dynamic</Kind> <SmartLink>False</SmartLink> <CopyToOutputDirectory>Always</CopyToOutputDirectory></NativeReference>
+    <NativeReference Include="libs\libp7zip.dylib"><Kind>Dynamic</Kind> <SmartLink>False</SmartLink> <CopyToOutputDirectory>Always</CopyToOutputDirectory></NativeReference>
+    <NativeReference Include="libs\libxlua.dylib"><Kind>Dynamic</Kind> <SmartLink>False</SmartLink> <CopyToOutputDirectory>Always</CopyToOutputDirectory></NativeReference>
+  </ItemGroup>
     <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.ObjCBinding.CSharp.targets" />
 </Project>

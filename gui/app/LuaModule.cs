@@ -10,7 +10,7 @@ using LuaAPI = UniLua.Lua;
 using RealStatePtr = UniLua.ILuaState;
 using LuaCSFunction = UniLua.CSharpFunctionDelegate;
 #else
-using LuaAPI = XLua.LuaDLL.Lua;
+// using LuaAPI = XLua.LuaDLL.Lua;
 using RealStatePtr = System.IntPtr;
 using LuaCSFunction = XLua.LuaDLL.lua_CSFunction;
 #endif
@@ -63,10 +63,10 @@ using LuaCSFunction = XLua.LuaDLL.lua_CSFunction;
         {
             return luaopen_luasocket_scripts(L);
         }
-
-        [DllImport("__Internal", CallingConvention = CallingConvention.Cdecl)]
+        
+        // [DllImport("nslua", CallingConvention = CallingConvention.Cdecl)]
         public static extern int luaopen_nslua(System.IntPtr L);
-
+        
         [MonoPInvokeCallback(typeof(LuaCSFunction))]
         public static int LoadNSLua(System.IntPtr L)
         {
