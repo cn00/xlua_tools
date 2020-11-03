@@ -30,7 +30,7 @@ namespace app.Services
                     Debug.WriteLine($"use ManifestResourceStream [{subpath}]");
                     var dir = Path.GetDirectoryName(filePath);
                     Directory.CreateDirectory(dir);
-                    var fs = new FileStream(filePath, FileMode.CreateNew);
+                    var fs = new FileStream(filePath, FileMode.Create);
                     stream.CopyTo(fs);
                     fs.Close();
                     stream.Position = 0;
