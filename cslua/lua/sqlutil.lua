@@ -52,7 +52,10 @@ local function test()
 	-- print("close", res:close())
 end
 
-local function _MysqlSQL2Sheet(conn, sql, sheet)
+local function _MysqlSQL2Sheet(conn, sql, sheet, offset_row)
+    
+    if offset_row == nil then offset_row = 0 end
+    
 	local res, err = conn:execute(sql)
 	if err ~= nil then print(err) return end
 
@@ -65,7 +68,7 @@ local function _MysqlSQL2Sheet(conn, sql, sheet)
 
 	for i=0,res:numrows()-1 do
 		local t = {res:fetch()}
-		local row = sheet:GetRow(i+1) or sheet:CreateRow(i+1)
+		local row = sheet:GetRow(offset_row+i+1) or sheet:CreateRow(offset_row+i+1)
 		for ii, vv in pairs(t) do
 			local cell = row:GetCell(ii-1) or row:CreateCell(ii-1)
 			cell:SetCellValue(vv)
