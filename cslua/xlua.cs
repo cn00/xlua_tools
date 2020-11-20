@@ -3,8 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using XLua;
+using XLua.LuaDLL;
 
 namespace xlua
 {
@@ -34,6 +36,16 @@ namespace xlua
 
     internal class xlua
     {
+        
+        [DllImport("lua", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int pmain(System.IntPtr L);
+
+        [MonoPInvokeCallback(typeof(lua_CSFunction))]
+        public static int LuaPmain(System.IntPtr L)
+        {
+            return pmain(L);
+        }
+
         public static string ExecutableDir;
         public static void Main(string[] args)
         {
@@ -93,19 +105,47 @@ namespace xlua
                 Debug.WriteLine(" usage:\n\tosx/unix: mono xlua.exe path/to/entry.lua");
                 Debug.WriteLine("\twindows: xlua.exe path/to/entry.lua");
                 Debug.WriteLine("Or type lua code in Interaction Mode\nGood luck.");
-                Console.Write("xlua> ");
-                var history = File.AppendText("xlua.history.lua");
-                var cmd = Console.ReadLine();
+                Console.Write("xlua");
+
+                
+                // // XLua.LuaDLL.Lua.lua_pushcclosure(L, (IntPtr)(pmain), 0);
+                // XLua.LuaDLL.Lua.xlua_pushinteger(L, args.Length - 1);
+                // luaenv.Translator.PushAny(L, args);
+                // var ok = pmain(L);
+                // Console.WriteLine($"lua return: {ok}");
+                
+                //*
+                var fhistory = "xlua.history.lua";
+                System.ReadLine.HistoryEnabled = false;
+                var historyList = ReadLine.GetHistory();
+                if (File.Exists(fhistory))
+                {
+                    historyList.AddRange(File.ReadAllLines(fhistory)
+                        .GroupBy(i => i)
+                        .Select(i => i.First()));
+                    // ReadLine.AddHistory(historyList.ToArray());
+                }
+
+                var history = File.AppendText(fhistory);
+                int historyIdx = 0;
+                var cmd = "";
                 while (cmd != "quit" && cmd != "exit")
                 {
-                    // var c = Console.ReadKey();
-                    // Debug.WriteLine(c.Key);
-                    
                     cmd = cmd.Trim().Replace("\0", "");
+                    if(!historyList.Contains(cmd)){
+                        historyList.Add(cmd);
+                        history.WriteLine(cmd);
+                        history.Flush();
+                    }
+                    if(cmd == "cls")
+                    {
+                        Console.Clear();
+                        goto next;
+                    }
                     if (cmd != "" 
-                        // && !cmd.Contains(" ") 
-                        && !cmd.Contains("=") 
-                        && !cmd.Contains("print")
+                         // && !cmd.Contains(" ") 
+                         && !cmd.Contains("=") 
+                         && !cmd.Contains("print")
                      )
                     {
                         if(!cmd.Contains(",")
@@ -143,12 +183,12 @@ namespace xlua
                         Debug.WriteLine(e.Message + "\n#trace: \n" + e.StackTrace);
                     }
 
-                    history.WriteLine(cmd);
-                    history.Flush();
-                    Console.Write("> ");
-                    cmd = Console.ReadLine();
-                }
+                    next:
+                    cmd = ReadLine.Read("> ");
+                }// while
                 history.Close();
+                Console.WriteLine("exit");
+                // */
             }
         }
     }

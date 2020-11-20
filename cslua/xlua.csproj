@@ -4,7 +4,7 @@
         <LangVersion>8</LangVersion>
 	<DefineConstants>THREAD_SAFE;XLUA_GENERAL;GEN_CODE_MINIMIZE</DefineConstants>
 	<TargetFramework>netcoreapp3.1</TargetFramework>
-	<OutputType>Exe</OutputType>
+	<OutputType>WinExe</OutputType>
     </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.HttpUtility, Version=1.0.0.1, Culture=neutral, PublicKeyToken=null">
@@ -33,4 +33,15 @@
     <ProjectReference Include="..\npoi\OpenXmlFormats\NPOI.OpenXmlFormats.Core.csproj" />
     <ProjectReference Include="..\xlua\General\vs2013\XLua.Mini.csproj" />
   </ItemGroup>
+ <ItemGroup>
+    <NativeReference Include="..\xlua\build\build_osx\bin\Release\lib*.dylib">
+      <Kind>Dynamic</Kind>
+      <SmartLink>False</SmartLink>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </NativeReference>
+  </ItemGroup>
+ <ItemGroup>
+   <PackageReference Include="ReadLine" Version="2.0.1" />
+ </ItemGroup>
+
 </Project>
