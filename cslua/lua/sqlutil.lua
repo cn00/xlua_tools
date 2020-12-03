@@ -16,7 +16,7 @@ local luasql = require "luasql.mysql"
 -- end
 
 local function test()
-	local conn, err = luasql.mysql():connect("a3_350_u", "a3", "654123", "10.23.22.233")
+	local conn, err = luasql.mysql():connect("a3_350_u", "a3", "654123", "10.23.24.239")
 	if err ~= nil then print(err) return end
 	-- local sql = "show tables;"
 	local sql = "select s.jp_name, c.* from a3_350_m.m_card c left join a3_350_m.m_string_item s on c.card_name_id = s.string_id limit 20;"

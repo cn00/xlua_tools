@@ -3,8 +3,13 @@
     <PropertyGroup>
         <LangVersion>8</LangVersion>
 	<DefineConstants>THREAD_SAFE;XLUA_GENERAL;GEN_CODE_MINIMIZE</DefineConstants>
-	<TargetFramework>netcoreapp3.1</TargetFramework>
-	<OutputType>WinExe</OutputType>
+	<OutputType>Exe</OutputType>
+	<Nullable>enable</Nullable>
+	<TargetFrameworks>net48;netcoreapp3.1</TargetFrameworks>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <DebugType>full</DebugType>
     </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.HttpUtility, Version=1.0.0.1, Culture=neutral, PublicKeyToken=null">
@@ -17,31 +22,20 @@
       <HintPath>..\..\..\..\..\usr\local\Cellar\mono\6.6.0.161\lib\mono\4.0-api\System.Windows.Forms.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
-    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\abb\libs\UnityEngine.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="lua/**/*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <Content Include="lua/**/*">   <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
+    <Content Include="lib/*.dylib"><CopyToOutputDirectory>Always</CopyToOutputDirectory></Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\npoi\main\NPOI.Core.csproj" />
     <ProjectReference Include="..\npoi\ooxml\NPOI.OOXML.Core.csproj" />
     <ProjectReference Include="..\npoi\openxml4Net\NPOI.OpenXml4Net.Core.csproj" />
     <ProjectReference Include="..\npoi\OpenXmlFormats\NPOI.OpenXmlFormats.Core.csproj" />
-    <ProjectReference Include="..\xlua\General\vs2013\XLua.Mini.csproj" />
-  </ItemGroup>
- <ItemGroup>
-    <NativeReference Include="..\xlua\build\build_osx\bin\Release\lib*.dylib">
-      <Kind>Dynamic</Kind>
-      <SmartLink>False</SmartLink>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </NativeReference>
+    <ProjectReference Include="..\xlua\XLua.Mini.csproj" />
   </ItemGroup>
  <ItemGroup>
    <PackageReference Include="ReadLine" Version="2.0.1" />
+   <PackageReference Include="Mono.HttpUtility" Version="1.0.0.1" />
  </ItemGroup>
-
 </Project>

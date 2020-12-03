@@ -38,18 +38,19 @@ namespace xlua
     {
         
         [DllImport("lua", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int pmain(System.IntPtr L);
+        public static extern void doREPL(System.IntPtr L);
 
         [MonoPInvokeCallback(typeof(lua_CSFunction))]
-        public static int LuaPmain(System.IntPtr L)
+        public static int LuaDoREPL(System.IntPtr L)
         {
-            return pmain(L);
+             doREPL(L);
+             return 0;
         }
 
         public static string ExecutableDir;
         public static void Main(string[] args)
         {
-            // args = new[] {"/Volumes/Data/a3/c3/client/Unity/Tools/excel/lua/ks3.lua"};
+            // args = new[] {"/Volumes/Data/a3/tools/cslua/lua/bf.lua"};
             
             // for (int i = 0; i < args.Length; i++)
             // {
@@ -71,7 +72,7 @@ namespace xlua
             luaenv.DoString(@"package.path = package.path .. ';lua/?.lua' .. ';../lua/?.lua';"
                             + string.Format("package.path = package.path .. ';{0}/?.lua;'", ExecutableDir)
                             +       "package.cpath = package.cpath .. ';./lib?.dylib;./?.dylib';"
-                            + string.Format("package.cpath = package.cpath .. ';{0}/lib?.dylib;{0}/?.dylib'", ExecutableDir)
+                            + string.Format("package.cpath = package.cpath .. ';{0}lib?.dylib;{0}lib/lib?.dylib;{0}lib/?.dylib;{0}../lib/lib?.dylib;{0}../lib/?.dylib'", ExecutableDir)
             );
             
             var initlua = ExecutableDir + "init.lua";
@@ -113,7 +114,11 @@ namespace xlua
                 // luaenv.Translator.PushAny(L, args);
                 // var ok = pmain(L);
                 // Console.WriteLine($"lua return: {ok}");
-                
+
+
+                // LuaDoREPL(L);
+                //
+                // return;
                 //*
                 var fhistory = "xlua.history.lua";
                 System.ReadLine.HistoryEnabled = false;
@@ -133,10 +138,11 @@ namespace xlua
                 {
                     cmd = cmd.Trim().Replace("\0", "");
                     if(!historyList.Contains(cmd)){
-                        historyList.Add(cmd);
                         history.WriteLine(cmd);
                         history.Flush();
                     }
+                    if(cmd .Length > 0)
+                        historyList.Add(cmd);
                     if(cmd == "cls")
                     {
                         Console.Clear();
@@ -160,17 +166,25 @@ namespace xlua
                     {
                         if (cmd.Length > 0)
                         {
-                            var ret = luaenv.DoString(cmd);
-                            if (ret != null && ret.Length > 0)
+                            try
                             {
-                                foreach (var o in ret)
+                                var ret = luaenv.DoString(cmd);
+                                if (ret != null && ret.Length > 0)
                                 {
-                                    // ObjectTranslatorPool.Instance.Find(L).PushAny(L, o);
-                                    // var v = o is null ? XLua.LuaDLL.Lua.lua_tostring(L, -1) : o.ToString();
-                                    var v = o is null ? "nil or native_ptr try tostring(obj) again" : o.ToString();
-                                    Console.Write("{0}\t", v);
+                                    foreach (var o in ret)
+                                    {
+                                        // ObjectTranslatorPool.Instance.Find(L).PushAny(L, o);
+                                        // var v = o is null ? XLua.LuaDLL.Lua.lua_tostring(L, -1) : o.ToString();
+                                        var v = o is null ? "nil or native_ptr try tostring(obj) again" : o.ToString();
+                                        Console.Write("{0}\t", v);
+                                    }
+
+                                    Console.Write("\n");
                                 }
-                                Console.Write("\n");
+                            }
+                            catch (LuaException e)
+                            {
+                                Console.WriteLine(e.Message);
                             }
                         }
                     }
@@ -187,7 +201,7 @@ namespace xlua
                     cmd = ReadLine.Read("> ");
                 }// while
                 history.Close();
-                Console.WriteLine("exit");
+                Console.WriteLine("\nexit no error.");
                 // */
             }
         }

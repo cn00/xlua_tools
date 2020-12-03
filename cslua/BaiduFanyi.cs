@@ -7,8 +7,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Timers;
-using System.Web;
-using HttpUtility = System.Web.HttpUtility;
+using Mono.Web;
 using Random = System.Random;
 
 namespace Baidu

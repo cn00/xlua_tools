@@ -102,7 +102,7 @@ local function OpenExcel( path )
     return wb
 end
 
-function BF( strt )
+local function BF( strt )
     local bf=CS.Baidu.Fanyi.Do
     local json = require "json"
     local t = strt
