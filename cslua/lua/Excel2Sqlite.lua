@@ -4,7 +4,7 @@ local System = CS.System
 local util = require "util"
 
 
-function Excel2Sqlite(path, db, language, version)
+local function Excel2Sqlite(path, db, language, version)
     if(path:sub(-5) == ".xlsx" and nil == path:match("~") )then return end
 
     language = language or "zh"

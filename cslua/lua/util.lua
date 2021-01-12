@@ -12,6 +12,11 @@ function split(self, sep)
     return fields
 end
 
+---GetFiles
+---@param root string
+---@param fileAct function
+---@param filter string|function
+---@param includechild boolean
 local function GetFiles(root, fileAct, filter, includechild)
     if includechild == nil then includechild = true end
     -- print("GetFiles", root)

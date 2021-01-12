@@ -2,9 +2,9 @@ local CS = CS
 local System = CS.System
 local StringBuilder = System.Text.StringBuilder
 
-local util = require "util"
-local excel = require "util.excel"
-local dump = require "dump"
+local util = require "lua.util"
+local excel = require "lua.util.excel"
+local dump = require "lua.dump"
 
 local TotalCellCount = 0;
 local DiffCellCount = 0;
