@@ -10,6 +10,8 @@ local Regex = System.Text.RegularExpressions.Regex
 -- local dump = require "dump"
 local sqlite3 = require "lsqlite3"
 local lfs = require "lfs"
+local util = require "util"
+local table = require("util.linq")
 
 local bf=CS.Baidu.Fanyi.Do
 local GroupBy = CS.xlua.Util.GroupBy
@@ -23,30 +25,24 @@ local print = function(...)
     _G.print("codeTrans", ...)
 end
 
-local dicdbpath = "/Volumes/Data/a3/c3/client/Unity/Tools/excel/strings.sqlite3"
+local dicdbpath = "strings-all.sqlite3"
 local db = sqlite3.open(dicdbpath);
-local time = os.time()
+assert(db ~= nil, "db open failed")
 
-function sethead(t, h)
-	-- print(unpack(h))
-	local hh = {}
-	for i,v in ipairs(h) do hh[v] = i end
-	local mt = {
-		__index = function(tt, kk, vv)
-			if hh[kk] ~= nil then
-				return tt[hh[kk]]
-			else
-				return nil
-			end
-		end
-	}
-	for i, v in ipairs(t) do
-		if(type(v) == "table")then
-			-- print("set-meta", i, v.id, v[2], v[5])
-			setmetatable(v, mt)
-		end
-	end
-end
+local sql = [[
+CREATE TABLE IF NOT EXISTS "dic"(
+	"id"	INTEGER UNIQUE,
+	"s"	text UNIQUE,
+	"zh"	text,
+	"tr"	text,
+	"src"	text,
+	"v"	INTEGER DEFAULT 0,
+	"ut"	TEXT,
+	PRIMARY KEY("id" AUTOINCREMENT)
+)]]
+assert(sqlite3.OK == db:exec(sql), db:errmsg():gsub("\n", "\\n"))
+
+local time = os.time()
 
 local function trim( s, t )
     t = t or {"^%s+", "%s+$", "^//*", "^'", "'$", "^\"", "\"$"}
@@ -58,7 +54,7 @@ local function trim( s, t )
     return s
 end
 
-function strip( s )
+local function strip( s )
 	local t = {
 		{'%%', '‰'}, -- 必须放第一个
 		{'%(', '%%('},
@@ -80,14 +76,11 @@ function strip( s )
 end
 
 local gmsc, ggpc, gslc = 0,0,0
-function TransOne( fpath, regular_jp, t )
+local function TransOne( fpath, regular_jp, t )
 	local f = io.open(fpath)
 	local s = f:read('*a')
 	f:close()
 
-	-- local regular_zh = [[.*[\u4e00-\u9fa5]+.*]] -- zh
-	-- local regular_jpzh = [[.*[\u3021-\u3126\u4e00-\u9fa5]+.*]] -- zh + jp
-	-- local ms = Regex.Matches(s, regular_jp, System.Text.RegularExpressions.RegexOptions.Singleline)
 	local ms = Regex.Matches(s, regular_jp, System.Text.RegularExpressions.RegexOptions.Compiled)
 	if ms.Count < 1 then return end
 	-- print("ms", ms, ms.Count)
@@ -113,7 +106,7 @@ function TransOne( fpath, regular_jp, t )
 		, "\n"
 	}
 	local jp = nil
-	local selectdic = {'select * from dic where s in ('}
+	local selectdic = {'select * from (select * from dic where s in ('}
 	local insertdic = {'insert into dic (s, src, ut) VALUES '} -- no trans jp
 	for i=0,ms.Count-1 do
 		jp = "'" .. trim(ms[i].Value, trimt) .. "'"
@@ -122,7 +115,7 @@ function TransOne( fpath, regular_jp, t )
 		insertdic[1+#insertdic] = '\t(' .. jp .. ', \'{src="'.. fpath ..'"}\', '..time..'),'
 	end
 	selectdic[#selectdic] = '\t' .. jp
-	selectdic[1+#selectdic] = ') and ((zh NOTNULL and zh <> \'\') or ( tr NOTNULL and tr <> \'\'));'
+	selectdic[1+#selectdic] = ') and ((zh NOTNULL and zh <> \'\') or ( tr NOTNULL and tr <> \'\'))) ORDER BY length(s) desc;'
 	insertdic[#insertdic] = '\t(' .. jp .. ', \'{src="'.. fpath ..'"}\', '..time..')'
 	local language = "s"
 	insertdic[1+#insertdic] = "ON CONFLICT(s) DO UPDATE SET \n\t"
@@ -145,34 +138,116 @@ function TransOne( fpath, regular_jp, t )
 	f:write(sql)
 	f:close()
 
-	
 	print('--->', fpath)
 	-- if true then return end
 
 	-- check dic
 	local dic = {}
 	local head = nil
-	local err = db:exec(sql, function ( ud, ncols, values, names )
-		-- print("check-dic-cb", unpack(values))
-		head = names
-		local r = {table.unpack(values)}
-		dic [1+#dic] = r
-
-		return sqlite3.OK
-	end)
-	if err ~= sqlite3.OK then print("check dic error", db:errmsg():gsub("\n", "\\n"), sql:gsub("\n", "\\n")) end
-	if #dic < 1 then return end
-	sethead(dic, head)
+	for row in db:nrows(sql) do
+		dic [1+#dic] = row
+	end
+	if #dic < 1 then
+		print("no trans find.")
+		return
+	end
+	--sethead(dic, head)
 
 	-- trans replace
 	for i,v in ipairs(dic) do
 		if v.zh == nil or v.zh == '' then v.zh = 'tr:' .. v.tr end
-		if v.v and (v.v:match("bdfy") or v.v:match("bf")) then v.zh = "bf:" .. v.zh .. ":fb" end
-		-- print('replace', regular_jp, i, v.s, v.zh)
+		if v.v and (v.v:match("bdfy") or v.v:match("bf")) then v.zh = "<bf:" .. v.zh .. ":fb>" end
+		 print('replace', regular_jp, i, v.s, v.zh)
 		if t == 'sh' then
 			s = CS.xlua.Util.Replace(s, ("'" .. v.s .. "'"), ("'" .. v.zh .. "'"))
 		elseif t == 'c' then
-			s = CS.xlua.Util.Replace(s, ('"' .. v.s .. '"'), ('"' .. v.zh .. '"'))
+			--s = CS.xlua.Util.Replace(s, ('"' .. v.s .. '"'), ('"' .. v.zh .. '"'))
+			s = CS.xlua.Util.Replace(s, v.s, v.zh)
+		elseif t == 'xml' then
+			s = CS.xlua.Util.Replace(s, ( v.s ), ( v.zh ))
+		end
+	end
+	f = io.open(fpath, "w")
+	f:write(s)
+	f:close()
+
+end
+
+
+local function TransOneV2( fpath, regular_jp, t )
+	local f = io.open(fpath)
+	local s = f:read('*a')
+	f:close()
+
+	local ms = string.gmatch(s, regular_jp)
+	local trimt = {
+		"^>", "<$"
+	, "^'", "'$"
+	, "^\"", "\"$"
+		-- , "^//*", "^'", "'$", "^\"", "\"$"
+	, "\n"
+	}
+	local jp = nil
+	local selectdic = {'select * from (select * from dic where s in ('}
+	local insertdic = {'insert into dic (s, src, ut) VALUES '} -- no trans jp
+	for si in ms do
+		--jp = "'" .. trim(si, trimt) .. "'"
+		jp = "'" .. si .. "'"
+		-- print("ms", i, jp)
+		selectdic[1+#selectdic] = '\t' .. jp .. ','
+		insertdic[1+#insertdic] = '\t(' .. jp .. ', \'{src="'.. fpath ..'"}\', '..time..'),'
+	end
+	if #selectdic < 2 and #insertdic < 2 then return end
+
+	selectdic[#selectdic] = '\t' .. jp
+	selectdic[1+#selectdic] = ') and ((zh NOTNULL and zh <> \'\') or ( tr NOTNULL and tr <> \'\'))) ORDER BY length(s) desc;'
+	insertdic[#insertdic] = '\t(' .. jp .. ', \'{src="'.. fpath ..'"}\', '..time..')'
+	local language = "s"
+	insertdic[1+#insertdic] = "ON CONFLICT(s) DO UPDATE SET \n\t"
+			..language.." = CASE WHEN "..language.." ISNULL OR "..language.." = '' THEN excluded."..language.. " ELSE " .. language .. " END"
+			.."\n\t, src = excluded.src||','||char(13)||src"
+			-- .." WHERE "..language.." <> excluded."..language
+			.. ";"
+
+	lfs.mkdir("tmp-sel-sql")
+	lfs.mkdir("tmp-ins-sql")
+	local sql = table.concat( insertdic, "\n")
+	local f = io.open("tmp-ins-sql/" .. fpath:gsub("/", "_") .. "-insert.sql", "w")
+	f:write(sql)
+	f:close()
+	local err = db:exec(sql)
+	if err ~= sqlite3.OK then print("insert err", db:errmsg():gsub("\n", "\\n"), sql:gsub("\n", "\\n")) end
+
+	local sql = table.concat( selectdic, "\n")
+	local f = io.open("tmp-sel-sql/" .. fpath:gsub("/", "_") .. "-select.sql", "w")
+	f:write(sql)
+	f:close()
+
+	print('--->', fpath)
+	-- if true then return end
+
+	-- check dic
+	local dic = {}
+	local head = nil
+	for row in db:nrows(sql) do
+		dic [1+#dic] = row
+	end
+	if #dic < 1 then
+		print("no trans find.", "new_jp", #insertdic)
+		return
+	end
+	--sethead(dic, head)
+
+	-- trans replace
+	for i,v in ipairs(dic) do
+		if v.zh == nil or v.zh == '' then v.zh = 'tr:' .. v.tr end
+		if v.v and (v.v:match("bdfy") or v.v:match("bf")) then v.zh = "<bf:" .. v.zh .. ":fb>" end
+		print('replace', regular_jp, i, v.s, v.zh)
+		if t == 'sh' then
+			s = CS.xlua.Util.Replace(s, ("'" .. v.s .. "'"), ("'" .. v.zh .. "'"))
+		elseif t == 'c' then
+			--s = CS.xlua.Util.Replace(s, ('"' .. v.s .. '"'), ('"' .. v.zh .. '"'))
+			s = CS.xlua.Util.Replace(s, v.s, v.zh)
 		elseif t == 'xml' then
 			s = CS.xlua.Util.Replace(s, ( v.s ), ( v.zh ))
 		end
@@ -186,53 +261,33 @@ end
 -- local fpath = "/Volumes/Data/a3/s/v210/fuel/appadm/config/menu.php"
 -- TransOne(fpath)
 
-local function GetFiles(root, fileAct, filter)
-    -- print("GetFiles", root)
-    for entry in lfs.dir(root) do
-        if entry ~= '.' and entry ~= '..' then
-            local traverpath = root .. "/" .. entry
-            local attr = lfs.attributes(traverpath)
-            if (type(attr) ~= "table") then --如果获取不到属性表则报错
-                print('ERROR:' .. traverpath .. 'is not a path')
+-- utf8.charpattern
+local charpattern = '[\0-\127\194-\253][\128-\191]*'
+-- 单字节字符首字节编码[0-127]   0x00-0x7f
+-- 双字节字符首字节编码[194-223] 0x0080-0x07ff
+-- 三字节字符首字节编码[224-239] 0x0800-0xffff
+-- 四字节字符首字节编码[240-247] 0x10000-0x1fffff
+-- 五字节字符首字节编码[248-251] 0x200000-0x3ffffff
+-- 六字节字符首字节编码[252-253] 0x4000000-0x7fffffff
+local luaregular_jp   = '[^\0-\127]*\227[\128-\132][\128-\191][^\0-\127]*' -- 包含一个日文字母 \227[\128-\132][\128-\191]
+--local luaregular_jpzh = '[\0-\127\194-\253][\128-\191]+[\0-\253]*'
 
-                goto continue
-            end
-            -- print(traverpath)
-            if (attr.mode == "directory") then
-                GetFiles(traverpath, fileAct, filter)
-            elseif attr.mode == "file" then
-                if fileAct then
-                    -- print("filter", filter)
-                    if filter ~= nil and type(filter) == "function" then
-                        if  filter(traverpath) then fileAct(traverpath) end
-                    else
-                        fileAct(traverpath)
-                    end
-                end
-            end
-        end
-        :: continue :: 
-    end
-end
+--local regular_jpzh= '[\\u3021-\\u3126\\u4e00-\\u9fa5]+'; --jp+zh
 
-
-local regular_jp  = [['[^'"\n]*[\u3040-\u3126]+[^'"\n]*']] 		-- c   'jp'
-local regular_jp2 = [["[^'"\n]*[\u3040-\u3126]+[^'"\n]*"]] 	 	-- c   "jp"
-local regular_jp3 = [[>[^-><'";]*[\u3040-\u3126]+[^-><'";]*<]]  -- xml >jp<
-GetFiles(
-    "fuel"
+local csregular_jpzh= '[\\u4e00-\\u9fa5]*[\\u3021-\\u3126]+[\\u3021-\\u3126\\u4e00-\\u9fa5]*'; --jp
+-- local regular_jp  = [['[^'"\n]*[\u3040-\u3126]+[^'"\n]*']] 		-- c   'jp'
+-- local regular_jp2 = [["[^'"\n]*[\u3040-\u3126]+[^'"\n]*"]] 	 	-- c   "jp"
+-- local regular_jp3 = [[>[^-><'";]*[\u3040-\u3126]+[^-><'";]*<]]  -- xml >jp<
+util.GetFiles(
+    "."
     , function ( fp )
-        TransOne(fp, regular_jp,  'sh')
-        TransOne(fp, regular_jp2, 'c')
-        TransOne(fp, regular_jp3, 'xml')
+        -- TransOne(fp, regular_jp,  'sh')
+        -- TransOne(fp, regular_jp2, 'c')
+        TransOneV2(fp, luaregular_jp, 'c')
+        -- TransOne(fp, regular_jp3, 'xml')
     end
-    , function ( fp )
-        if (
-              fp:sub(-3) == "php"
-        )
-        then return true end
-        return false
-    end
+	 , "md|kt|go|java|scala|puml"
+	--, "puml"
 )
 print("gmsc, ggpc, gslc", gmsc, ggpc, gslc)
 assert(db:exec("VACUUM;"))

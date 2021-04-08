@@ -95,7 +95,7 @@ local function ExcelStory2Mysql(path, db, story_id, type, version, suffix)
 
     local sheet = wb:GetSheet('Scenario')
     local scenario = excel.GetSheetAsTable(sheet, sheet.FirstRowNum + 2)
-    local values = { "INSERT ignore INTO story_".. version .. "_jp (story_id, type, version, row, command, arg1, arg2, arg3, arg4, arg5, arg6, arg7, text, pagectrl, voice, memo, english, layer_type, layer_x, layer_y, layer_z, sound_type, cuesheet, cuename, streaming) VALUES " }
+    local values = { "INSERT ignore INTO story_".. version .. suffix.." (story_id, type, version, row, command, arg1, arg2, arg3, arg4, arg5, arg6, arg7, text, pagectrl, voice, memo, english, layer_type, layer_x, layer_y, layer_z, sound_type, cuesheet, cuename, streaming) VALUES " }
     local currentRow
     for i, v in ipairs(scenario) do
         local l = getLayerInfo(v.Arg3) or {Type = "", X = 0, Y = 0, Z = 0}
@@ -119,7 +119,7 @@ local function ExcelStory2Mysql(path, db, story_id, type, version, suffix)
 
     local sql = table.concat(values, "\n")
 
-    local f = io.open(path .. ".sql", "w")
+    local f = io.open(path .. "-Scenario.sql", "w")
     f:write(sql)
     f:close()
     
@@ -129,22 +129,141 @@ local function ExcelStory2Mysql(path, db, story_id, type, version, suffix)
     end
 end
 
-local function Story2MysqlTest()
-    -- TODO: import master excelpath:find("/Master.xls")
-    -- local excelpath = "/Users/cn/a3/cjp/res-jp/ExcelData/Story/back/back_663_067.xls"
-    local count  = 0
-    util.GetFiles("path/to/ExcelData/Story", function(excelpath)
-        count = count + 1
-        local matchs = string.gmatch(excelpath, ".*/Story/([^/]*)/(.*)%.xls")
-        local type, id = matchs()
-        print(count, id, type, excelpath)
-        if type ~= nil and id ~= nil then
-            local db, err = luasql.mysql():connect("a3_excel_data", "a3", "***", "10.x.x.x")
-            local suffix = ""
-            ExcelStory2Mysql(excelpath, db, id, type, "308", suffix)
-        end
-    end, "xls|xlsx")
-end
--- Story2MysqlTest()
 
-return ExcelStory2Mysql
+local function StoryMaster2Mysql(path, db, version, suffix)
+    if (path:sub(-5) == ".xlsx" and nil == path:match("~")) then
+        return
+    end
+
+    version = version or "210"
+    suffix = suffix or ""
+
+    local createsql = string.format([[
+         create table if NOT EXISTS `story_texture_%s%s`(
+           `id`        int(16) unsigned NOT NULL AUTO_INCREMENT,
+           `label`     char(32), -- Bg, Title, Bgm, Face, Anime, Emotion
+           `type`      char(16), -- Bg, Bg02, Still, Obj, Effect
+           `path`      char(126),
+           `comment` text DEFAULT NULL,
+           PRIMARY KEY (`id`),
+           KEY `texture` (`label`,`type`,`path`)
+         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;]], version, suffix)
+    print(createsql)
+    assert( db:execute(createsql));
+
+    createsql = string.format([[
+         create table if NOT EXISTS `story_character_%s%s`(
+           `id`        int(16) unsigned NOT NULL AUTO_INCREMENT,
+           `label`     char(32), -- sakuya
+           `name`      char(16), -- 咲也
+           `color`     char(8),  -- ff008e
+           `path`      char(126),
+           `face`      char(126),
+           `comment`   char(126),
+           PRIMARY KEY (`id`),
+           KEY `character` (`label`,`name`,`color`,`path`,`face`)
+         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;]], version, suffix)
+    print(createsql)
+    assert( db:execute(createsql));
+
+    createsql = string.format([[
+        create table if NOT EXISTS `story_voice_%s%s`(
+          `id`        int(16) unsigned NOT NULL AUTO_INCREMENT,
+          `label`     char(32), -- bgm001, bgm_Shm15_loop, se.eff11, 016_sys100
+          `type`      char(16), -- Sound003
+          `cuesheet`  char(32),  -- Sound003_001_001
+          `cuename`   char(32),
+          `streaming` char(8),  -- TRUE
+          `comment`   char(126),
+          PRIMARY KEY (`id`),
+          KEY `voice` (`label`,`type`,`cuesheet`,`cuename`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    ]], version, suffix)
+    print(createsql)
+    assert( db:execute(createsql));
+
+    local wb = excel.OpenExcel(path)
+    local sound = excel.GetSheetAsTable(wb:GetSheet('Sound'))
+
+    local values = { "INSERT ignore INTO story_voice_".. version..suffix.." (label, type, cuesheet, cuename, streaming, comment) VALUES " }
+    local currentRow
+    for i, v in ipairs(sound) do
+        currentRow = string.format("('%s','%s','%s','%s','%s','%s')"
+        , v.Label, v.Type, v.CueSheet, v.CueName, v.Streaming, v.comment)
+        values[1 + #values] = currentRow .. ","
+    end
+    values[#values] = currentRow -- replace last ','
+
+    local sql = table.concat(values, "\n")
+    local f = io.open(path .. "-Sound.sql", "w")
+    f:write(sql)
+    f:close()
+    assert( db:execute(sql));
+
+
+    -- texture
+    local Texture = excel.GetSheetAsTable(wb:GetSheet('Texture'))
+    local values = { "INSERT ignore INTO story_texture_".. version..suffix.." (label, type, path, comment) VALUES " }
+    local currentRow
+    for i, v in ipairs(Texture) do
+        currentRow = string.format("('%s','%s','%s','%s')"
+        , v.Label, v.Type, v.FileName, v.comment)
+        values[1 + #values] = currentRow .. ","
+    end
+    values[#values] = currentRow -- replace last ','
+
+    local sql = table.concat(values, "\n")
+    local f = io.open(path .. ".Texture.sql", "w")
+    f:write(sql)
+    f:close()
+    assert( db:execute(sql));
+
+
+
+
+    -- character
+    local Texture = excel.GetSheetAsTable(wb:GetSheet('Character'))
+    local values = { "INSERT ignore INTO story_character_".. version..suffix.." (label, name, color,  path, face, comment) VALUES " }
+    local currentRow
+    for i, v in ipairs(Texture) do
+        currentRow = string.format("('%s','%s','%s','%s','%s','%s')"
+        , v.Label, v.NameText, v.NameBoxColor, v.FileName, v.FaceFileName, v.comment)
+        values[1 + #values] = currentRow .. ","
+    end
+    values[#values] = currentRow -- replace last ','
+
+    local sql = table.concat(values, "\n")
+    local f = io.open(path .. ".Character.sql", "w")
+    f:write(sql)
+    f:close()
+    assert( db:execute(sql));
+    
+end
+
+
+
+local function Story2MysqlTest()
+    local db, err = luasql.mysql():connect("a3_excel_data", "a3", "654123", "10.*.*.*")
+    local version = "210"
+    local suffix = "new"
+    
+    ---- import master excelpath:find("/Master.xls")
+     local masterpath = "/Users/cn/a3/c/client/Unity/Assets/Application/Resource/ExcelData/Story/Master.xls"
+    StoryMaster2Mysql(masterpath, db, version, suffix )
+    
+    --local count  = 0
+    --util.GetFiles("/Users/cn/a3/cjp/res-jp/ExcelData/Story", function(excelpath)
+    --    count = count + 1
+    --    local matchs = string.gmatch(excelpath, ".*/Story/([^/]*)/(.*)%.xls")
+    --    local type, id = matchs()
+    --    print(count, id, type, excelpath)
+    --    if type ~= nil and id ~= nil then
+    --        ExcelStory2Mysql(excelpath, db, id, type, version, suffix)
+    --    end
+    --end, "xls|xlsx")
+    
+    db:close()
+end
+--Story2MysqlTest()
+
+--return ExcelStory2Mysql
