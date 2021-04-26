@@ -3,7 +3,7 @@ local util = require "util"
 local sqlite3 = require "lsqlite3"
 
 -- local dicdbpath = "/Users/cn/a3/c3/client/Unity/Tools/excel/strings.sqlite3"
-local dicdbpath = "strings-puml.sqlite3"
+local dicdbpath = "/Users/cn/dark/strings-dic.sqlite3"
 local db = sqlite3.open(dicdbpath);
 local function checkdberr( errno, sql )
     if errno ~= sqlite3.OK then print("sqlerr", db:errmsg():gsub("\n", "\\n"), sql) end

@@ -7,50 +7,13 @@ local NPOI = CS.NPOI
 local XWorkbook = NPOI.XSSF.UserModel.XSSFWorkbook
 
 local util = require "util"
-local dump = require "dump"
+local dump = util.dump
 
 local sqlite3 = require "lsqlite3"
 local luasql = require "luasql.mysql"
 -- for k,v in pairs(luasql) do
 -- 	print(k,v)
 -- end
-
-local function test()
-	local conn, err = luasql.mysql():connect("a3_350_u", "a3", "654123", "10.23.24.239")
-	if err ~= nil then print(err) return end
-	-- local sql = "show tables;"
-	local sql = "select s.jp_name, c.* from a3_350_m.m_card c left join a3_350_m.m_string_item s on c.card_name_id = s.string_id limit 20;"
-	local res, err = conn:execute(sql)
-	if err ~= nil then print(err) return end
-	print(dump(res:getcolnames()), res:numrows())
-	for i=0,res:numrows()-1 do
-		local t = {res:fetch()}
-		-- t = {fetch()}
-		--[[ t =
-		{
-			"1",
-			"352",
-			"1",
-			...
-		}
-		]]
-
-		-- t = fetch(t, "a")
-		--[[ t = 
-		{
-			["variation_no"] = "1",
-			["rf_flag"] = "1",
-			["rarity"] = "1",
-			...
-		}
-		]]
-		-- local t = {}
-		-- res:fetch(t, "a")
-		print(i, res:fetch())
-		-- print(i, dump(t))
-	end
-	-- print("close", res:close())
-end
 
 local function _MysqlSQL2Sheet(conn, sql, sheet, offset_row)
     
@@ -59,9 +22,10 @@ local function _MysqlSQL2Sheet(conn, sql, sheet, offset_row)
 	local res, err = conn:execute(sql)
 	if err ~= nil then print(err) return end
 
-	print(tab, dump(res:getcolnames()), res:numrows())
+	print("_MysqlSQL2Sheet", dump(res:getcolnames()), res:numrows())
 	local row = sheet:GetRow(0) or sheet:CreateRow(0)
 	for k,v in pairs(res:getcolnames()) do
+        --print(k,v)
 		local cell = row:GetCell(k-1) or row:CreateCell(k-1)
 		cell:SetCellValue(v)
 	end
@@ -95,8 +59,8 @@ local function MysqlSQL2Excel(source, SheetName, sql, user, pward, host, excelPa
 end
 
 local function Mysql2Excel(source, tables, user, pward, host, excelPath)
-	local conn, err = luasql.mysql():connect(source, user, pward, host)
-	if err ~= nil then print(err) return end
+	print(user, pward, host, excelPath)
+    local conn, err = assert(luasql.mysql():connect(source, user, pward, host))
 
 	if tables == nil then
 		tables = {}
@@ -140,7 +104,7 @@ local function _SqliteSQL2Sheet( db, sql, sheet )
 		return sqlite3.OK
 	end)
 	if ok ~= sqlite3.OK then print(ok, db:errmsg(), sql) return end
-	print(tab, dump(head), numrows)
+	print("_SqliteSQL2Sheet", dump(head), numrows)
 
 	-- head
 	local row = sheet:GetRow(0) or sheet:CreateRow(0)
@@ -199,7 +163,7 @@ local function Sqlite2Excel(dbpath, tables, excelPath )
 		end)
 		if err ~= sqlite3.OK then print(db:errmsg()) return end
 	end
-	print(source, dump(tables))
+	print("Sqlite2Excel", dump(tables))
 
 	local wb = XWorkbook()
 	for it,tab in ipairs(tables) do
@@ -285,9 +249,47 @@ local function Excel2Sql(source, user, pward, host, excelPath)
 	
 end
 
+
+local function testMysql()
+    local conn, err = luasql.mysql():connect("a3_350_u", "a3", "654123", "10.23.24.239")
+    if err ~= nil then print(err) return end
+    -- local sql = "show tables;"
+    local sql = "select s.jp_name, c.* from a3_350_m.m_card c left join a3_350_m.m_string_item s on c.card_name_id = s.string_id limit 20;"
+    local res, err = conn:execute(sql)
+    if err ~= nil then print(err) return end
+    print(dump(res:getcolnames()), res:numrows())
+    for i=0,res:numrows()-1 do
+        local t = {res:fetch()}
+        -- t = {fetch()}
+        --[[ t =
+        {
+            "1",
+            "352",
+            "1",
+            ...
+        }
+        ]]
+
+        -- t = fetch(t, "a")
+        --[[ t = 
+        {
+            ["variation_no"] = "1",
+            ["rf_flag"] = "1",
+            ["rarity"] = "1",
+            ...
+        }
+        ]]
+        -- local t = {}
+        -- res:fetch(t, "a")
+        print(i, res:fetch())
+        -- print(i, dump(t))
+    end
+    -- print("close", res:close())
+end
+
 -------------------------------------
 return {
-	test = test,
+    testMysql = testMysql,
 	Sqlite2Excel = Sqlite2Excel,
 	SqliteSQL2Excel = SqliteSQL2Excel,
 	Mysql2Excel = Mysql2Excel,

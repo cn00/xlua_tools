@@ -71,6 +71,13 @@ function table:groupby(filter)
     return t
 end
 
+function table:uniqi(filter)
+    filter = filter or function(i)return i end
+    return table.select(table.groupbyi(self, filter), function(it)
+        return it[1]
+    end)
+end
+
 function table.linqtest()
     local t = {
         {k1="abc", k2 = 123},
