@@ -29,7 +29,7 @@ public class LuaSys : SingleMono<LuaSys>
     };
     const string Tag = "LuaSys";
     //all lua behaviour shared one luaenv only!
-    internal LuaEnv luaEnv = new LuaEnv();
+    internal LuaEnv luaEnv = null;
     public LuaEnv GlobalEnv
     {
         get
@@ -93,6 +93,7 @@ public class LuaSys : SingleMono<LuaSys>
         // AppLog.d(Tag, "require: " + assetName);
         if(File.Exists(assetName))
         {
+            // Console.WriteLine($"assetName");
             bytes = File.ReadAllBytes(assetName);
         }
 
@@ -107,8 +108,7 @@ public class LuaSys : SingleMono<LuaSys>
     {
         luaEnv.AddLoader(Require);
 
-        luaEnv.AddBuildin("socket.util", XLua.LuaDLL.Lua.LoadSocketScripts);
-        luaEnv.AddBuildin("mime.core", XLua.LuaDLL.Lua.LoadSocketMime);
+        // luaEnv.AddBuildin("mime.core", XLua.LuaDLL.Lua.LoadSocketMime);
         luaEnv.AddBuildin("lpeg", XLua.LuaDLL.Lua.LoadLpeg);
         luaEnv.AddBuildin("ffi", XLua.LuaDLL.Lua.LoadFfi);
         luaEnv.AddBuildin("lxp", XLua.LuaDLL.Lua.LoadLxp);
