@@ -2,11 +2,16 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Security.Policy;
 using XLua;
 using XLua.LuaDLL;
+// using PinYinConverter;
+using LuaAPI = XLua.LuaDLL.Lua;
 
 namespace xlua
 {
@@ -50,6 +55,43 @@ namespace xlua
         public static string ExecutableDir;
         public static void Main(string[] args)
         {
+            // // no use
+            // AppDomain.CurrentDomain.AssemblyResolve += delegate(object sender, ResolveEventArgs eventArgs)
+            // {
+            //     string assemblyFile = (eventArgs.Name.Contains(','))
+            //         ? eventArgs.Name.Substring(0, eventArgs.Name.IndexOf(','))
+            //         : eventArgs.Name;
+            //
+            //     assemblyFile += ".dll";
+            //
+            //     // // Forbid non handled dll's
+            //     // if (!LOAD_ASSEMBLIES.Contains(assemblyFile))
+            //     // {
+            //     //     return null;
+            //     // }
+            //
+            //     string absoluteFolder = new FileInfo((new System.Uri(Assembly.GetExecutingAssembly().CodeBase)).LocalPath).Directory.FullName;
+            //     string targetPath = Path.Combine(absoluteFolder, assemblyFile);
+            //
+            //     try
+            //     {
+            //         Console.WriteLine($"try load:{targetPath}");
+            //         return Assembly.LoadFile(targetPath);
+            //     }
+            //     catch (Exception)
+            //     {
+            //         return null;
+            //     }
+            //     Console.WriteLine($"load:{targetPath}");
+            // };
+           
+            
+            // // no use 2
+            // var PrivateBinPath = AppDomain.CurrentDomain.SetupInformation.PrivateBinPath + (System.IO.Path.PathSeparator+AppDomain.CurrentDomain.BaseDirectory+"lib");
+            // AppDomain.CurrentDomain.SetupInformation.PrivateBinPath = PrivateBinPath;
+            // Console.WriteLine($"PathSeparator:{System.IO.Path.PathSeparator}\nPrivateBinPath:{PrivateBinPath}=>{AppDomain.CurrentDomain.SetupInformation.PrivateBinPath}\nBaseDirectory:{AppDomain.CurrentDomain.BaseDirectory} ");
+            
+            
             // args = new[] {"/Volumes/Data/a3/tools/cslua/lua/bf.lua"};
             
             // for (int i = 0; i < args.Length; i++)
@@ -65,13 +107,16 @@ namespace xlua
             
             // var l = LuaCallCSharpTypes.L;
 
-            ExecutableDir = AppDomain.CurrentDomain.BaseDirectory;// Application.ExecutablePath.Replace(Path.GetFileName(Application.ExecutablePath), "");
-        
             LuaEnv luaenv = LuaEnvSingleton.Instance;
             var L = luaenv.L;
-            luaenv.DoString(@"package.path = package.path .. ';lua/?.lua' .. ';../lua/?.lua';"
-                            + string.Format("package.path = package.path .. ';{0}/?.lua;'", ExecutableDir)
-                            +       "package.cpath = package.cpath .. ';./lib?.dylib;./?.dylib';"
+            if (0 == LuaAPI.xlua_getglobal(L, "_VERSION"))
+            {
+                Console.WriteLine($"{LuaAPI.lua_tostring(L, -1)}");
+            }
+
+            ExecutableDir = AppDomain.CurrentDomain.BaseDirectory.Replace("\\", "/");// Application.ExecutablePath.Replace(Path.GetFileName(Application.ExecutablePath), "");
+        
+            luaenv.DoString("package.cpath = package.cpath .. ';./lib?.dylib;./?.dylib';"
                             + string.Format("package.cpath = package.cpath .. ';{0}lib?.dylib;{0}lib/lib?.dylib;{0}lib/?.dylib;{0}../lib/lib?.dylib;{0}../lib/?.dylib'", ExecutableDir)
             );
             
@@ -83,6 +128,10 @@ namespace xlua
             if (args.Length > 0)
             {
                 mainlua = args[0];
+                var maindir = mainlua.Substring(0, mainlua.LastIndexOf("/"));
+                luaenv.DoString(string.Format("package.path = package.path .. ';{0}/../?.lua;{0}/?.lua;{0}/lua/?.lua;'", maindir)
+                                    + @"package.path = package.path .. ';lua/?.lua' .. ';../lua/?.lua';"
+                                    + string.Format("package.path = package.path .. ';{0}/?.lua;;{0}/lua/?.lua;'", ExecutableDir));
             
                 LuaTable env =luaenv.NewTable();
                 env.Set("__index",    luaenv.Global);
@@ -102,6 +151,8 @@ namespace xlua
             }
             else
             {
+                luaenv.DoString(@"package.path = package.path .. ';lua/?.lua' .. ';../lua/?.lua';"
+                                    + string.Format("package.path = package.path .. ';{0}/?.lua;;{0}/lua/?.lua;'", ExecutableDir));
                 // Debug.WriteLine("run default entry lua/main.lua");
                 Debug.WriteLine(" usage:\n\tosx/unix: mono xlua.exe path/to/entry.lua");
                 Debug.WriteLine("\twindows: xlua.exe path/to/entry.lua");
