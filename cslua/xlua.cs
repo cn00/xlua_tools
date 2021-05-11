@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Policy;
+using NPOI.XSSF.UserModel;
 using XLua;
 using XLua.LuaDLL;
 // using PinYinConverter;
@@ -55,6 +56,9 @@ namespace xlua
         public static string ExecutableDir;
         public static void Main(string[] args)
         {
+                        
+            // args = new[] {"/Users/cn/a3/c308/client/Unity/Tools/excel/lua/app/CollectImg2Excel.lua"};
+
             // // no use
             // AppDomain.CurrentDomain.AssemblyResolve += delegate(object sender, ResolveEventArgs eventArgs)
             // {
@@ -92,8 +96,6 @@ namespace xlua
             // Console.WriteLine($"PathSeparator:{System.IO.Path.PathSeparator}\nPrivateBinPath:{PrivateBinPath}=>{AppDomain.CurrentDomain.SetupInformation.PrivateBinPath}\nBaseDirectory:{AppDomain.CurrentDomain.BaseDirectory} ");
             
             
-            // args = new[] {"/Volumes/Data/a3/tools/cslua/lua/bf.lua"};
-            
             // for (int i = 0; i < args.Length; i++)
             // {
             //     Debug.WriteLine("args{0}: {1}", i, args[i]);
@@ -107,6 +109,20 @@ namespace xlua
             
             // var l = LuaCallCSharpTypes.L;
 
+            // var size = NPOI.SS.Util.ImageUtils.GetImageDimension(null);
+            // var wb = new XSSFWorkbook();
+            // var sheet = wb.GetSheet("");
+            // var picInd = wb.AddPicture(new FileStream("", FileMode.Open), 6);
+            // var helper = wb.GetCreationHelper();
+            // var drawing = sheet.CreateDrawingPatriarch();
+            // var anchor = helper.CreateClientAnchor();
+            // anchor.Col1 = 0;
+            // anchor.Col2 = 0;
+            // anchor.Row1 = 5;
+            // var pict = drawing.CreatePicture(anchor, picInd);
+            // pict.Resize();
+
+            
             LuaEnv luaenv = LuaEnvSingleton.Instance;
             var L = luaenv.L;
             if (0 == LuaAPI.xlua_getglobal(L, "_VERSION"))

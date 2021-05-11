@@ -26,6 +26,8 @@ namespace Baidu
         /// <returns></returns>
         public static string Do(string src, string from, string to, string appId, string secretKey)
         {
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+            
             Random rd = new Random();
             string salt = rd.Next(100000).ToString();
             string sign = EncryptString(appId + src + salt + secretKey);
@@ -109,9 +111,10 @@ namespace Baidu
         public static string DoImg(string fpath, string from, string to, string appId, string secretKey)
         {
             Random rd = new Random();
-            string salt = rd.Next(100000).ToString();
-            var fmd5 = xlua.Util.Md5(fpath).ToLower();
-            string sign = EncryptString(appId + fmd5 + salt + "APICUIDmac" + secretKey);
+            string salt = "1435660288";//rd.Next(100000).ToString();
+            var fmd5 = EncryptString(File.ReadAllBytes(fpath)).ToLower();
+            var date2sigin = appId + fmd5 + salt + "APICUIDmac" + secretKey;
+            string sign = EncryptString(date2sigin);
             string url = "https://fanyi-api.baidu.com/api/trans/sdk/picture?";
             // url += "q=" + HttpUtility.UrlEncode(fpath);
             url += "from=" + from;
@@ -120,20 +123,20 @@ namespace Baidu
             url += "&salt=" + salt;
             url += "&sign=" + sign;
             url += "&cuid=APICUID&mac=mac";
-            url += $"&fmd5={fmd5}";
-            Console.WriteLine($"url:{url}");
+            // url += $"&fmd5={fmd5}";
+            Console.WriteLine($"fmd5:{fmd5} url:{url}");
 
             // var retString = HttpPostData(url, 6000, "image.png", fpath, new NameValueCollection());
             var retString = Upload(url, fpath);
             
             // HttpWebRequest request = (HttpWebRequest) WebRequest.Create(url);
-
+            //
             // // request.Method = "GET";
             // // request.ContentType = "text/html;charset=UTF-8";
             // request.Method = "POST";
             // request.KeepAlive = true;
             // // request.Connection = "Keep-Alive";
-            // request.ContentType = "multipart/form-data; boundary=WFxd9eMHN7IjLC2KgBBYWXZ0hXvG9J4w";
+            // request.ContentType = "multipart/form-data";
             // request.UserAgent = null;
             // request.Timeout = 6000;
             // var rs = request.GetRequestStream();
@@ -232,14 +235,14 @@ namespace Baidu
 
         public static string Upload(string uri, string filePath)
         {   
-            string formdataTemplate = "Content-Disposition: form-data; filename=\"{0}\";\r\nContent-Type: image/jpeg\r\n\r\n";
+            string formdataTemplate = "Content-Disposition: form-data; filename=\"{0}\";\r\nContent-Type: image/png\r\n\r\n";
             string boundary = "---------------------------" + DateTime.Now.Ticks.ToString("x");
             byte[] boundarybytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
             request.ServicePoint.Expect100Continue = false;
             request.Method = "POST";
-            request.ContentType = "image/png; multipart/form-data; boundary=" + boundary;
+            request.ContentType = "multipart/form-data; boundary=" + boundary;
 
             using(FileStream fileStream    = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
@@ -249,9 +252,9 @@ namespace Baidu
                     string formitem = string.Format(formdataTemplate, Path.GetFileName(filePath));   
                     byte[] formbytes = Encoding.UTF8.GetBytes(formitem);
                     requestStream.Write(formbytes, 0, formbytes.Length);
+
                     byte[] buffer = new byte[1024 * 4];
                     int bytesLeft = 0;
-
                     while ((bytesLeft = fileStream.Read(buffer, 0, buffer.Length)) > 0)
                     {
                         requestStream.Write(buffer, 0, bytesLeft);
@@ -334,12 +337,9 @@ namespace Baidu
             return sb.ToString();
         }
 
-        // 计算MD5值
-        public static string EncryptString(string str)
+        public static string EncryptString(byte[] byteOld)
         {
             MD5 md5 = MD5.Create();
-            // 将字符串转换成字节数组
-            byte[] byteOld = Encoding.UTF8.GetBytes(str);
             // 调用加密方法
             byte[] byteNew = md5.ComputeHash(byteOld);
             // 将加密结果转换为字符串
@@ -352,6 +352,13 @@ namespace Baidu
 
             // 返回加密的字符串
             return sb.ToString();
+
+        }
+        // 计算MD5值
+        public static string EncryptString(string str)
+        {
+            byte[] byteOld = Encoding.UTF8.GetBytes(str);
+            return EncryptString(byteOld);
         }
     }
 }
