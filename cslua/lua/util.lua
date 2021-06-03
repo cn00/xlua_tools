@@ -37,49 +37,59 @@ end
 ---@param fileAct function
 ---@param filter string|function
 ---@param includechild boolean
-local function GetFiles(root, fileAct, filter, includechild)
-    if includechild == nil then
-        includechild = true
+local function GetFiles(_root, _fileAct, _filter, _includechild)
+    if _includechild == nil then
+        _includechild = true
     end
     -- print("GetFiles", root)
-    for entry in lfs.dir(root) do
-        if entry ~= '.' and entry ~= '..' then
-            local traverpath = root .. "/" .. entry
-            local attr = lfs.attributes(traverpath)
-            if (type(attr) ~= "table") then
-                --如果获取不到属性表则报错
-                print('ERROR:' .. traverpath .. 'is not a path')
+    
+    local _GetFiles= function(root, fileAct, filter, includechild)
+        for entry in lfs.dir(root) do
+            if entry ~= '.' and entry ~= '..' then
+                local traverpath = root .. "/" .. entry
+                local attr = lfs.attributes(traverpath)
+                if (type(attr) ~= "table") then
+                    --如果获取不到属性表则报错
+                    print('ERROR:' .. traverpath .. 'is not a path')
 
-                goto continue
-            end
-            -- print(traverpath)
-            if (attr.mode == "directory" and includechild) then
-                GetFiles(traverpath, fileAct, filter)
-            elseif attr.mode == "file" then
-                if fileAct then
-                    -- print("filter", filter)
-                    if filter ~= nil then
-                        if type(filter) == "string" then
-                            local lastname = traverpath:match("%w+$")
-                            local lastnames = split(filter, "|")
-                            for i, v in ipairs(lastnames) do
-                                -- print(i,v,lastname, traverpath)
-                                if v == lastname then
-                                    fileAct(traverpath)
-                                    break
+                    goto continue
+                end
+                -- print(traverpath)
+                if (attr.mode == "directory" and includechild) then
+                    GetFiles(traverpath, fileAct, filter)
+                elseif attr.mode == "file" then
+                    if fileAct then
+                        -- print("filter", filter)
+                        if filter ~= nil then
+                            if type(filter) == "string" then
+                                local lastname = traverpath:match("%w+$")
+                                local lastnames = split(filter, "|")
+                                for i, v in ipairs(lastnames) do
+                                    -- print(i,v,lastname, traverpath)
+                                    if v == lastname then
+                                        fileAct(traverpath)
+                                        break
+                                    end
                                 end
+                            elseif type(filter) == "function" and filter(traverpath) then
+                                fileAct(traverpath)
                             end
-                        elseif type(filter) == "function" and filter(traverpath) then
+                        else
+                            -- all files
                             fileAct(traverpath)
                         end
-                    else
-                        -- all files
-                        fileAct(traverpath)
                     end
                 end
             end
+            :: continue ::
         end
-        :: continue ::
+    end
+    if type(_root) == "string" then
+        _GetFiles(_root, _fileAct, _filter, _includechild)
+    elseif(type(_root) == "table") then
+        for i,v in ipairs(_root) do
+            _GetFiles(v, _fileAct, _filter, _includechild)
+        end
     end
 end
 
@@ -137,7 +147,7 @@ end
 ---@param batchcb function
 local function BF(strt, batchcb)
     local bf = CS.Baidu.Fanyi.Do
-    local json = require "json"
+    local json = require "util.json"
     local t = strt
     print("util.BF", t, #t)
     local limitl = 1000

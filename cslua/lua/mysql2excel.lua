@@ -16,13 +16,13 @@ local sqlutil = require "util.sqlutil"
 -- WHERE 
 -- 	 (s.jp <> s2.jp OR s.zh IS NULL) AND NOT (s.jp LIKE '%ダミー%')
 -- ]]
-local sql = [[
-    select id, unique_string, jp, zh, explanation,provisional, category from strings;
-]]
-sqlutil.Mysql2Excel("dark_text"
-, { "kv_text_not_null", "kv_text_uniq","file_list" }
+-- local sql = [[
+--     select id, unique_string, jp, zh, explanation,provisional, category from strings;
+-- ]]
+sqlutil.Mysql2Excel("dark_master_jp"
+, { "all_master_text_view", "all_master_text_view_uniq"}
 , "dark", "654123", "cn.local"
-, "dark-workspace-jp-kv-text-"..os.date("%Y%m%d%H%M%S")..".xlsx")
+, "all_master_text_view-v121-"..os.date("%Y%m%d%H%M%S")..".xlsx")
 
 
 -- sql = [[

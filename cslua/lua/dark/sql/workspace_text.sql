@@ -26,4 +26,13 @@ select t1.*, ktv.p path
 from kv_text t1
 left join file_list ktv on t1.f = ktv.id;
 
+
+create view if not exists kv_test_unique_view as
+select a.*, fl.p pathId, dic.zh bf
+from (select * from kv_text t1 group by t1.v) a
+         left join file_list fl on a.f = fl.id
+         left join dic on a.v = dic.s
+order by a.id
+;
+
 # insert ignore into file_list (p) values ('')

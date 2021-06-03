@@ -31,7 +31,6 @@ assert(sqlite3.OK == db:exec(sql), db:errmsg():gsub("\n", "\\n"))
 
 db:create_function("uniqsrc", 2, function(ctx, id, src)
     src = string.gsub(src,"^\n", "")
-    print(id, string.sub(src, 1,5))
     local ss= string.split(src:gsub('/Users/cn/dark/', "./"), ',') -- load("return {"..src.."}")();
     local ust = table.uniqi(ss) -- table.where(table.uniqi(ss), function(i) return nil == string.match(i, "_Users_cn_") end)
     local us = table.concat(ust, ",")
@@ -42,7 +41,7 @@ db:create_function("uniqsrc", 2, function(ctx, id, src)
     ctx:result_text(us)
 end)
 
-local time = os.time()
+local time = os.date("%Y-%m-%d %H:%M:%S") --, os.date("%Y%m%d%H%M%S", os.time())
 
 local function trim( s, t )
     t = t or {"^%s+", "%s+$", "^//*", "^'", "'$", "^\"", "\"$"}
@@ -77,8 +76,11 @@ end
 
 local gmsc, ggpc, gslc = 0,0,0
 -- local onconflict = [[ ON CONFLICT(s) DO UPDATE SET s = CASE WHEN s ISNULL OR s = '' THEN excluded.s ELSE s END, src = excluded.src||','||char(13)||src;]]
-local onconflict = [[ ON CONFLICT(s) DO UPDATE SET s = excluded.s, src = uniqsrc(excluded.src||','||char(10)||src), ut = excluded.ut;]]
+local onconflict = [[ ON CONFLICT(s) DO UPDATE SET s = excluded.s, src = uniqsrc(excluded.id, excluded.src||','||char(10)||src), ut = excluded.ut;]]
 local function TransOneV2( fpath, regular_jp, t )
+    
+    -- TODO: use a temp table to 
+    
 	local f = io.open(fpath)
 	local s = f:read('*a')
 	f:close()
@@ -113,7 +115,7 @@ local function TransOneV2( fpath, regular_jp, t )
 		if i % 100 == 0 then
 			insertdic[#insertdic] = string.gsub(insertdic[#insertdic], ",$", onconflict .. " insert into dic (s, src, ut) VALUES ")
 		end
-		insertdic[1+#insertdic] = '    (' .. jp .. ', \''.. fpath ..'\', '..time..'),'
+		insertdic[1+#insertdic] = '    (' .. jp .. ', \''.. fpath ..'\', \''..time..'\'),'
 
 		::continue::
 	end
@@ -124,7 +126,7 @@ local function TransOneV2( fpath, regular_jp, t )
 	selectdic[#selectdic] = '    ' .. jp
 	selectdic[1+#selectdic] = ') and ((zh NOTNULL and zh <> \'\') or ( tr NOTNULL and tr <> \'\'))) ORDER BY length(s) desc;'
 	
-	insertdic[#insertdic] = '    (' .. jp .. ', \''.. fpath ..'\', '..time..')'
+	insertdic[#insertdic] = '    (' .. jp .. ', \''.. fpath ..'\', \''..time..'\')'
 	local language = "s"
 	insertdic[1+#insertdic] = onconflict
 
@@ -132,12 +134,12 @@ local function TransOneV2( fpath, regular_jp, t )
 	lfs.mkdir("/Users/cn/dark/tmp-ins-sql")
 	local sql = table.concat( insertdic, "\n")
 
-		local fti = io.open("/Users/cn/dark/tmp-ins-sql/" .. fpath:gsub("/", "_") .. "-insert.sql", "w")
-		assert(fti, fpath)
-		if fti then
-			fti:write(sql)
-			fti:close()
-		end
+    local fti = io.open("/Users/cn/dark/tmp-ins-sql/" .. fpath:gsub("/", "_") .. "-insert.sql", "w")
+    assert(fti ~= nil, fpath)
+    --if fti then
+        fti:write(sql)
+        fti:close()
+    --end
 	local err = db:exec(sql)
 	if err ~= sqlite3.OK then 
 		print("error insert", err, db:errmsg():gsub("\n", "\\n")) 
@@ -190,7 +192,7 @@ end
 
 local function UniqueSrc(db)
 	for row in db:nrows([[update dic set src = uniqsrc(id, src)]]) do
-		print(row.id, row.usrc)
+		--print(row.id, row.usrc)
 	end
 end
 
@@ -220,21 +222,26 @@ local luaregular_jp   = '[^\0-\127]*\227[\129-\131][\128-\191][^\0-\127]*' -- åŒ
 -- local regular_jp2 = [["[^'"\n]*[\u3040-\u3126]+[^'"\n]*"]] 	 	-- c   "jp"
 -- local regular_jp3 = [[>[^-><'";]*[\u3040-\u3126]+[^-><'";]*<]]  -- xml >jp<
 
---util.GetFiles(
---	-- "." -- server
---	-- "./dark-client/Assets/Scripts" -- client
---	-- "./dark-client/Assets/Resources/text/ja"
---	"./tools"
---	-- "dark-client/Assets/workspace/text/ja"
---    , function ( fp )
---        -- TransOne(fp, regular_jp,  'sh')
---        -- TransOne(fp, regular_jp2, 'c')
---        TransOneV2(fp, luaregular_jp, 'c')
---        -- TransOne(fp, regular_jp3, 'xml')
---    end
---	 , "adoc|md|kt|go|java|scala|puml|sh|bash|sql|csv|gradle|yml|js|jsx"
---	--  , "cs|md|adoc|txt"
---)
+util.GetFiles(
+    {
+        --"." -- server
+        -- "dark-client/Assets/Scripts", -- client
+        --"dark-client/Assets/ExternalAssets", -- client
+        --"./server-admin-react/app",
+        
+        --"dark-client/Assets/Resources/text/ja",
+        --"dark-client/Assets/workspace/text/ja",
+        "/Users/cn/dark/octo/hilo-octo-server/src"
+    }
+   , function ( fp )
+       -- TransOne(fp, regular_jp,  'sh')
+       -- TransOne(fp, regular_jp2, 'c')
+       TransOneV2(fp, luaregular_jp, 'c')
+       -- TransOne(fp, regular_jp3, 'xml')
+   end
+	 --, "adoc|cs|md|kt|go|java|scala|puml|sh|bash|sql|csv|gradle|yml|js|jsx|ts|tsx|json"
+	  , "go"
+)
 
 print("UniqueSrc")
 UniqueSrc(db)
