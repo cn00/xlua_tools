@@ -15,6 +15,28 @@ namespace xlua
 {
     public static class Util
     {
+        
+        public static string Md5(Stream stream)
+        {
+            stream.Seek(0, SeekOrigin.Begin);
+            var md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
+            byte[] hash_byte = md5.ComputeHash(stream);
+
+            var md5str = System.BitConverter.ToString(hash_byte);
+            md5str = md5str.Replace("-", "");
+
+            md5.Clear();
+            return md5str;
+        }
+
+        public static string Md5(string fname)
+        {
+            FileStream inStream = new FileStream(fname, FileMode.Open);
+            var md5str = Md5(inStream);
+            inStream.Close();
+            return md5str;
+        }
+
         public static void PushAny(this RealStatePtr L, object o)
         {
             ObjectTranslatorPool.Instance.Find(L).PushAny(L, o);
