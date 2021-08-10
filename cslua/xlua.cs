@@ -13,6 +13,7 @@ using XLua;
 using XLua.LuaDLL;
 // using PinYinConverter;
 using LuaAPI = XLua.LuaDLL.Lua;
+using Debug = System.Console;
 
 namespace xlua
 {
@@ -52,9 +53,29 @@ namespace xlua
              doREPL(L);
              return 0;
         }
+        
+        [StructLayout(LayoutKind.Sequential)]
+        unsafe internal struct Utsname
+        {
+            public fixed byte sysname[65];
+            public fixed byte nodename[65];
+            public fixed byte release[65];
+            public fixed byte version[65];
+            public fixed byte machine[65];
+            public fixed byte domainname[65];
+        }
+
+        [DllImport("libc", CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int uname(ref Utsname buf);
+        static unsafe string GetUnameRelease()
+        {
+            Utsname buf;
+            uname(ref buf);
+            return Marshal.PtrToStringAnsi((IntPtr)buf.release);
+        }
 
         public static string ExecutableDir;
-        public static void Main(string[] args)
+        unsafe public static void Main(string[] args)
         {
                         
             // args = new[] {"/Users/cn/a3/c308/client/Unity/Tools/excel/lua/app/CollectImg2Excel.lua"};
@@ -96,6 +117,7 @@ namespace xlua
             // Console.WriteLine($"PathSeparator:{System.IO.Path.PathSeparator}\nPrivateBinPath:{PrivateBinPath}=>{AppDomain.CurrentDomain.SetupInformation.PrivateBinPath}\nBaseDirectory:{AppDomain.CurrentDomain.BaseDirectory} ");
             
             
+            // Debug.WriteLine($"args.Length:{args.Length}");
             // for (int i = 0; i < args.Length; i++)
             // {
             //     Debug.WriteLine("args{0}: {1}", i, args[i]);
@@ -122,19 +144,33 @@ namespace xlua
             // var pict = drawing.CreatePicture(anchor, picInd);
             // pict.Resize();
 
+            Utsname un = new Utsname();
+            uname(ref un);
+            // Console.WriteLine($"sysname:{Marshal.PtrToStringAnsi((IntPtr)un.sysname)}");
+            // Console.WriteLine($"nodename:{Marshal.PtrToStringAnsi((IntPtr)un.nodename)}");
+            // Console.WriteLine($"release:{Marshal.PtrToStringAnsi((IntPtr)un.release)}");
+            // Console.WriteLine($"version:{Marshal.PtrToStringAnsi((IntPtr)un.version)}");
+            // Console.WriteLine($"machine:{Marshal.PtrToStringAnsi((IntPtr)un.machine)}");
+            // Console.WriteLine($"domainname:{Marshal.PtrToStringAnsi((IntPtr)un.domainname)}");
             
+            var sysname = Marshal.PtrToStringAnsi((IntPtr) un.sysname);
             LuaEnv luaenv = LuaEnvSingleton.Instance;
             var L = luaenv.L;
             if (0 == LuaAPI.xlua_getglobal(L, "_VERSION"))
             {
-                Console.WriteLine($"{LuaAPI.lua_tostring(L, -1)}");
+                Console.WriteLine($"{sysname}: {LuaAPI.lua_tostring(L, -1)}");
             }
 
             ExecutableDir = AppDomain.CurrentDomain.BaseDirectory.Replace("\\", "/");// Application.ExecutablePath.Replace(Path.GetFileName(Application.ExecutablePath), "");
-        
-            luaenv.DoString("package.cpath = package.cpath .. ';./lib?.dylib;./?.dylib';"
-                            + string.Format("package.cpath = package.cpath .. ';{0}lib?.dylib;{0}lib/lib?.dylib;{0}lib/?.dylib;{0}../lib/lib?.dylib;{0}../lib/?.dylib'", ExecutableDir)
-            );
+
+            var dlext = "so";
+            switch (sysname)
+            {
+                case "Darwin": dlext = "dylib"; break;
+                case "Linux": dlext = "so"; break;
+            }
+            luaenv.DoString("package.cpath = './lib?.{1};./?.{1}';..package.cpath"
+            + string.Format("package.cpath = '{0}lib?.{1};{0}lib/lib?.{1};{0}lib/?.{1};{0}../lib/lib?.{1};{0}../lib/?.{1};'..package.cpath", ExecutableDir, dlext));
             
             var initlua = ExecutableDir + "init.lua";
             if(File.Exists(initlua))
@@ -144,7 +180,7 @@ namespace xlua
             if (args.Length > 0)
             {
                 mainlua = args[0];
-                var maindir = mainlua.Substring(0, mainlua.LastIndexOf("/"));
+                var maindir = mainlua.Contains("/") ? mainlua.Substring(0, mainlua.LastIndexOf("/")) : "./";
                 luaenv.DoString(string.Format("package.path = package.path .. ';{0}/../?.lua;{0}/?.lua;{0}/lua/?.lua;'", maindir)
                                     + @"package.path = package.path .. ';lua/?.lua' .. ';../lua/?.lua';"
                                     + string.Format("package.path = package.path .. ';{0}/?.lua;;{0}/lua/?.lua;'", ExecutableDir));
