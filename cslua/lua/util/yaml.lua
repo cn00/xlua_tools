@@ -47,8 +47,85 @@ table_print_value = function(value, indent, done)
   end
 end
 
+local table_print_to_yaml
+table_print_to_yaml = function(value, indent, done)
+    indent = indent or 0
+    done = done or {}
+    if type(value) == "table" and not done [value] then
+        done [value] = true
+
+        local list = {}
+        for key in pairs (value) do
+            list[#list + 1] = key
+        end
+        table.sort(list, function(a, b) return tostring(a) < tostring(b) end)
+        local last = list[#list]
+
+        local rep = "\n"
+        local comma = ""
+        for _, key in ipairs (list) do
+            --if key == last then
+            --    comma = ''
+            --else
+            --    comma = ','
+            --end
+            local keyRep
+            --if type(key) == "number" then
+                keyRep = tostring(key)
+            --else
+            --    keyRep = string.format("%q", tostring(key))
+            --end
+            rep = rep .. string.format(
+                "%s%s: %s%s\n",
+                string.rep(" ", indent + 2),
+                keyRep,
+                table_print_to_yaml(value[key], indent + 2, done),
+                comma
+            )
+        end
+
+        rep = rep .. string.rep(" ", indent) -- indent it
+        --rep = rep .. "}"
+
+        done[value] = false
+        return rep
+    elseif type(value) == "string" then
+        return string.format("%q", value)
+    else
+        return tostring(value)
+    end
+end
+
 local table_print = function(tt)
   print('return '..table_print_value(tt))
+end
+
+local function toyaml(t)
+    print("toyaml", t)
+    local ts = {} -- line table
+    local dumpkt
+    dumpkt = function(key, v, indent)
+        key = key or ""
+        indent = indent or 0
+        print(key, v, indent)
+        if type(v) == "table" then
+            local ks = string.rep('  ', indent) .. tostring(key) .. ":"
+            print(ks)
+            table.insert(ts, ks)
+            for kk, vv in pairs(v) do
+                dumpkt(kk, vv, indent + 1)
+            end
+        else
+            local kvs = string.rep('  ', indent) .. tostring(key) .. ": " .. tostring(v)
+            print(kvs)
+            table.insert(ts, kvs)
+        end
+    end
+    for kk, vv in pairs(t) do
+        dumpkt(kk, vv)
+    end
+    local s = table.concat(ts, "\n")
+    return s
 end
 
 local table_clone = function(t)
@@ -577,6 +654,6 @@ exports.eval = function (str)
   return Parser:new(exports.tokenize(str)):parse()
 end
 
-exports.dump = table_print
-
+exports.dump = table_print_to_yaml --  table_print
+exports.toyaml = toyaml
 return exports

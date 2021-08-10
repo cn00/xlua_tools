@@ -22,7 +22,7 @@ local function _MysqlSQL2Sheet(conn, sql, sheet, offset_row)
 	local res, err = conn:execute(sql)
 	if err ~= nil then print(err) return end
 
-	print("_MysqlSQL2Sheet", dump(res:getcolnames()), res:numrows())
+	print("_MysqlSQL2Sheet", dump(res:getcolnames(), false), res:numrows())
 	local row = sheet:GetRow(0) or sheet:CreateRow(0)
 	for k,v in pairs(res:getcolnames()) do
         --print(k,v)
@@ -76,6 +76,7 @@ local function Mysql2Excel(source, tables, user, pward, host, excelPath)
 
 	local wb = XWorkbook()
 	for it,tab in ipairs(tables) do
+		print("Mysql2Excel", tab)
 		local sheet = wb:CreateSheet()
 		sheet.SheetName = tab
 		local sql = "select * from " .. tab ..";"

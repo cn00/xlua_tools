@@ -56,7 +56,7 @@ local function EnumerateSheetInBook(book, callback)
         end
     end
     
-    for sheetidx = 0, book1.NumberOfSheets - 1 do
+    for sheetidx = 0, book.NumberOfSheets - 1 do
         local sheet = book:GetSheetAt(sheetidx)
         callback(sheet)
     end
@@ -68,10 +68,12 @@ end
 ---@param callback function
 local function EnumerateRowInSheet(sheet, callback, firstRow, lastRow)
     if firstRow == nil then firstRow = sheet.FirstRowNum end
-    if lastRow == nil then lastRow = Math.Min(MaxRowNum, Math.Max(sheet.LastRowNum, sheet.LastRowNum)) end
+    if lastRow == nil then lastRow = math.min(MaxRowNum, sheet.LastRowNum-1) end
     for i = firstRow, lastRow do
-        local row = sheet:Row(i);
-        callback(row)
+        local row = sheet:GetRow(i);
+        if row == nil then goto continue end
+        callback(i, row)
+        ::continue::
     end
 end
 
