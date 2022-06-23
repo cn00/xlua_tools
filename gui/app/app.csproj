@@ -16,7 +16,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Analyzers" Version="3.0.0-preview3-19153-02" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.0-rc.2.20475.6" />
     <PackageReference Include="MySql.Data" Version="8.0.22" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.Security.Cryptography.Xml" Version="4.7.0" />
     <PackageReference Include="Xamarin.Forms" Version="4.8.0.1560" />  
     <PackageReference Include="Xamarin.Essentials" Version="1.5.3.2" />
